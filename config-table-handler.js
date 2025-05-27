@@ -74,6 +74,9 @@ function updateAndShowConfigTable() {
     // First clear any existing data in the table to avoid showing outdated information
     clearConfigTable();
     
+    // Set default values for warranty and condition cells for HDD and Monitor
+    setDefaultHddMonitorValues();
+    
     // Get component values from dropdowns
     const cpuDropdown = document.getElementById('cpu');
     const mainboardDropdown = document.getElementById('mainboard');
@@ -168,13 +171,13 @@ function updateAndShowConfigTable() {
             // Update price
             const priceCell = document.getElementById('cpu-cooler-price');
             if (priceCell) {
-                priceCell.textContent = formatPrice(cooler.price) + ' VND';
+                priceCell.textContent = formatPriceForDisplay(cooler.price);
             }
             
             // Update total
             const totalCell = document.getElementById('cpu-cooler-total');
             if (totalCell) {
-                totalCell.textContent = formatPrice(cooler.price) + ' VND';
+                totalCell.textContent = formatPriceForDisplay(cooler.price);
             }
             
             // Update warranty
@@ -335,13 +338,13 @@ function updateComponentCell(componentType, componentKey, alternativeType) {
     // Update price cell
     const priceCell = document.getElementById(`${cellId}-price`);
     if (priceCell) {
-        priceCell.textContent = formatPrice(component.price) + ' VND';
+        priceCell.textContent = formatPriceForDisplay(component.price);
     }
     
     // Update total cell
     const totalCell = document.getElementById(`${cellId}-total`);
     if (totalCell) {
-        totalCell.textContent = formatPrice(component.price) + ' VND';
+        totalCell.textContent = formatPriceForDisplay(component.price);
     }
     
     // Update warranty cell - Use exact warranty from component data
@@ -391,6 +394,24 @@ function getIconClassForComponent(componentType) {
     }
 }
 
+// Helper function to format price with commas
+function formatPrice(price) {
+    try {
+        // Format price with commas and remove trailing zeros if needed
+        const formattedPrice = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return formattedPrice;
+    } catch (error) {
+        console.error('Error formatting price:', error);
+        return price.toString();
+    }
+}
+
+// Format price for display in the table
+function formatPriceForDisplay(price) {
+    const formattedPrice = formatPrice(price);
+    return formattedPrice + ' VND';
+}
+
 // Calculate total price of all components
 function calculateTotalPrice() {
     try {
@@ -415,24 +436,19 @@ function calculateTotalPrice() {
         // Update total price cell
         const totalPriceCell = document.getElementById('total-price-cell');
         if (totalPriceCell) {
-            totalPriceCell.textContent = formatPrice(totalPrice) + ' VND';
+            totalPriceCell.textContent = formatPriceForDisplay(totalPrice);
         }
         
         // Update remaining price cell (same as total for now)
         const remainingPriceCell = document.getElementById('remaining-price-cell');
         if (remainingPriceCell) {
-            remainingPriceCell.textContent = formatPrice(totalPrice) + ' VND';
+            remainingPriceCell.textContent = formatPriceForDisplay(totalPrice);
         }
         
         console.log(`Total price calculated: ${formatPrice(totalPrice)} VND`);
     } catch (error) {
         console.error('Error calculating total price:', error);
     }
-}
-
-// Helper function to format price with commas
-function formatPrice(price) {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function updateComponentTable(cpuKey, mainboardKey, vgaKey, ramKey, ssdKey, psuKey, caseKey, cpuCoolerKey) {
@@ -479,13 +495,13 @@ function updateComponentTable(cpuKey, mainboardKey, vgaKey, ramKey, ssdKey, psuK
             // Update price
             const priceCell = document.getElementById('cpu-cooler-price');
             if (priceCell) {
-                priceCell.textContent = formatPrice(cooler.price) + ' VND';
+                priceCell.textContent = formatPriceForDisplay(cooler.price);
             }
             
             // Update total
             const totalCell = document.getElementById('cpu-cooler-total');
             if (totalCell) {
-                totalCell.textContent = formatPrice(cooler.price) + ' VND';
+                totalCell.textContent = formatPriceForDisplay(cooler.price);
             }
         } else {
             console.warn(`CPU cooler ${cpuCoolerKey} not found in data:`, window.cpuCoolerData);
@@ -529,4 +545,31 @@ function clearConfigTable() {
     });
     
     console.log('Configuration table cleared');
+}
+
+// Set default values for HDD and Monitor warranty and condition
+function setDefaultHddMonitorValues() {
+    // Default values for HDD
+    const hddWarrantyCell = document.getElementById('additional-component-warranty');
+    const hddConditionCell = document.getElementById('additional-component-condition');
+    
+    if (hddWarrantyCell && !hddWarrantyCell.textContent) {
+        hddWarrantyCell.textContent = '12T';
+    }
+    
+    if (hddConditionCell && !hddConditionCell.textContent) {
+        hddConditionCell.textContent = 'NEW';
+    }
+    
+    // Default values for Monitor
+    const monitorWarrantyCell = document.getElementById('monitor-warranty');
+    const monitorConditionCell = document.getElementById('monitor-condition');
+    
+    if (monitorWarrantyCell && !monitorWarrantyCell.textContent) {
+        monitorWarrantyCell.textContent = '36T';
+    }
+    
+    if (monitorConditionCell && !monitorConditionCell.textContent) {
+        monitorConditionCell.textContent = 'NEW';
+    }
 } 
