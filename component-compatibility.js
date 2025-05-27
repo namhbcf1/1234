@@ -30,10 +30,28 @@ document.addEventListener('DOMContentLoaded', function() {
         ramDropdown.disabled = true;
         
         // 4. Set up event listeners for enabling dropdowns
-        // When CPU changes, enable mainboard
+        // When CPU changes, enable mainboard and filter compatible options
         cpuDropdown.addEventListener('change', function() {
             if (this.value) {
-                mainboardDropdown.disabled = false;
+                // Don't enable directly - the filterMainboardsByCpu function will handle it
+                // after filtering compatible options
+                filterMainboardsByCpu(this.value);
+                
+                // Reset mainboard and RAM if we change CPU
+                if (mainboardDropdown.value) {
+                    // Check if current mainboard is compatible with new CPU
+                    const cpu = window.cpuData[this.value];
+                    const mainboard = window.mainboardData[mainboardDropdown.value];
+                    
+                    if (cpu && mainboard) {
+                        const isCompatible = window.determineCpuMainboardCompatibility(cpu, mainboard);
+                        if (!isCompatible) {
+                            mainboardDropdown.value = '';
+                            ramDropdown.value = '';
+                            ramDropdown.disabled = true;
+                        }
+                    }
+                }
             } else {
                 mainboardDropdown.disabled = true;
                 mainboardDropdown.value = '';
@@ -42,10 +60,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // When mainboard changes, enable RAM
+        // When mainboard changes, enable RAM and filter compatible options
         mainboardDropdown.addEventListener('change', function() {
             if (this.value) {
-                ramDropdown.disabled = false;
+                // Don't enable directly - the updateRamOptionsBasedOnMainboard function will handle it
+                // after filtering compatible options
+                updateRamOptionsBasedOnMainboard(this.value);
+                
+                // Check compatibility with selected CPU
+                const cpuValue = cpuDropdown ? cpuDropdown.value : null;
+                if (cpuValue) {
+                    checkSocketCompatibility(cpuValue, this.value);
+                }
             } else {
                 ramDropdown.disabled = true;
                 ramDropdown.value = '';
@@ -57,6 +83,25 @@ document.addEventListener('DOMContentLoaded', function() {
             socketInfoDiv.style.border = '2px solid #4CAF50';
             socketInfoDiv.style.boxShadow = '0 0 10px rgba(76, 175, 80, 0.5)';
         }
+        
+        // 6. Add validation to prevent incompatible selection
+        mainboardDropdown.addEventListener('focus', function() {
+            if (!cpuDropdown.value) {
+                // Show message to select CPU first
+                alert('Vui lòng chọn CPU trước khi chọn Mainboard');
+                cpuDropdown.focus();
+                return false;
+            }
+        });
+        
+        ramDropdown.addEventListener('focus', function() {
+            if (!mainboardDropdown.value) {
+                // Show message to select mainboard first
+                alert('Vui lòng chọn Mainboard trước khi chọn RAM');
+                mainboardDropdown.focus();
+                return false;
+            }
+        });
         
         console.log('Strict component compatibility setup complete');
     }

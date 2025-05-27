@@ -288,12 +288,11 @@ function updateRamOptionsBasedOnMainboard(mainboardKey) {
                     
                     logger.log(`RAM Compatibility Check: ${ramName} (${ramType}) with ${mbName} (${mbRamType})`);
                     
-                    // Nếu không có loại RAM rõ ràng, luôn cho phép chọn
-                    if (!mbRamType || !ramType) return true;
+                    // Nếu không có loại RAM rõ ràng, từ chối chọn
+                    if (!mbRamType || !ramType) return false;
                     
-                    // Return true để luôn cho phép chọn RAM sau khi đã chọn mainboard
-                    // Điều này giúp fix vấn đề người dùng không thể chọn RAM sau khi chọn CPU và mainboard
-                    return true;
+                    // CRITICAL: Chỉ cho phép RAM cùng loại DDR với mainboard
+                    return ramType === mbRamType;
                 }
                 
                 // Kiểm tra tương thích RAM
@@ -430,7 +429,19 @@ function filterMainboardsByCpu(cpuKey) {
         if (!mainboardDropdown || !cpuKey || !window.cpuData[cpuKey]) return;
         
         const cpu = window.cpuData[cpuKey];
-        const cpuSocket = cpu.socket;
+        
+        // Xác định socket CPU
+        let cpuSocket = cpu.socket;
+        if (!cpuSocket) {
+            cpuSocket = getCPUSocketFromName(cpu.name);
+            // Lưu lại để sử dụng sau này
+            cpu.socket = cpuSocket;
+        }
+        
+        if (!cpuSocket) {
+            console.error(`Không thể xác định socket cho CPU: ${cpu.name}`);
+            return;
+        }
         
         // Hiển thị thông tin socket trên UI
         const socketInfoDiv = document.getElementById('socket-info');
@@ -457,14 +468,10 @@ function filterMainboardsByCpu(cpuKey) {
         // Cập nhật thông tin socket
         const socketInfoDivUpdated = document.getElementById('socket-info');
         if (socketInfoDivUpdated) {
-            // Lấy socket từ CPU được chọn
-            const detectedCpuSocket = getCPUSocketFromName(cpu.name);
-            const finalCpuSocket = cpuSocket || detectedCpuSocket;
-            
             // Hiển thị với màu nổi bật - đã xóa phần RAM Type
             socketInfoDivUpdated.innerHTML = `
-                <span style="color:#1e88e5; font-weight:bold;">CPU Socket: ${finalCpuSocket}</span> | 
-                <span style="color:#43a047; font-weight:bold;">Mainboard Socket: ${finalCpuSocket}</span>
+                <span style="color:#1e88e5; font-weight:bold;">CPU Socket: ${cpuSocket}</span> | 
+                <span style="color:#43a047; font-weight:bold;">Yêu cầu Mainboard Socket: ${cpuSocket}</span>
             `;
             
             // Thêm style cho div
@@ -496,134 +503,19 @@ function filterMainboardsByCpu(cpuKey) {
         if (window.mainboardData) {
             Object.keys(window.mainboardData).forEach(mainboardKey => {
                 const mainboard = window.mainboardData[mainboardKey];
-                const mbSockets = mainboard.sockets || [mainboard.socket];
                 
-                // Kiểm tra tương thích nghiêm ngặt dựa trên socket chính xác
-                let isCompatible = false;
-                
-                // Hàm tự tạo xác định tương thích giữa CPU và mainboard
-                function determineCpuMainboardCompatibility(cpu, mainboard) {
-                    // Đảm bảo có dữ liệu
-                    if (!cpu || !mainboard) return false;
-                    
-                    // Xác định socket CPU
-                    let cpuSocket = cpu.socket;
-                    if (!cpuSocket && cpu.name) {
-                        cpuSocket = getCPUSocketFromName(cpu.name);
-                    }
-                    
-                    // Xác định socket mainboard
-                    let mbSocket = mainboard.socket;
-                    if (!mbSocket && mainboard.name) {
-                        mbSocket = getMainboardSocketFromName(mainboard.name);
-                    }
-                    
-                    // Xử lý trường hợp mainboard hỗ trợ nhiều socket
-                    const mbSockets = mainboard.sockets || [mbSocket];
-                    
-                    // Lưu socket vào đối tượng để sử dụng sau này
-                    cpu.socket = cpuSocket;
+                // Xác định socket mainboard
+                let mbSocket = mainboard.socket;
+                if (!mbSocket) {
+                    mbSocket = getMainboardSocketFromName(mainboard.name);
+                    // Lưu lại để sử dụng sau này
                     mainboard.socket = mbSocket;
-                    
-                    // Kiểm tra tương thích
-                    if (!cpuSocket || !mbSocket) return false;
-                    
-                    // Đặc biệt kiểm tra CPU Ryzen 5/7/9 cho socket AM5
-                    if (cpu.name.includes('Ryzen') && 
-                        (cpu.name.includes('7500f') || cpu.name.includes('7600') || cpu.name.includes('7700') || 
-                         cpu.name.includes('7800') || cpu.name.includes('7900') || cpu.name.includes('7950') ||
-                         cpu.name.includes('9600') || cpu.name.includes('9700') || cpu.name.includes('9800') || 
-                         cpu.name.includes('9900') || cpu.name.includes('9950'))) {
-                        
-                        // Các CPU này cần mainboard AM5
-                        const isCompatible = mbSocket === 'AM5' || mbSockets.includes('AM5');
-                        console.log(`AMD Ryzen 7000/9000 series CPU (${cpu.name}) compatibility with ${mainboard.name}: ${isCompatible ? 'Compatible (AM5)' : 'Not compatible (requires AM5)'}`);
-                        return isCompatible;
-                    }
-                    
-                    // Kiểm tra tương thích CPU Ryzen 3/5/7/9 thế hệ 3000-5000 với mainboard AM4
-                    if (cpu.name.includes('Ryzen') && 
-                        (cpu.name.includes('3600') || cpu.name.includes('3700') || cpu.name.includes('3800') || 
-                         cpu.name.includes('3900') || cpu.name.includes('5600') || cpu.name.includes('5700') || 
-                         cpu.name.includes('5800') || cpu.name.includes('5900') || cpu.name.includes('5950'))) {
-                        
-                        // Các CPU này cần mainboard AM4
-                        const isCompatible = mbSocket === 'AM4' || mbSockets.includes('AM4');
-                        console.log(`AMD Ryzen 3000-5000 series CPU (${cpu.name}) compatibility with ${mainboard.name}: ${isCompatible ? 'Compatible (AM4)' : 'Not compatible (requires AM4)'}`);
-                        return isCompatible;
-                    }
-                    
-                    // Kiểm tra tương thích CPU Intel 12/13/14th Gen với mainboard LGA1700
-                    if ((cpu.name.includes('Intel') || cpu.name.includes('Core i')) && 
-                        (cpu.name.includes('12') || cpu.name.includes('13') || cpu.name.includes('14') || 
-                         cpu.name.includes('12100') || cpu.name.includes('12400') || cpu.name.includes('12600') || 
-                         cpu.name.includes('12700') || cpu.name.includes('12900') || cpu.name.includes('13100') || 
-                         cpu.name.includes('13400') || cpu.name.includes('13600') || cpu.name.includes('13700') || 
-                         cpu.name.includes('13900') || cpu.name.includes('14100') || cpu.name.includes('14400') ||
-                         cpu.name.includes('14600') || cpu.name.includes('14700') || cpu.name.includes('14900'))) {
-                        
-                        // Các CPU này cần mainboard LGA1700
-                        const isCompatible = mbSocket === 'LGA1700' || mbSockets.includes('LGA1700');
-                        console.log(`Intel 12-14th Gen CPU (${cpu.name}) compatibility with ${mainboard.name}: ${isCompatible ? 'Compatible (LGA1700)' : 'Not compatible (requires LGA1700)'}`);
-                        return isCompatible;
-                    }
-                    
-                    // Kiểm tra tương thích CPU Intel 10/11th Gen với mainboard LGA1200
-                    if ((cpu.name.includes('Intel') || cpu.name.includes('Core i')) && 
-                        (cpu.name.includes('10') || cpu.name.includes('11') || 
-                         cpu.name.includes('10100') || cpu.name.includes('10400') || cpu.name.includes('10600') || 
-                         cpu.name.includes('10700') || cpu.name.includes('10900') || cpu.name.includes('11100') || 
-                         cpu.name.includes('11400') || cpu.name.includes('11600') || cpu.name.includes('11700') || 
-                         cpu.name.includes('11900'))) {
-                        
-                        // Các CPU này cần mainboard LGA1200
-                        const isCompatible = mbSocket === 'LGA1200' || mbSockets.includes('LGA1200');
-                        console.log(`Intel 10-11th Gen CPU (${cpu.name}) compatibility with ${mainboard.name}: ${isCompatible ? 'Compatible (LGA1200)' : 'Not compatible (requires LGA1200)'}`);
-                        return isCompatible;
-                    }
-                    
-                    // Kiểm tra tương thích CPU Intel 8/9th Gen với mainboard LGA1151
-                    if ((cpu.name.includes('Intel') || cpu.name.includes('Core i')) && 
-                        (cpu.name.includes('8') || cpu.name.includes('9') || 
-                         cpu.name.includes('8100') || cpu.name.includes('8400') || cpu.name.includes('8600') || 
-                         cpu.name.includes('8700') || cpu.name.includes('9100') || cpu.name.includes('9400') || 
-                         cpu.name.includes('9600') || cpu.name.includes('9700') || cpu.name.includes('9900'))) {
-                        
-                        // Các CPU này cần mainboard LGA1151 300-series
-                        const isCompatible = mbSocket === 'LGA1151' || mbSockets.includes('LGA1151');
-                        console.log(`Intel 8-9th Gen CPU (${cpu.name}) compatibility with ${mainboard.name}: ${isCompatible ? 'Compatible (LGA1151)' : 'Not compatible (requires LGA1151)'}`);
-                        return isCompatible;
-                    }
-                    
-                    // Kiểm tra tương thích CPU Intel 6/7th Gen với mainboard LGA1151
-                    if ((cpu.name.includes('Intel') || cpu.name.includes('Core i')) && 
-                        (cpu.name.includes('6') || cpu.name.includes('7') || 
-                         cpu.name.includes('6100') || cpu.name.includes('6400') || cpu.name.includes('6500') || 
-                         cpu.name.includes('6600') || cpu.name.includes('6700') || cpu.name.includes('7100') || 
-                         cpu.name.includes('7400') || cpu.name.includes('7600') || cpu.name.includes('7700'))) {
-                        
-                        // Các CPU này cần mainboard LGA1151 100/200-series
-                        const isCompatible = mbSocket === 'LGA1151' || mbSockets.includes('LGA1151');
-                        console.log(`Intel 6-7th Gen CPU (${cpu.name}) compatibility with ${mainboard.name}: ${isCompatible ? 'Compatible (LGA1151)' : 'Not compatible (requires LGA1151)'}`);
-                        return isCompatible;
-                    }
-                    
-                    // Kiểm tra tương thích chung
-                    let isCompatible = false;
-                    if (Array.isArray(mbSockets)) {
-                        isCompatible = mbSockets.includes(cpuSocket);
-                    } else {
-                        isCompatible = mbSocket === cpuSocket;
-                    }
-                    
-                    console.log(`General CPU-Mainboard compatibility check: ${cpu.name} (${cpuSocket}) with ${mainboard.name} (${mbSocket}): ${isCompatible ? 'Compatible' : 'Not compatible'}`);
-                    return isCompatible;
                 }
                 
-                // Xác định tương thích
-                isCompatible = determineCpuMainboardCompatibility(cpu, mainboard);
+                const mbSockets = mainboard.sockets || [mbSocket];
                 
-                console.log(`Compatibility check for ${cpu.name} (${cpuSocket}) with ${mainboard.name}: ${isCompatible ? 'Compatible' : 'Not compatible'}`);
+                // Kiểm tra tương thích nghiêm ngặt dựa trên socket chính xác
+                const isCompatible = window.determineCpuMainboardCompatibility(cpu, mainboard);
                 
                 if (isCompatible) {
                     const option = document.createElement('option');
@@ -631,6 +523,7 @@ function filterMainboardsByCpu(cpuKey) {
                     option.text = `${mainboard.name} - ${formatPrice(mainboard.price)} VNĐ`;
                     option.dataset.price = mainboard.price;
                     option.dataset.image = mainboard.image;
+                    option.dataset.socket = mbSocket; // Lưu socket vào dataset
                     mainboardDropdown.appendChild(option);
                     
                     // Kiểm tra xem mainboard hiện tại có còn tương thích không
@@ -639,6 +532,26 @@ function filterMainboardsByCpu(cpuKey) {
                     }
                 }
             });
+        }
+        
+        // Nếu không có mainboard nào tương thích
+        if (mainboardDropdown.options.length <= 1) {
+            const message = document.createElement('div');
+            message.innerHTML = `<strong>Thông báo:</strong> Không tìm thấy mainboard nào tương thích với CPU socket ${cpuSocket}.`;
+            message.style.color = '#e74c3c';
+            message.style.backgroundColor = '#fadbd8';
+            message.style.padding = '10px';
+            message.style.borderRadius = '5px';
+            message.style.margin = '10px 0';
+            
+            // Hiển thị thông báo và tự động xóa sau 5 giây
+            const container = document.querySelector('.components-grid');
+            if (container) {
+                container.prepend(message);
+                setTimeout(() => {
+                    message.remove();
+                }, 5000);
+            }
         }
         
         // Enable mainboard after CPU is selected
@@ -683,32 +596,8 @@ function filterMainboardsByCpu(cpuKey) {
         
         // Update style cho dropdown
         mainboardDropdown.style.borderColor = mainboardDropdown.options.length > 1 ? '' : '#e74c3c';
-        
-        // Thêm label hiển thị socket yêu cầu
-        const mainboardComponentHeader = document.querySelector('.component:has(#mainboard) .component-header');
-        if (mainboardComponentHeader) {
-            // Xóa label cũ nếu có
-            const existingLabel = mainboardComponentHeader.querySelector('.socket-type-label');
-            if (existingLabel) {
-                existingLabel.remove();
-            }
-            
-            // Thêm label mới
-            const socketTypeLabel = document.createElement('span');
-            socketTypeLabel.className = 'socket-type-label';
-            socketTypeLabel.style.fontSize = '12px';
-            socketTypeLabel.style.marginLeft = '8px';
-            socketTypeLabel.style.padding = '2px 6px';
-            socketTypeLabel.style.borderRadius = '3px';
-            socketTypeLabel.style.backgroundColor = '#2ecc71';
-            socketTypeLabel.style.color = '#fff';
-            socketTypeLabel.textContent = cpuSocket;
-            mainboardComponentHeader.appendChild(socketTypeLabel);
-        }
-        
-        console.log(`Mainboard dropdown updated with ${mainboardDropdown.options.length - 1} compatible options`);
     } catch (error) {
-        console.error('Error filtering mainboards by CPU:', error);
+        console.error('Error in filterMainboardsByCpu:', error);
     }
 }
 
@@ -1169,10 +1058,37 @@ function handleImageError(img) {
     ctx.fillStyle = '#ffffff';
     ctx.font = '14px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText(img.alt || componentType, canvas.width/2, canvas.height/2);
+    ctx.fillText(img.alt || componentType.toUpperCase(), canvas.width/2, canvas.height/2);
     
-    // Replace the img src with the canvas data
-    img.src = canvas.toDataURL('image/png');
+    // Fix Safari compatibility issue - ensure image is loaded before setting src
+    setTimeout(() => {
+        try {
+            // Replace the img src with the canvas data
+            const dataUrl = canvas.toDataURL('image/png');
+            img.src = dataUrl;
+            
+            // Add a fallback source for older browsers
+            if (!img.srcset) {
+                img.srcset = dataUrl;
+            }
+            
+            // Add inline styles to show at least something
+            img.style.backgroundColor = bgColors[componentType];
+            img.style.minWidth = '200px';
+            img.style.minHeight = '150px';
+        } catch (e) {
+            console.error('Error generating fallback image:', e);
+            // Ultimate fallback: color box
+            img.style.backgroundColor = bgColors[componentType];
+            img.style.minWidth = '200px';
+            img.style.minHeight = '150px';
+            img.style.display = 'flex';
+            img.style.alignItems = 'center';
+            img.style.justifyContent = 'center';
+            img.style.color = '#ffffff';
+            img.textContent = img.alt || componentType.toUpperCase();
+        }
+    }, 0);
     
     // Prevent further error handling
     img.onerror = null;
@@ -1231,13 +1147,35 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // Add global image error handler for all images in the document
     function setupImageErrorHandlers() {
+        // First, add preconnect hints for image domains
+        const head = document.head;
+        const domains = ['images', 'image'];
+        
+        domains.forEach(domain => {
+            const link = document.createElement('link');
+            link.rel = 'preconnect';
+            link.href = `/${domain}`;
+            head.appendChild(link);
+        });
+        
+        // Apply handlers to all images, current and future
         document.querySelectorAll('img').forEach(img => {
             if (!img.hasAttribute('data-error-handler-attached')) {
                 img.setAttribute('data-error-handler-attached', 'true');
+                
+                // Set loading="lazy" for better performance
+                img.loading = 'lazy';
+                
+                // Add error handler
                 img.onerror = function() {
                     window.handleImageError(this);
                     return true;
                 };
+                
+                // Special Safari fix - re-fetch the image if initial load fails
+                if (img.complete && (img.naturalWidth === 0 || img.naturalHeight === 0)) {
+                    window.handleImageError(img);
+                }
             }
         });
         
@@ -1247,24 +1185,43 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (mutation.addedNodes && mutation.addedNodes.length > 0) {
                     mutation.addedNodes.forEach(function(node) {
                         if (node.nodeType === 1) { // ELEMENT_NODE
+                            // Handle img elements inside the added node
                             const images = node.querySelectorAll('img');
                             images.forEach(img => {
                                 if (!img.hasAttribute('data-error-handler-attached')) {
                                     img.setAttribute('data-error-handler-attached', 'true');
+                                    
+                                    // Set loading="lazy" for better performance
+                                    img.loading = 'lazy';
+                                    
                                     img.onerror = function() {
                                         window.handleImageError(this);
                                         return true;
                                     };
+                                    
+                                    // Special Safari fix - re-fetch the image if initial load fails
+                                    if (img.complete && (img.naturalWidth === 0 || img.naturalHeight === 0)) {
+                                        window.handleImageError(img);
+                                    }
                                 }
                             });
                             
                             // Check if the node itself is an image
                             if (node.tagName === 'IMG' && !node.hasAttribute('data-error-handler-attached')) {
                                 node.setAttribute('data-error-handler-attached', 'true');
+                                
+                                // Set loading="lazy" for better performance
+                                node.loading = 'lazy';
+                                
                                 node.onerror = function() {
                                     window.handleImageError(this);
                                     return true;
                                 };
+                                
+                                // Special Safari fix - re-fetch the image if initial load fails
+                                if (node.complete && (node.naturalWidth === 0 || node.naturalHeight === 0)) {
+                                    window.handleImageError(node);
+                                }
                             }
                         }
                     });
@@ -1277,7 +1234,7 @@ document.addEventListener('DOMContentLoaded', function () {
             subtree: true
         });
         
-        console.log('Global image error handlers have been set up');
+        console.log('Enhanced image error handlers have been set up');
     }
     
     // Call the setup function when the page loads
