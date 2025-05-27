@@ -5101,161 +5101,25 @@ console.log("✅ CPU-Mainboard and RAM compatibility functions exposed globally"
                         
 // forceShowConfigTables function removed
                         
-function validateAllComponents() {
-    console.log('Validating all components');
+// validateAllComponents function is already defined elsewhere in the file
+// DO NOT add a duplicate here
+
+// Helper function to check form factor compatibility
+function isFormFactorCompatible(caseFormFactor, mainboardFormFactor) {
+    // ATX cases can fit ATX, Micro-ATX, and Mini-ITX
+    // Micro-ATX cases can fit Micro-ATX and Mini-ITX
+    // Mini-ITX cases can only fit Mini-ITX
     
-    // Get all selected components
-    const cpu = document.getElementById('cpu');
-    const mainboard = document.getElementById('mainboard');
-    const vga = document.getElementById('vga');
-    const ram = document.getElementById('ram');
-    const ssd = document.getElementById('ssd');
-    const psu = document.getElementById('psu');
-    const caseElement = document.getElementById('case');
-    const cpuCooler = document.getElementById('cpuCooler');
+    const formFactorRank = {
+        'ATX': 3,
+        'Micro-ATX': 2,
+        'Mini-ITX': 1
+    };
     
-    // Clear previous error messages
-    clearOldMessages();
-    resetBorderColors();
-    hideGreenSections();
+    // Convert to uppercase for case-insensitive comparison
+    const caseRank = formFactorRank[caseFormFactor.toUpperCase()] || formFactorRank[caseFormFactor] || 0;
+    const mbRank = formFactorRank[mainboardFormFactor.toUpperCase()] || formFactorRank[mainboardFormFactor] || 0;
     
-    // Store error messages
-    const errorMessages = [];
-    
-    // Validate CPU and Mainboard compatibility
-    if (cpu && cpu.value && mainboard && mainboard.value) {
-        const cpuKey = cpu.value;
-        const mainboardKey = mainboard.value;
-        
-        if (!checkSocketCompatibility(cpuKey, mainboardKey)) {
-            errorMessages.push(`<span style="color: #e74c3c; font-weight: bold;">❌ LỖI TƯƠNG THÍCH:</span> CPU ${window.cpuData[cpuKey].name} không tương thích với mainboard ${window.mainboardData[mainboardKey].name}. Socket CPU ${window.cpuData[cpuKey].socket || 'unknown'} không phù hợp với socket mainboard ${Array.isArray(window.mainboardData[mainboardKey].sockets) ? window.mainboardData[mainboardKey].sockets.join(', ') : window.mainboardData[mainboardKey].sockets || 'unknown'}.`);
-            
-            // Highlight error elements
-            cpu.style.borderColor = '#e74c3c';
-            mainboard.style.borderColor = '#e74c3c';
-        }
-    }
-    
-    // Validate RAM and Mainboard compatibility
-    if (ram && ram.value && mainboard && mainboard.value) {
-        const ramKey = ram.value;
-        const mainboardKey = mainboard.value;
-        
-        const ramType = window.ramData[ramKey].memoryType;
-        const mainboardRamType = window.mainboardData[mainboardKey].memoryType;
-        
-        if (ramType !== mainboardRamType) {
-            errorMessages.push(`<span style="color: #e74c3c; font-weight: bold;">❌ LỖI TƯƠNG THÍCH:</span> RAM ${window.ramData[ramKey].name} (${ramType}) không tương thích với mainboard ${window.mainboardData[mainboardKey].name} (hỗ trợ ${mainboardRamType}).`);
-            
-            // Highlight error elements
-            ram.style.borderColor = '#e74c3c';
-            mainboard.style.borderColor = '#e74c3c';
-        }
-    }
-    
-    // Validate case and mainboard compatibility
-    if (caseElement && caseElement.value && mainboard && mainboard.value) {
-        const caseKey = caseElement.value;
-        const mainboardKey = mainboard.value;
-        
-        const caseFormFactor = window.caseData[caseKey].formFactor;
-        const mainboardFormFactor = window.mainboardData[mainboardKey].formFactor;
-        
-        // Check if case can fit the mainboard
-        if (!isFormFactorCompatible(caseFormFactor, mainboardFormFactor)) {
-            errorMessages.push(`<span style="color: #e74c3c; font-weight: bold;">❌ LỖI TƯƠNG THÍCH:</span> Case ${window.caseData[caseKey].name} (${caseFormFactor}) không phù hợp với mainboard ${window.mainboardData[mainboardKey].name} (${mainboardFormFactor}).`);
-            
-            // Highlight error elements
-            caseElement.style.borderColor = '#e74c3c';
-            mainboard.style.borderColor = '#e74c3c';
-        }
-    }
-    
-    // Helper function to check form factor compatibility
-    function isFormFactorCompatible(caseFormFactor, mainboardFormFactor) {
-        // ATX cases can fit ATX, Micro-ATX, and Mini-ITX
-        // Micro-ATX cases can fit Micro-ATX and Mini-ITX
-        // Mini-ITX cases can only fit Mini-ITX
-        
-        const formFactorRank = {
-            'ATX': 3,
-            'Micro-ATX': 2,
-            'Mini-ITX': 1
-        };
-        
-        // Convert to uppercase for case-insensitive comparison
-        const caseRank = formFactorRank[caseFormFactor.toUpperCase()] || formFactorRank[caseFormFactor] || 0;
-        const mbRank = formFactorRank[mainboardFormFactor.toUpperCase()] || formFactorRank[mainboardFormFactor] || 0;
-        
-        return caseRank >= mbRank;
-    }
-    
-    // Hiển thị các thông báo lỗi
-    if (errorMessages.length > 0) {
-        // Use the designated compatibility-alert section instead of creating new divs
-        const compatibilityAlert = document.getElementById('compatibility-alert');
-        const compatibilityMessage = document.getElementById('compatibility-message');
-        
-        if (compatibilityAlert && compatibilityMessage) {
-            // Show the alert
-            compatibilityAlert.classList.remove('hidden');
-            
-            // Set alert styling
-            compatibilityAlert.style.backgroundColor = '#fadbd8';
-            compatibilityAlert.style.border = '1px solid #e74c3c';
-            compatibilityAlert.style.borderLeft = '5px solid #e74c3c';
-            compatibilityAlert.style.borderRadius = '5px';
-            compatibilityAlert.style.padding = '15px 20px';
-            compatibilityAlert.style.margin = '15px 0 30px 0';
-            compatibilityAlert.style.position = 'relative';
-            compatibilityAlert.style.display = 'flex';
-            compatibilityAlert.style.alignItems = 'flex-start';
-            
-            // Set the message content
-            compatibilityMessage.innerHTML = '';
-            compatibilityMessage.style.color = '#c0392b';
-            compatibilityMessage.style.fontWeight = 'bold';
-            compatibilityMessage.style.flex = '1';
-            compatibilityMessage.style.marginLeft = '10px';
-            
-            // Add each error message
-            errorMessages.forEach((message, index) => {
-                const msgPara = document.createElement('p');
-                msgPara.innerHTML = message;
-                if (index > 0) {
-                    msgPara.style.marginTop = '10px';
-                }
-                compatibilityMessage.appendChild(msgPara);
-            });
-            
-            // Add click handler to close button
-            const closeButton = document.getElementById('close-alert');
-            if (closeButton) {
-                closeButton.style.cursor = 'pointer';
-                closeButton.style.background = 'none';
-                closeButton.style.border = 'none';
-                closeButton.style.color = '#e74c3c';
-                closeButton.style.fontSize = '20px';
-                closeButton.style.paddingTop = '0';
-                
-                // Remove any existing event listeners
-                const newCloseButton = closeButton.cloneNode(true);
-                closeButton.parentNode.replaceChild(newCloseButton, closeButton);
-                
-                // Add new event listener
-                newCloseButton.addEventListener('click', function() {
-                    compatibilityAlert.classList.add('hidden');
-                });
-            }
-        } else {
-            console.error('Compatibility alert elements not found in the DOM');
-        }
-    } else {
-        // No errors, hide the alert if it exists
-        const compatibilityAlert = document.getElementById('compatibility-alert');
-        if (compatibilityAlert) {
-            compatibilityAlert.classList.add('hidden');
-        }
-    }
+    return caseRank >= mbRank;
 }
                         

@@ -33,9 +33,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // When CPU changes, enable mainboard and filter compatible options
         cpuDropdown.addEventListener('change', function() {
             if (this.value) {
-                // Don't enable directly - the filterMainboardsByCpu function will handle it
-                // after filtering compatible options
-                filterMainboardsByCpu(this.value);
+                // Enable mainboard dropdown directly
+                mainboardDropdown.disabled = false;
+                
+                // If the global function exists, use it
+                if (typeof window.filterMainboardsByCpu === 'function') {
+                    window.filterMainboardsByCpu(this.value);
+                } else {
+                    console.warn('filterMainboardsByCpu function not found, using fallback');
+                    // Simple fallback - just enable the dropdown
+                    mainboardDropdown.disabled = false;
+                }
                 
                 // Reset mainboard and RAM if we change CPU
                 if (mainboardDropdown.value) {
@@ -44,7 +52,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     const mainboard = window.mainboardData[mainboardDropdown.value];
                     
                     if (cpu && mainboard) {
-                        const isCompatible = window.determineCpuMainboardCompatibility(cpu, mainboard);
+                        const isCompatible = window.determineCpuMainboardCompatibility && 
+                                           typeof window.determineCpuMainboardCompatibility === 'function' ? 
+                                           window.determineCpuMainboardCompatibility(cpu, mainboard) : true;
+                        
                         if (!isCompatible) {
                             mainboardDropdown.value = '';
                             ramDropdown.value = '';
@@ -63,14 +74,22 @@ document.addEventListener('DOMContentLoaded', function() {
         // When mainboard changes, enable RAM and filter compatible options
         mainboardDropdown.addEventListener('change', function() {
             if (this.value) {
-                // Don't enable directly - the updateRamOptionsBasedOnMainboard function will handle it
-                // after filtering compatible options
-                updateRamOptionsBasedOnMainboard(this.value);
+                // Enable RAM dropdown directly
+                ramDropdown.disabled = false;
+                
+                // If the global function exists, use it
+                if (typeof window.updateRamOptionsBasedOnMainboard === 'function') {
+                    window.updateRamOptionsBasedOnMainboard(this.value);
+                } else {
+                    console.warn('updateRamOptionsBasedOnMainboard function not found, using fallback');
+                    // Simple fallback - just enable the dropdown
+                    ramDropdown.disabled = false;
+                }
                 
                 // Check compatibility with selected CPU
                 const cpuValue = cpuDropdown ? cpuDropdown.value : null;
-                if (cpuValue) {
-                    checkSocketCompatibility(cpuValue, this.value);
+                if (cpuValue && typeof window.checkSocketCompatibility === 'function') {
+                    window.checkSocketCompatibility(cpuValue, this.value);
                 }
             } else {
                 ramDropdown.disabled = true;
