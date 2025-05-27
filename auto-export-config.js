@@ -14,10 +14,15 @@ function setupExportButton() {
   if (!saveButton) {
     // Nếu không tìm thấy nút cụ thể, tìm các nút khác có thể liên quan
     saveButton = document.querySelector('#save-button') ||
-                 document.querySelector('button[data-action="save"]') ||
-                 Array.from(document.querySelectorAll('button')).find(btn => 
-                    btn.textContent.includes('Lưu cấu hình') || 
-                    btn.innerText.includes('Lưu cấu hình'));
+                 document.querySelector('button[data-action="save"]');
+    
+    // Tìm button dựa vào nội dung text
+    if (!saveButton) {
+      const allButtons = Array.from(document.querySelectorAll('button'));
+      saveButton = allButtons.find(btn => 
+        btn.textContent.includes('Lưu cấu hình') || 
+        btn.innerText.includes('Lưu cấu hình'));
+    }
   }
   
   if (!saveButton) {

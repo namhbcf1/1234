@@ -36,20 +36,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Enable mainboard dropdown directly
                 mainboardDropdown.disabled = false;
                 
+                // Define a local fallback function if the global one doesn't exist
+                const filterMainboards = function(cpuValue) {
+                    console.log('Using fallback filterMainboardsByCpu function');
+                    // Simple fallback - just enable the dropdown
+                    mainboardDropdown.disabled = false;
+                };
+                
                 // If the global function exists, use it
                 if (typeof window.filterMainboardsByCpu === 'function') {
                     window.filterMainboardsByCpu(this.value);
                 } else {
                     console.warn('filterMainboardsByCpu function not found, using fallback');
-                    // Simple fallback - just enable the dropdown
-                    mainboardDropdown.disabled = false;
+                    filterMainboards(this.value);
                 }
                 
                 // Reset mainboard and RAM if we change CPU
                 if (mainboardDropdown.value) {
                     // Check if current mainboard is compatible with new CPU
-                    const cpu = window.cpuData[this.value];
-                    const mainboard = window.mainboardData[mainboardDropdown.value];
+                    const cpu = window.cpuData && window.cpuData[this.value];
+                    const mainboard = window.mainboardData && window.mainboardData[mainboardDropdown.value];
                     
                     if (cpu && mainboard) {
                         const isCompatible = window.determineCpuMainboardCompatibility && 
@@ -77,13 +83,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Enable RAM dropdown directly
                 ramDropdown.disabled = false;
                 
+                // Define a local fallback function if the global one doesn't exist
+                const updateRamOptions = function(mainboardValue) {
+                    console.log('Using fallback updateRamOptionsBasedOnMainboard function');
+                    // Simple fallback - just enable the dropdown
+                    ramDropdown.disabled = false;
+                };
+                
                 // If the global function exists, use it
                 if (typeof window.updateRamOptionsBasedOnMainboard === 'function') {
                     window.updateRamOptionsBasedOnMainboard(this.value);
                 } else {
                     console.warn('updateRamOptionsBasedOnMainboard function not found, using fallback');
-                    // Simple fallback - just enable the dropdown
-                    ramDropdown.disabled = false;
+                    updateRamOptions(this.value);
                 }
                 
                 // Check compatibility with selected CPU
