@@ -982,7 +982,7 @@
                 
                 <!-- Current date and time in Vietnam (GMT+7) -->
                 <div id="current-datetime" style="text-align: center; padding: 10px; background-color: #333; color: #fff; font-size: 16px; border-bottom: 1px solid #555;">
-                    Ngày giờ: <span id="datetime-value">Đang tải...</span>
+                     <span id="datetime-value"></span>
                 </div>
                 
                 <table style="width: 100%; border-collapse: collapse; background-color: #222; color: white;">
@@ -1008,8 +1008,8 @@
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">1</td>
                             <td id="cpu-price" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
                             <td id="cpu-total" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">36T</td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">NEW</td>
+                            <td id="cpu-warranty" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
+                            <td id="cpu-condition" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
                         </tr>
                         <tr>
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">2</td>
@@ -1019,8 +1019,8 @@
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">1</td>
                             <td id="mainboard-price" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
                             <td id="mainboard-total" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">36T</td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">NEW</td>
+                            <td id="mainboard-warranty" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
+                            <td id="mainboard-condition" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
                         </tr>
                         <tr>
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">3</td>
@@ -1030,8 +1030,8 @@
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">1</td>
                             <td id="ram-price" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
                             <td id="ram-total" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">36T</td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">NEW</td>
+                            <td id="ram-warranty" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
+                            <td id="ram-condition" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
                         </tr>
                         <tr>
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">4</td>
@@ -1041,8 +1041,8 @@
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">1</td>
                             <td id="vga-price" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
                             <td id="vga-total" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">3T</td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">NEW</td>
+                            <td id="vga-warranty" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
+                            <td id="vga-condition" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
                         </tr>
                         <tr>
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">5</td>
@@ -1052,8 +1052,8 @@
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">1</td>
                             <td id="ssd-price" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
                             <td id="ssd-total" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">36T</td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">NEW</td>
+                            <td id="ssd-warranty" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
+                            <td id="ssd-condition" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
                         </tr>
                         <tr>
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">6</td>
@@ -1063,8 +1063,8 @@
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">1</td>
                             <td id="cpu-cooler-price" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
                             <td id="cpu-cooler-total" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">12T</td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">NEW</td>
+                            <td id="cpu-cooler-warranty" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
+                            <td id="cpu-cooler-condition" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
                         </tr>
                         <tr>
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">7</td>
@@ -1074,8 +1074,8 @@
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">1</td>
                             <td id="psu-price" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
                             <td id="psu-total" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">36T</td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">NEW</td>
+                            <td id="psu-warranty" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
+                            <td id="psu-condition" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
                         </tr>
                         <tr>
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">8</td>
@@ -1085,8 +1085,8 @@
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">1</td>
                             <td id="case-price" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
                             <td id="case-total" style="padding: 10px; text-align: right; border: 1px solid #ddd;"></td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">12T</td>
-                            <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">NEW</td>
+                            <td id="case-warranty" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
+                            <td id="case-condition" style="padding: 10px; text-align: center; border: 1px solid #ddd;"></td>
                         </tr>
                         <tr>
                             <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">9</td>

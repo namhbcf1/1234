@@ -71,6 +71,9 @@ function setupComponentChangeListeners() {
 
 // Function to update and show the configuration table
 function updateAndShowConfigTable() {
+    // First clear any existing data in the table to avoid showing outdated information
+    clearConfigTable();
+    
     // Get component values from dropdowns
     const cpuDropdown = document.getElementById('cpu');
     const mainboardDropdown = document.getElementById('mainboard');
@@ -172,6 +175,20 @@ function updateAndShowConfigTable() {
             const totalCell = document.getElementById('cpu-cooler-total');
             if (totalCell) {
                 totalCell.textContent = formatPrice(cooler.price) + ' VND';
+            }
+            
+            // Update warranty
+            const warrantyCell = document.getElementById('cpu-cooler-warranty');
+            if (warrantyCell && cooler.warranty) {
+                warrantyCell.textContent = cooler.warranty;
+                console.log(`Updated CPU cooler warranty to: ${cooler.warranty}`);
+            }
+            
+            // Update condition
+            const conditionCell = document.getElementById('cpu-cooler-condition');
+            if (conditionCell && cooler.condition) {
+                conditionCell.textContent = cooler.condition;
+                console.log(`Updated CPU cooler condition to: ${cooler.condition}`);
             }
         } else {
             console.warn(`CPU cooler not found: ${coolerKey}`);
@@ -329,14 +346,30 @@ function updateComponentCell(componentType, componentKey, alternativeType) {
     
     // Update warranty cell - Use exact warranty from component data
     const warrantyCell = document.getElementById(`${cellId}-warranty`);
-    if (warrantyCell && component.warranty) {
-        warrantyCell.textContent = component.warranty;
+    if (warrantyCell) {
+        if (component.warranty) {
+            warrantyCell.textContent = component.warranty;
+            console.log(`Updated warranty for ${cellId} to: ${component.warranty}`);
+        } else {
+            warrantyCell.textContent = '';
+            console.warn(`No warranty data found for ${componentKey}`);
+        }
+    } else {
+        console.warn(`Warranty cell not found for ${cellId}-warranty`);
     }
     
     // Update condition/status cell
-    const statusCell = document.getElementById(`${cellId}-status`);
-    if (statusCell && component.condition) {
-        statusCell.textContent = component.condition;
+    const conditionCell = document.getElementById(`${cellId}-condition`);
+    if (conditionCell) {
+        if (component.condition) {
+            conditionCell.textContent = component.condition;
+            console.log(`Updated condition for ${cellId} to: ${component.condition}`);
+        } else {
+            conditionCell.textContent = '';
+            console.warn(`No condition data found for ${componentKey}`);
+        }
+    } else {
+        console.warn(`Condition cell not found for ${cellId}-condition`);
     }
 }
 
@@ -469,4 +502,31 @@ function updateComponentTable(cpuKey, mainboardKey, vgaKey, ramKey, ssdKey, psuK
     } catch (error) {
         console.error('Error updating component table:', error);
     }
+}
+
+// Function to clear the configuration table data (keeping structure)
+function clearConfigTable() {
+    // List of component types
+    const componentTypes = ['cpu', 'mainboard', 'vga', 'ram', 'ssd', 'psu', 'case', 'cpu-cooler', 'hdd', 'monitor'];
+    
+    // List of cell types to clear
+    const cellTypes = ['name', 'price', 'total', 'warranty', 'condition'];
+    
+    // Clear each cell
+    componentTypes.forEach(componentType => {
+        cellTypes.forEach(cellType => {
+            const cell = document.getElementById(`${componentType}-${cellType}`);
+            if (cell) {
+                cell.textContent = '';
+            }
+        });
+        
+        // Clear images
+        const imageCell = document.getElementById(`${componentType}-image`);
+        if (imageCell) {
+            imageCell.innerHTML = '';
+        }
+    });
+    
+    console.log('Configuration table cleared');
 } 
