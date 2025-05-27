@@ -139,239 +139,125 @@ function updateRamOptionsBasedOnMainboard(mainboardKey) {
         if (!ramDropdown || !mainboardKey || !window.mainboardData[mainboardKey]) return;
         
         const mainboard = window.mainboardData[mainboardKey];
-        const memoryType = mainboard.memoryType; // Lấy loại RAM từ mainboard (DDR3, DDR4, DDR5)
         
-        // Không hiển thị thông tin RAM type trên UI nữa
+        // Determine mainboard memory type (DDR3, DDR4, DDR5)
+        let memoryType = mainboard.memoryType;
+        if (!memoryType) {
+            // Determine based on socket and name
+            if (mainboard.socket === 'AM5') {
+                memoryType = 'DDR5';
+            } else if (mainboard.socket === 'AM4') {
+                memoryType = 'DDR4';
+            } else if (mainboard.socket === 'LGA1700') {
+                // LGA1700 can support both DDR4 and DDR5 depending on the mainboard
+                if (mainboard.name.includes('DDR4') || mainboard.name.includes('D4')) {
+                    memoryType = 'DDR4';
+                } else {
+                    memoryType = 'DDR5';
+                }
+            } else if (mainboard.socket === 'LGA1151' || mainboard.socket === 'LGA1200') {
+                memoryType = 'DDR4';
+            } else if (mainboard.socket === 'LGA1155' || mainboard.socket === 'LGA1150') {
+                memoryType = 'DDR3';
+            } else {
+                // Try to determine from name
+                if (mainboard.name.includes('DDR5')) {
+                    memoryType = 'DDR5';
+                } else if (mainboard.name.includes('DDR4')) {
+                    memoryType = 'DDR4';
+                } else if (mainboard.name.includes('DDR3')) {
+                    memoryType = 'DDR3';
+                } else {
+                    // Default to DDR4 for modern systems
+                    memoryType = 'DDR4';
+                }
+            }
+            
+            // Save for future use
+            mainboard.memoryType = memoryType;
+        }
+        
+        // Display memory type info
         const socketInfoDiv = document.getElementById('socket-info');
         if (socketInfoDiv) {
-            // Đảm bảo hiển thị thông tin socket
-            socketInfoDiv.style.display = 'block';
+            const currentText = socketInfoDiv.innerHTML;
+            socketInfoDiv.innerHTML = `${currentText} | Memory Type: <strong>${memoryType}</strong>`;
         }
         
-        // Đảm bảo RAM dropdown được kích hoạt sau khi chọn mainboard
-        if (ramDropdown) {
-            ramDropdown.disabled = false;
+        // Reset RAM dropdown
+        while (ramDropdown.options.length > 0) {
+            ramDropdown.remove(0);
         }
         
-        logger.log(`Updating RAM options based on mainboard ${mainboardKey} with memory type: ${memoryType}`);
+        // Add placeholder option
+        const placeholderOption = document.createElement('option');
+        placeholderOption.value = '';
+        placeholderOption.text = 'Chọn RAM';
+        placeholderOption.disabled = true;
+        placeholderOption.selected = true;
+        ramDropdown.add(placeholderOption);
         
-        // Lưu giá trị RAM hiện tại
-        const currentRamValue = ramDropdown.value;
-        
-        // Xóa tất cả tùy chọn trừ tùy chọn đầu tiên (thường là placeholder)
-        const placeholderOption = ramDropdown.options[0];
-        ramDropdown.innerHTML = '';
-        ramDropdown.appendChild(placeholderOption);
-        
-        // Biến để kiểm tra xem RAM hiện tại có còn tương thích không
-        let currentRamIsCompatible = false;
-        
-        // Thêm các tùy chọn RAM tương thích
-        if (window.ramData) {
-            Object.keys(window.ramData).forEach(ramKey => {
-                const ram = window.ramData[ramKey];
-                
-                // Hàm xác định loại RAM tương thích với mainboard
-                function determineRamCompatibility(ram, mainboard) {
-                    if (!ram || !mainboard) return false;
-                    
-                    // Xác định loại RAM từ nhiều thông tin
-                    let ramType = ram.type || '';
-                    const ramName = ram.name || '';
-                    
-                    // Phát hiện loại RAM từ tên
-                    if (!ramType) {
-                        // Kiểm tra theo thứ tự ưu tiên
-                        if (ramName.includes('DDR5') || 
-                            ramName.includes('Bus 6000') || 
-                            ramName.includes('Bus 5200') ||
-                            ramName.match(/Bus\s*[456]\d00/) || // Hỗ trợ bus từ 4000-6999
-                            ramName.includes('TridentZ') && !ramName.includes('DDR4')) {
-                            ramType = 'DDR5';
-                        }
-                        else if (ramName.includes('DDR4') || 
-                                ramName.includes('Bus 3200') || 
-                                ramName.includes('LPX') || 
-                                ramName.includes('Fury') ||
-                                ramName.match(/Bus\s*[23]\d00/)) { // Hỗ trợ bus từ 2000-3999
-                            ramType = 'DDR4';
-                        }
-                        else if (ramName.includes('DDR3') || 
-                                ramName.includes('1600MHz') || 
-                                ramName.match(/Bus\s*1\d00/)) { // Hỗ trợ bus từ 1000-1999
-                            ramType = 'DDR3';
-                        }
-                        else {
-                            // Default based on name clues
-                            if (ramName.toLowerCase().includes('corsair') && !ramName.includes('Bus')) {
-                                ramType = 'DDR4'; // Corsair common RAM is usually DDR4 if not specified
-                            } else {
-                                // Try to detect from price - newer RAM is more expensive
-                                const price = ram.price || 0;
-                                if (price > 1000000) ramType = 'DDR5';
-                                else if (price > 300000) ramType = 'DDR4';
-                                else ramType = 'DDR3';
-                            }
-                        }
-                    }
-                    
-                    // Xác định loại RAM hỗ trợ bởi mainboard
-                    let mbRamType = mainboard.memoryType || '';
-                    const mbName = mainboard.name || '';
-                    const mbSocket = mainboard.socket || '';
-                    
-                    // Kiểm tra tên mainboard để xác định loại RAM hỗ trợ
-                    if (!mbRamType) {
-                        // Xác định rõ ràng từ tên trước tiên
-                        if (mbName.includes('DDR5')) {
-                            mbRamType = 'DDR5';
-                        }
-                        else if (mbName.includes('DDR4') || mbName.includes('D4')) {
-                            mbRamType = 'DDR4';
-                        }
-                        else if (mbName.includes('DDR3')) {
-                            mbRamType = 'DDR3';
-                        }
-                        // Xác định từ socket hoặc chipset
-                        else if (mbName.includes('B650') || mbName.includes('X670') || mbName.includes('Z790')) {
-                            mbRamType = 'DDR5';
-                        }
-                        else if (mbName.includes('B550') || mbName.includes('X570') || mbName.includes('B450') || 
-                                mbName.includes('Z590') || mbName.includes('Z690') && mbName.includes('D4')) {
-                            mbRamType = 'DDR4';
-                        }
-                        else if (mbName.includes('H61') || mbName.includes('H81') || mbName.includes('B85')) {
-                            mbRamType = 'DDR3';
-                        }
-                        // Socket-based detection
-                        else if (mbSocket === 'AM5') {
-                            mbRamType = 'DDR5';
-                        }
-                        else if (mbSocket === 'AM4') {
-                            mbRamType = 'DDR4';
-                        }
-                        else if (mbSocket === 'LGA1700') {
-                            // LGA1700 supports both DDR4 and DDR5 depending on the model
-                            if (mbName.includes('D4')) {
-                                mbRamType = 'DDR4';
-                            } else {
-                                mbRamType = 'DDR5'; // Default to DDR5 for modern Intel boards
-                            }
-                        }
-                        else if (mbSocket === 'LGA1200' || mbSocket === 'LGA1151') {
-                            mbRamType = 'DDR4';
-                        }
-                        else if (mbSocket === 'LGA1150' || mbSocket === 'LGA1155') {
-                            mbRamType = 'DDR3';
-                        }
-                        else {
-                            // Default based on chipset clues
-                            if (mbName.includes('H610') || mbName.includes('B660') || mbName.includes('Z690')) {
-                                if (mbName.includes('D4')) {
-                                    mbRamType = 'DDR4';
-                                } else {
-                                    mbRamType = 'DDR5';
-                                }
-                            } else if (mbName.includes('H510') || mbName.includes('B560') || mbName.includes('Z590')) {
-                                mbRamType = 'DDR4';
-                            } else if (mbName.includes('H310') || mbName.includes('B360')) {
-                                mbRamType = 'DDR4';
-                            } else {
-                                mbRamType = 'DDR4'; // Default to DDR4 for most modern boards
-                            }
-                        }
-                    }
-                    
-                    // Lưu lại loại RAM đã xác định
-                    ram.type = ramType;
-                    mainboard.memoryType = mbRamType;
-                    
-                    logger.log(`RAM Compatibility Check: ${ramName} (${ramType}) with ${mbName} (${mbRamType})`);
-                    
-                    // Nếu không có loại RAM rõ ràng, từ chối chọn
-                    if (!mbRamType || !ramType) return false;
-                    
-                    // CRITICAL: Chỉ cho phép RAM cùng loại DDR với mainboard
-                    return ramType === mbRamType;
+        // Add compatible RAM options
+        let compatibleCount = 0;
+        for (const ramKey in window.ramData) {
+            const ram = window.ramData[ramKey];
+            
+            // Determine RAM type
+            let ramType = ram.type;
+            if (!ramType) {
+                if (ram.name.includes('DDR5') || ram.name.includes('Bus 6000') || ram.name.includes('Bus 5200')) {
+                    ramType = 'DDR5';
+                } else if (ram.name.includes('DDR4') || ram.name.includes('Bus 3200') || ram.name.includes('Bus 3600')) {
+                    ramType = 'DDR4';
+                } else if (ram.name.includes('DDR3') || ram.name.includes('Bus 1600')) {
+                    ramType = 'DDR3';
+                } else {
+                    // Try to guess based on price
+                    const price = ram.price || 0;
+                    if (price > 1500000) ramType = 'DDR5';
+                    else if (price > 500000) ramType = 'DDR4';
+                    else ramType = 'DDR3';
                 }
                 
-                // Kiểm tra tương thích RAM
-                const ramCompatible = determineRamCompatibility(ram, mainboard);
-                
-                if (ramCompatible) {
-                    const option = document.createElement('option');
-                    option.value = ramKey;
-                    option.text = `${ram.name} - ${formatPrice(ram.price)} VNĐ`;
-                    option.dataset.price = ram.price;
-                    option.dataset.image = ram.image;
-                    ramDropdown.appendChild(option);
-                    
-                    // Kiểm tra xem RAM hiện tại có còn tương thích không
-                    if (ramKey === currentRamValue) {
-                        currentRamIsCompatible = true;
-                    }
-                }
-            });
-        }
-        
-        // Nếu RAM hiện tại không tương thích, đặt lại về giá trị placeholder
-        if (currentRamValue && !currentRamIsCompatible) {
-            logger.log(`Current RAM ${currentRamValue} is not compatible with mainboard ${mainboardKey}, resetting selection`);
-            ramDropdown.value = '';
-            
-            // Hiển thị thông báo cho người dùng
-            const message = document.createElement('div');
-            message.innerHTML = `<strong>Thông báo:</strong> RAM đã chọn không tương thích với mainboard. Vui lòng chọn RAM ${memoryType}.`;
-            message.style.color = '#e74c3c';
-            message.style.backgroundColor = '#fadbd8';
-            message.style.padding = '10px';
-            message.style.borderRadius = '5px';
-            message.style.margin = '10px 0';
-            
-            // Hiển thị thông báo và tự động xóa sau 5 giây
-            const container = document.querySelector('.components-grid');
-            if (container) {
-                container.prepend(message);
-                setTimeout(() => {
-                    message.remove();
-                }, 5000);
+                // Save for future use
+                ram.type = ramType;
             }
-        } else if (currentRamValue && currentRamIsCompatible) {
-            // Giữ nguyên lựa chọn hiện tại
-            ramDropdown.value = currentRamValue;
+            
+            // Check for compatibility
+            if (ramType === memoryType) {
+                const option = document.createElement('option');
+                option.value = ramKey;
+                option.text = `${ram.name} - ${formatPrice(ram.price)} VNĐ`;
+                ramDropdown.add(option);
+                compatibleCount++;
+            }
         }
         
-        // Enable RAM dropdown after mainboard is selected
+        console.log(`Found ${compatibleCount} compatible RAM modules for memory type ${memoryType}`);
+        
+        // Display message if no compatible RAM found
+        if (compatibleCount === 0) {
+            const socketMessageDiv = document.getElementById('socket-message');
+            if (socketMessageDiv) {
+                socketMessageDiv.textContent = `Không tìm thấy RAM tương thích với loại bộ nhớ ${memoryType}`;
+                socketMessageDiv.style.display = 'block';
+                socketMessageDiv.style.color = '#721c24';
+                socketMessageDiv.style.backgroundColor = '#f8d7da';
+                socketMessageDiv.style.border = '1px solid #f5c6cb';
+            }
+            
+            // Add a default option explaining no compatibles found
+            const noCompatOption = document.createElement('option');
+            noCompatOption.value = '';
+            noCompatOption.text = `Không có RAM tương thích với loại bộ nhớ ${memoryType}`;
+            noCompatOption.disabled = true;
+            ramDropdown.add(noCompatOption);
+        }
+        
+        // Enable RAM dropdown
         ramDropdown.disabled = false;
-        
-        // Update style cho dropdown
-        ramDropdown.style.borderColor = ramDropdown.options.length > 1 ? '' : '#e74c3c';
-        
-        // Thêm label hiển thị loại RAM yêu cầu
-        const ramComponentHeader = document.querySelector('.component:has(#ram) .component-header');
-        if (ramComponentHeader) {
-            // Xóa label cũ nếu có
-            const existingLabel = ramComponentHeader.querySelector('.memory-type-label');
-            if (existingLabel) {
-                existingLabel.remove();
-            }
-            
-            // Thêm label mới
-            const memoryTypeLabel = document.createElement('span');
-            memoryTypeLabel.className = 'memory-type-label';
-            memoryTypeLabel.style.fontSize = '12px';
-            memoryTypeLabel.style.marginLeft = '8px';
-            memoryTypeLabel.style.padding = '2px 6px';
-            memoryTypeLabel.style.borderRadius = '3px';
-            memoryTypeLabel.style.backgroundColor = '#f1c40f';
-            memoryTypeLabel.style.color = '#000';
-            memoryTypeLabel.textContent = memoryType;
-            ramComponentHeader.appendChild(memoryTypeLabel);
-        }
-        
-        console.log(`RAM dropdown updated with ${ramDropdown.options.length - 1} compatible options`);
     } catch (error) {
-        console.error('Error updating RAM options:', error);
+        console.error('Error in updateRamOptionsBasedOnMainboard:', error);
     }
 }
 
@@ -445,157 +331,70 @@ function filterMainboardsByCpu(cpuKey) {
         
         // Hiển thị thông tin socket trên UI
         const socketInfoDiv = document.getElementById('socket-info');
-        if (!socketInfoDiv) {
-            // Tạo div hiển thị thông tin socket nếu chưa có
-            const newSocketInfoDiv = document.createElement('div');
-            newSocketInfoDiv.id = 'socket-info';
-            newSocketInfoDiv.style.backgroundColor = '#e3f2fd';
-            newSocketInfoDiv.style.padding = '10px';
-            newSocketInfoDiv.style.borderRadius = '5px';
-            newSocketInfoDiv.style.marginBottom = '15px';
-            newSocketInfoDiv.style.fontSize = '14px';
-            newSocketInfoDiv.style.fontWeight = 'bold';
+        if (socketInfoDiv) {
+            socketInfoDiv.innerHTML = `CPU Socket: <strong>${cpuSocket}</strong>`;
+            socketInfoDiv.style.display = 'block';
+        }
+        
+        // Lọc các mainboard dựa trên socket CPU
+        console.log(`Filtering mainboards for CPU socket: ${cpuSocket}`);
+        
+        // Reset mainboard dropdown
+        while (mainboardDropdown.options.length > 0) {
+            mainboardDropdown.remove(0);
+        }
+        
+        // Add placeholder option
+        const placeholderOption = document.createElement('option');
+        placeholderOption.value = '';
+        placeholderOption.text = 'Chọn Mainboard';
+        placeholderOption.disabled = true;
+        placeholderOption.selected = true;
+        mainboardDropdown.add(placeholderOption);
+        
+        // Add compatible mainboard options
+        let compatibleCount = 0;
+        for (const mbKey in window.mainboardData) {
+            const mainboard = window.mainboardData[mbKey];
             
-            // Chèn vào trước dòng đầu tiên của component grid
-            const componentsGrid = document.querySelector('.components-grid') || document.querySelector('.component-container');
-            if (componentsGrid && componentsGrid.firstChild) {
-                componentsGrid.insertBefore(newSocketInfoDiv, componentsGrid.firstChild);
-            } else if (componentsGrid) {
-                componentsGrid.appendChild(newSocketInfoDiv);
+            // Xác định socket mainboard
+            let mbSocket = mainboard.socket;
+            if (!mbSocket) {
+                mbSocket = getMainboardSocketFromName(mainboard.name);
+                // Lưu lại để sử dụng sau này
+                mainboard.socket = mbSocket;
+            }
+            
+            // Kiểm tra socket có tương thích không
+            if (mbSocket === cpuSocket) {
+                const option = document.createElement('option');
+                option.value = mbKey;
+                option.text = `${mainboard.name} - ${formatPrice(mainboard.price)} VNĐ`;
+                mainboardDropdown.add(option);
+                compatibleCount++;
             }
         }
         
-        // Cập nhật thông tin socket
-        const socketInfoDivUpdated = document.getElementById('socket-info');
-        if (socketInfoDivUpdated) {
-            // Hiển thị với màu nổi bật - đã xóa phần RAM Type
-            socketInfoDivUpdated.innerHTML = `
-                <span style="color:#1e88e5; font-weight:bold;">CPU Socket: ${cpuSocket}</span> | 
-                <span style="color:#43a047; font-weight:bold;">Yêu cầu Mainboard Socket: ${cpuSocket}</span>
-            `;
-            
-            // Thêm style cho div
-            socketInfoDivUpdated.style.backgroundColor = '#e3f2fd';
-            socketInfoDivUpdated.style.padding = '15px';
-            socketInfoDivUpdated.style.borderRadius = '5px';
-            socketInfoDivUpdated.style.margin = '10px 0';
-            socketInfoDivUpdated.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
-            socketInfoDivUpdated.style.fontSize = '16px';
-            
-            // Đảm bảo hiển thị thông tin socket
-            socketInfoDivUpdated.style.display = 'block';
-        }
+        console.log(`Found ${compatibleCount} compatible mainboards for CPU socket ${cpuSocket}`);
         
-        console.log(`Filtering mainboards by CPU socket: ${cpuSocket}`);
-        
-        // Lưu giá trị mainboard hiện tại
-        const currentMainboardValue = mainboardDropdown.value;
-        
-        // Xóa tất cả tùy chọn trừ tùy chọn đầu tiên (thường là placeholder)
-        const placeholderOption = mainboardDropdown.options[0];
-        mainboardDropdown.innerHTML = '';
-        mainboardDropdown.appendChild(placeholderOption);
-        
-        // Biến để kiểm tra xem mainboard hiện tại có còn tương thích không
-        let currentMainboardIsCompatible = false;
-        
-        // Thêm các tùy chọn mainboard tương thích
-        if (window.mainboardData) {
-            Object.keys(window.mainboardData).forEach(mainboardKey => {
-                const mainboard = window.mainboardData[mainboardKey];
-                
-                // Xác định socket mainboard
-                let mbSocket = mainboard.socket;
-                if (!mbSocket) {
-                    mbSocket = getMainboardSocketFromName(mainboard.name);
-                    // Lưu lại để sử dụng sau này
-                    mainboard.socket = mbSocket;
-                }
-                
-                const mbSockets = mainboard.sockets || [mbSocket];
-                
-                // Kiểm tra tương thích nghiêm ngặt dựa trên socket chính xác
-                const isCompatible = window.determineCpuMainboardCompatibility(cpu, mainboard);
-                
-                if (isCompatible) {
-                    const option = document.createElement('option');
-                    option.value = mainboardKey;
-                    option.text = `${mainboard.name} - ${formatPrice(mainboard.price)} VNĐ`;
-                    option.dataset.price = mainboard.price;
-                    option.dataset.image = mainboard.image;
-                    option.dataset.socket = mbSocket; // Lưu socket vào dataset
-                    mainboardDropdown.appendChild(option);
-                    
-                    // Kiểm tra xem mainboard hiện tại có còn tương thích không
-                    if (mainboardKey === currentMainboardValue) {
-                        currentMainboardIsCompatible = true;
-                    }
-                }
-            });
-        }
-        
-        // Nếu không có mainboard nào tương thích
-        if (mainboardDropdown.options.length <= 1) {
-            const message = document.createElement('div');
-            message.innerHTML = `<strong>Thông báo:</strong> Không tìm thấy mainboard nào tương thích với CPU socket ${cpuSocket}.`;
-            message.style.color = '#e74c3c';
-            message.style.backgroundColor = '#fadbd8';
-            message.style.padding = '10px';
-            message.style.borderRadius = '5px';
-            message.style.margin = '10px 0';
-            
-            // Hiển thị thông báo và tự động xóa sau 5 giây
-            const container = document.querySelector('.components-grid');
-            if (container) {
-                container.prepend(message);
-                setTimeout(() => {
-                    message.remove();
-                }, 5000);
-            }
-        }
-        
-        // Enable mainboard after CPU is selected
-        mainboardDropdown.disabled = false;
-        
-        // Nếu mainboard hiện tại không tương thích, đặt lại về giá trị placeholder
-        if (currentMainboardValue && !currentMainboardIsCompatible) {
-            console.log(`Current mainboard ${currentMainboardValue} is not compatible with CPU ${cpuKey}, resetting selection`);
-            mainboardDropdown.value = '';
-            
-            // Reset RAM selection since mainboard is reset
-            const ramDropdown = document.getElementById('ram');
-            if (ramDropdown) {
-                ramDropdown.value = '';
-                ramDropdown.disabled = true;
+        // Hiển thị thông báo nếu không có mainboard tương thích
+        if (compatibleCount === 0) {
+            const socketMessageDiv = document.getElementById('socket-message');
+            if (socketMessageDiv) {
+                socketMessageDiv.textContent = `Không tìm thấy mainboard tương thích với socket ${cpuSocket}`;
+                socketMessageDiv.style.display = 'block';
+                socketMessageDiv.style.color = '#721c24';
+                socketMessageDiv.style.backgroundColor = '#f8d7da';
+                socketMessageDiv.style.border = '1px solid #f5c6cb';
             }
             
-            // Hiển thị thông báo cho người dùng
-            const message = document.createElement('div');
-            message.innerHTML = `<strong>Thông báo:</strong> Mainboard đã chọn không tương thích với CPU socket ${cpuSocket}. Vui lòng chọn lại.`;
-            message.style.color = '#e74c3c';
-            message.style.backgroundColor = '#fadbd8';
-            message.style.padding = '10px';
-            message.style.borderRadius = '5px';
-            message.style.margin = '10px 0';
-            
-            // Hiển thị thông báo và tự động xóa sau 5 giây
-            const container = document.querySelector('.components-grid');
-            if (container) {
-                container.prepend(message);
-                setTimeout(() => {
-                    message.remove();
-                }, 5000);
-            }
-        } else if (currentMainboardValue && currentMainboardIsCompatible) {
-            // Giữ nguyên lựa chọn hiện tại
-            mainboardDropdown.value = currentMainboardValue;
-            
-            // Update RAM options
-            updateRamOptionsBasedOnMainboard(currentMainboardValue);
+            // Add a default option explaining no compatibles found
+            const noCompatOption = document.createElement('option');
+            noCompatOption.value = '';
+            noCompatOption.text = `Không có mainboard tương thích với socket ${cpuSocket}`;
+            noCompatOption.disabled = true;
+            mainboardDropdown.add(noCompatOption);
         }
-        
-        // Update style cho dropdown
-        mainboardDropdown.style.borderColor = mainboardDropdown.options.length > 1 ? '' : '#e74c3c';
     } catch (error) {
         console.error('Error in filterMainboardsByCpu:', error);
     }
@@ -2334,417 +2133,187 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Cập nhật bảng linh kiện chi tiết
     function updateComponentTable(cpuKey, mainboardKey, vgaKey, ramKey, ssdKey, psuKey, caseKey, cpuCoolerKey) {
-        console.log('Updating component table with:', { cpuKey, mainboardKey, vgaKey, ramKey, ssdKey, psuKey, caseKey, cpuCoolerKey });
-        
         try {
-            // Lấy dữ liệu của từng linh kiện
-            const cpu = cpuKey ? window.cpuData[cpuKey] : null;
-            const mainboard = mainboardKey ? window.mainboardData[mainboardKey] : null;
-            const vga = vgaKey ? window.vgaData[vgaKey] : null;
-            const ram = ramKey ? window.ramData[ramKey] : null;
-            const ssd = ssdKey ? window.ssdData[ssdKey] : null;
-            const psu = psuKey ? window.psuData[psuKey] : null;
-            const caseItem = caseKey ? window.caseData[caseKey] : null;
-            const cpuCooler = cpuCoolerKey ? window.cpuCoolerData[cpuCoolerKey] : null;
-            
-            // Also get HDD and monitor data if available
-            const hddKey = document.getElementById('hdd')?.value;
-            const monitorKey = document.getElementById('monitor')?.value;
-            const hdd = hddKey ? window.hddData[hddKey] : null;
-            const monitor = monitorKey ? window.monitorData[monitorKey] : null;
-            
-            // Tạo nội dung tĩnh cho bảng nếu chưa tồn tại
-            const tableContainer = document.querySelector('.config-table');
-            if (!tableContainer) {
-                console.error('Configuration table container not found');
-                
-                // Try to find alternative container or create one
-                const modalBody = document.querySelector('.modal-body');
-                if (modalBody) {
-                    const newTableContainer = document.createElement('div');
-                    newTableContainer.className = 'config-table';
-                    modalBody.appendChild(newTableContainer);
-                    console.log('Created new configuration table container');
-                } else {
-                    console.error('Could not find or create table container');
-                    return;
-                }
+            // If specific keys are not provided, get them from the dropdowns
+            if (!cpuKey) {
+                const cpuDropdown = document.getElementById('cpu');
+                cpuKey = cpuDropdown ? cpuDropdown.value : '';
             }
             
-            // Refresh container reference in case we created a new one
-            const tableContainerRef = document.querySelector('.config-table');
-            if (tableContainerRef) {
-                // Kiểm tra xem bảng đã tồn tại chưa
-                let tableExists = tableContainerRef.querySelector('table');
-                if (!tableExists) {
-                    // Tạo bảng mới nếu chưa tồn tại
-                    const tableHTML = `
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>HÌNH ẢNH</th>
-                                    <th>TÊN, MÃ, LOẠI LINH KIỆN</th>
-                                    <th>ĐVT</th>
-                                    <th>SỐ LƯỢNG</th>
-                                    <th>ĐƠN GIÁ</th>
-                                    <th>THÀNH TIỀN</th>
-                                    <th>BẢO HÀNH</th>
-                                    <th>GHI CHÚ</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr id="cpu-row">
-                                    <td>1</td>
-                                    <td id="cpu-image"></td>
-                                    <td id="cpu-name"></td>
-                                    <td>Chiếc</td>
-                                    <td>1</td>
-                                    <td id="cpu-price"></td>
-                                    <td id="cpu-total"></td>
-                                    <td>36T</td>
-                                    <td>NEW</td>
-                                </tr>
-                                <tr id="mainboard-row">
-                                    <td>2</td>
-                                    <td id="mainboard-image"></td>
-                                    <td id="mainboard-name"></td>
-                                    <td>Chiếc</td>
-                                    <td>1</td>
-                                    <td id="mainboard-price"></td>
-                                    <td id="mainboard-total"></td>
-                                    <td>36T</td>
-                                    <td>NEW</td>
-                                </tr>
-                                <tr id="ram-row">
-                                    <td>3</td>
-                                    <td id="ram-image"></td>
-                                    <td id="ram-name"></td>
-                                    <td>Chiếc</td>
-                                    <td>1</td>
-                                    <td id="ram-price"></td>
-                                    <td id="ram-total"></td>
-                                    <td>36T</td>
-                                    <td>NEW</td>
-                                </tr>
-                                <tr id="vga-row">
-                                    <td>4</td>
-                                    <td id="vga-image"></td>
-                                    <td id="vga-name"></td>
-                                    <td>Chiếc</td>
-                                    <td>1</td>
-                                    <td id="vga-price"></td>
-                                    <td id="vga-total"></td>
-                                    <td>3T</td>
-                                    <td>NEW</td>
-                                </tr>
-                                <tr id="ssd-row">
-                                    <td>5</td>
-                                    <td id="ssd-image"></td>
-                                    <td id="ssd-name"></td>
-                                    <td>Chiếc</td>
-                                    <td>1</td>
-                                    <td id="ssd-price"></td>
-                                    <td id="ssd-total"></td>
-                                    <td>36T</td>
-                                    <td>NEW</td>
-                                </tr>
-                                <tr id="cpu-cooler-row">
-                                    <td>6</td>
-                                    <td id="cpu-cooler-image"></td>
-                                    <td id="cpu-cooler-name"></td>
-                                    <td>Chiếc</td>
-                                    <td>1</td>
-                                    <td id="cpu-cooler-price"></td>
-                                    <td id="cpu-cooler-total"></td>
-                                    <td>12T</td>
-                                    <td>NEW</td>
-                                </tr>
-                                <tr id="psu-row">
-                                    <td>7</td>
-                                    <td id="psu-image"></td>
-                                    <td id="psu-name"></td>
-                                    <td>Chiếc</td>
-                                    <td>1</td>
-                                    <td id="psu-price"></td>
-                                    <td id="psu-total"></td>
-                                    <td>36T</td>
-                                    <td>NEW</td>
-                                </tr>
-                                <tr id="case-row">
-                                    <td>8</td>
-                                    <td id="case-image"></td>
-                                    <td id="case-name"></td>
-                                    <td>Chiếc</td>
-                                    <td>1</td>
-                                    <td id="case-price"></td>
-                                    <td id="case-total"></td>
-                                    <td>12T</td>
-                                    <td>NEW</td>
-                                </tr>
-                                <tr id="hdd-row">
-                                    <td>9</td>
-                                    <td id="hdd-image"></td>
-                                    <td id="hdd-name"></td>
-                                    <td>Chiếc</td>
-                                    <td>1</td>
-                                    <td id="hdd-price"></td>
-                                    <td id="hdd-total"></td>
-                                    <td>12T</td>
-                                    <td>NEW</td>
-                                </tr>
-                                <tr id="monitor-row">
-                                    <td>10</td>
-                                    <td id="monitor-image"></td>
-                                    <td id="monitor-name"></td>
-                                    <td>Chiếc</td>
-                                    <td>1</td>
-                                    <td id="monitor-price"></td>
-                                    <td id="monitor-total"></td>
-                                    <td>36T</td>
-                                    <td>NEW</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="9" style="height: 10px; border: none !important; background-color: #191919 !important;"></td>
-                                </tr>
-                                <tr class="total-row">
-                                    <td colspan="6" style="text-align: right; font-weight: bold;">Tổng cộng:</td>
-                                    <td id="total-price-cell"></td>
-                                    <td colspan="2"></td>
-                                </tr>
-                                <tr class="total-row">
-                                    <td colspan="6" style="text-align: right; font-weight: bold;">Chiết khấu:</td>
-                                    <td></td>
-                                    <td colspan="2"></td>
-                                </tr>
-                                <tr class="total-row">
-                                    <td colspan="6" style="text-align: right; font-weight: bold;">Đã thanh toán:</td>
-                                    <td></td>
-                                    <td colspan="2"></td>
-                                </tr>
-                                <tr class="total-row">
-                                    <td colspan="6" style="text-align: right; font-weight: bold;">Còn lại:</td>
-                                    <td id="remaining-price-cell"></td>
-                                    <td colspan="2"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    `;
-                    tableContainerRef.innerHTML = tableHTML;
-                    console.log('Created new configuration table');
-                } else {
-                    console.log('Configuration table already exists, updating cells');
-                }
-            } else {
-                console.error('Could not find or create table container after attempt');
-                return;
+            if (!mainboardKey) {
+                const mainboardDropdown = document.getElementById('mainboard');
+                mainboardKey = mainboardDropdown ? mainboardDropdown.value : '';
             }
             
-            // Ensure table is visible - fix any display issues
-            const tableElement = document.querySelector('.config-table table');
-            if (tableElement) {
-                tableElement.style.display = 'table';
-                tableElement.style.width = '100%';
-                tableElement.style.borderCollapse = 'collapse';
+            if (!vgaKey) {
+                const vgaDropdown = document.getElementById('vga');
+                vgaKey = vgaDropdown ? vgaDropdown.value : '';
             }
             
-            // Cập nhật từng cell của bảng và hình ảnh
-            if (cpu) {
-                updateTableCell('cpu-name', cpu.name);
-                updateTableCell('cpu-price', formatPrice(cpu.price));
-                updateTableCell('cpu-total', formatPrice(cpu.price));
-                updateTableImage('cpu-image', cpu.image, 'CPU');
-                const cpuRow = document.getElementById('cpu-row');
-                if (cpuRow) cpuRow.style.display = '';
-            } else {
-                const cpuRow = document.getElementById('cpu-row');
-                if (cpuRow) cpuRow.style.display = 'none';
+            if (!ramKey) {
+                const ramDropdown = document.getElementById('ram');
+                ramKey = ramDropdown ? ramDropdown.value : '';
             }
             
-            if (mainboard) {
-                updateTableCell('mainboard-name', mainboard.name);
-                updateTableCell('mainboard-price', formatPrice(mainboard.price));
-                updateTableCell('mainboard-total', formatPrice(mainboard.price));
-                updateTableImage('mainboard-image', mainboard.image, 'MAINBOARD');
-                const mainboardRow = document.getElementById('mainboard-row');
-                if (mainboardRow) mainboardRow.style.display = '';
-            } else {
-                const mainboardRow = document.getElementById('mainboard-row');
-                if (mainboardRow) mainboardRow.style.display = 'none';
+            if (!ssdKey) {
+                const ssdDropdown = document.getElementById('ssd');
+                ssdKey = ssdDropdown ? ssdDropdown.value : '';
             }
             
-            if (ram) {
-                updateTableCell('ram-name', ram.name);
-                updateTableCell('ram-price', formatPrice(ram.price));
-                updateTableCell('ram-total', formatPrice(ram.price));
-                updateTableImage('ram-image', ram.image, 'RAM');
-                const ramRow = document.getElementById('ram-row');
-                if (ramRow) ramRow.style.display = '';
-            } else {
-                const ramRow = document.getElementById('ram-row');
-                if (ramRow) ramRow.style.display = 'none';
+            if (!psuKey) {
+                const psuDropdown = document.getElementById('psu');
+                psuKey = psuDropdown ? psuDropdown.value : '';
             }
             
-            if (vga) {
-                updateTableCell('vga-name', vga.name);
-                updateTableCell('vga-price', formatPrice(vga.price));
-                updateTableCell('vga-total', formatPrice(vga.price));
-                updateTableImage('vga-image', vga.image, 'VGA');
-                const vgaRow = document.getElementById('vga-row');
-                if (vgaRow) vgaRow.style.display = '';
-            } else {
-                const vgaRow = document.getElementById('vga-row');
-                if (vgaRow) vgaRow.style.display = 'none';
+            if (!caseKey) {
+                const caseDropdown = document.getElementById('case');
+                caseKey = caseDropdown ? caseDropdown.value : '';
             }
             
-            if (ssd) {
-                updateTableCell('ssd-name', ssd.name);
-                updateTableCell('ssd-price', formatPrice(ssd.price));
-                updateTableCell('ssd-total', formatPrice(ssd.price));
-                updateTableImage('ssd-image', ssd.image, 'SSD');
-                const ssdRow = document.getElementById('ssd-row');
-                if (ssdRow) ssdRow.style.display = '';
-            } else {
-                const ssdRow = document.getElementById('ssd-row');
-                if (ssdRow) ssdRow.style.display = 'none';
+            if (!cpuCoolerKey) {
+                const cpuCoolerDropdown = document.getElementById('cpuCooler');
+                cpuCoolerKey = cpuCoolerDropdown ? cpuCoolerDropdown.value : '';
             }
             
-            if (cpuCooler) {
-                updateTableCell('cpu-cooler-name', cpuCooler.name);
-                updateTableCell('cpu-cooler-price', formatPrice(cpuCooler.price));
-                updateTableCell('cpu-cooler-total', formatPrice(cpuCooler.price));
-                updateTableImage('cpu-cooler-image', cpuCooler.image, 'CPUCOOLER');
-                const cpuCoolerRow = document.getElementById('cpu-cooler-row');
-                if (cpuCoolerRow) cpuCoolerRow.style.display = '';
-            } else {
-                const cpuCoolerRow = document.getElementById('cpu-cooler-row');
-                if (cpuCoolerRow) cpuCoolerRow.style.display = 'none';
-            }
+            // Get the additional components
+            const hddDropdown = document.getElementById('hdd');
+            const hddKey = hddDropdown ? hddDropdown.value : '';
             
-            if (psu) {
-                updateTableCell('psu-name', psu.name);
-                updateTableCell('psu-price', formatPrice(psu.price));
-                updateTableCell('psu-total', formatPrice(psu.price));
-                updateTableImage('psu-image', psu.image, 'PSU');
-                const psuRow = document.getElementById('psu-row');
-                if (psuRow) psuRow.style.display = '';
-            } else {
-                const psuRow = document.getElementById('psu-row');
-                if (psuRow) psuRow.style.display = 'none';
-            }
+            const monitorDropdown = document.getElementById('monitor');
+            const monitorKey = monitorDropdown ? monitorDropdown.value : '';
             
-            if (caseItem) {
-                updateTableCell('case-name', caseItem.name);
-                updateTableCell('case-price', formatPrice(caseItem.price));
-                updateTableCell('case-total', formatPrice(caseItem.price));
-                updateTableImage('case-image', caseItem.image, 'CASE');
-                const caseRow = document.getElementById('case-row');
-                if (caseRow) caseRow.style.display = '';
-            } else {
-                const caseRow = document.getElementById('case-row');
-                if (caseRow) caseRow.style.display = 'none';
-            }
-            
-            // Update HDD row if available
-            if (hdd) {
-                updateTableCell('hdd-name', hdd.name);
-                updateTableCell('hdd-price', formatPrice(hdd.price));
-                updateTableCell('hdd-total', formatPrice(hdd.price));
-                updateTableImage('hdd-image', hdd.image, 'HDD');
-                const hddRow = document.getElementById('hdd-row');
-                if (hddRow) hddRow.style.display = '';
-            } else {
-                const hddRow = document.getElementById('hdd-row');
-                if (hddRow) hddRow.style.display = 'none';
-            }
-            
-            // Update Monitor row if available
-            if (monitor) {
-                updateTableCell('monitor-name', monitor.name);
-                updateTableCell('monitor-price', formatPrice(monitor.price));
-                updateTableCell('monitor-total', formatPrice(monitor.price));
-                updateTableImage('monitor-image', monitor.image, 'MONITOR');
-                const monitorRow = document.getElementById('monitor-row');
-                if (monitorRow) monitorRow.style.display = '';
-            } else {
-                const monitorRow = document.getElementById('monitor-row');
-                if (monitorRow) monitorRow.style.display = 'none';
-            }
-            
-            // Tính tổng tiền
-            let totalPrice = 0;
-            if (cpu) totalPrice += cpu.price;
-            if (mainboard) totalPrice += mainboard.price;
-            if (vga) totalPrice += vga.price;
-            if (ram) totalPrice += ram.price;
-            if (ssd) totalPrice += ssd.price;
-            if (cpuCooler) totalPrice += cpuCooler.price;
-            if (psu) totalPrice += psu.price;
-            if (caseItem) totalPrice += caseItem.price;
-            if (hdd) totalPrice += hdd.price;
-            if (monitor) totalPrice += monitor.price;
-            
-            // Cập nhật tổng tiền
-            updateTableCell('total-price-cell', formatPrice(totalPrice));
-            updateTableCell('remaining-price-cell', formatPrice(totalPrice));
-            
-            // Make sure the table is visible
-            const configTable = document.querySelector('.config-table');
+            // Make sure the config table is visible
+            const configTable = document.getElementById('config-table');
             if (configTable) {
                 configTable.style.display = 'block';
+                configTable.style.visibility = 'visible';
             }
             
-            // Also update the total price display in the UI
-            const totalPriceDisplay = document.getElementById('total-price');
-            if (totalPriceDisplay) {
-                const priceElement = totalPriceDisplay.querySelector('p');
-                if (priceElement) {
-                    priceElement.textContent = `${totalPrice.toLocaleString()} VNĐ`;
-                }
+            // Update the table cells
+            updateComponentCell('cpu', cpuKey);
+            updateComponentCell('mainboard', mainboardKey);
+            updateComponentCell('vga', vgaKey);
+            updateComponentCell('ram', ramKey);
+            updateComponentCell('ssd', ssdKey);
+            updateComponentCell('cpu-cooler', cpuCoolerKey);
+            updateComponentCell('psu', psuKey);
+            updateComponentCell('case', caseKey);
+            
+            // Update additional components
+            if (hddKey) {
+                updateComponentCell('additional-component', hddKey, 'hdd');
             }
             
-            // Hiển thị các chỉ số hiệu năng nếu có CPU và VGA
-            if (cpu && vga) {
-                showPerformanceMetrics(cpuKey, vgaKey, ram ? 70 : 50, ssd ? 60 : 40);
+            if (monitorKey) {
+                updateComponentCell('monitor', monitorKey);
             }
             
-            console.log('Component table updated successfully with total price:', totalPrice);
+            // Calculate and update total price
+            calculateTotalPrice();
+            
+            console.log('Component table updated successfully');
         } catch (error) {
             console.error('Error updating component table:', error);
         }
     }
-    
-    // Hàm cập nhật cell trong bảng
-    function updateTableCell(cellId, value) {
-        const cell = document.getElementById(cellId);
-        if (cell) {
-            cell.textContent = value;
+
+    // Helper function to update a component cell in the table
+    function updateComponentCell(componentType, componentKey, alternativeType) {
+        try {
+            // Skip if no component selected
+            if (!componentKey) return;
+            
+            // Get component data
+            const dataObj = window[`${alternativeType || componentType}Data`];
+            if (!dataObj) return;
+            
+            const component = dataObj[componentKey];
+            if (!component) return;
+            
+            // Update name cell
+            const nameCell = document.getElementById(`${componentType}-name`);
+            if (nameCell) {
+                nameCell.textContent = component.name;
+            }
+            
+            // Update price cell
+            const priceCell = document.getElementById(`${componentType}-price`);
+            if (priceCell) {
+                priceCell.textContent = formatPrice(component.price) + ' VNĐ';
+            }
+            
+            // Update total cell (price is the same as price for single quantity)
+            const totalCell = document.getElementById(`${componentType}-total`);
+            if (totalCell) {
+                totalCell.textContent = formatPrice(component.price) + ' VNĐ';
+            }
+            
+            // Update image cell with icon
+            const imageCell = document.getElementById(`${componentType}-image`);
+            if (imageCell) {
+                // Use Font Awesome icon
+                const iconClass = getIconClassForComponent(componentType);
+                imageCell.innerHTML = `<i class="${iconClass}" style="font-size: 32px; color: #0053b4;"></i>`;
+            }
+        } catch (error) {
+            console.error(`Error updating ${componentType} cell:`, error);
         }
     }
 
-    // Hàm cập nhật hình ảnh trong bảng
-    function updateTableImage(cellId, imageSrc, componentType) {
-        const cell = document.getElementById(cellId);
-        if (cell) {
-            // Xóa nội dung cũ
-            cell.innerHTML = '';
+    // Helper function to get icon class for component type
+    function getIconClassForComponent(componentType) {
+        switch (componentType) {
+            case 'cpu': return 'fas fa-microchip';
+            case 'mainboard': return 'fas fa-server';
+            case 'vga': return 'fas fa-tv';
+            case 'ram': return 'fas fa-memory';
+            case 'ssd': return 'fas fa-hdd';
+            case 'psu': return 'fas fa-bolt';
+            case 'case': return 'fas fa-cube';
+            case 'cpu-cooler': return 'fas fa-wind';
+            case 'hdd': return 'fas fa-hdd';
+            case 'monitor': return 'fas fa-desktop';
+            case 'additional-component': return 'fas fa-hdd';
+            default: return 'fas fa-microchip';
+        }
+    }
+
+    // Calculate total price of all components
+    function calculateTotalPrice() {
+        try {
+            let totalPrice = 0;
             
-            // Tạo phần tử img với fallback
-            const img = document.createElement('img');
-            img.src = imageSrc || '';
-            img.alt = componentType || '';
-            img.setAttribute('data-component-type', componentType || '');
-            img.onerror = function() {
-                handleImageError(this, componentType);
-            };
+            // Get prices from all price cells
+            const priceCells = document.querySelectorAll('[id$="-price"]');
+            priceCells.forEach(cell => {
+                if (cell && cell.textContent) {
+                    // Extract numeric value from price text
+                    const priceText = cell.textContent;
+                    const priceMatch = priceText.match(/(\d{1,3}(,\d{3})*)/);
+                    if (priceMatch) {
+                        const price = parseInt(priceMatch[1].replace(/,/g, ''));
+                        if (!isNaN(price)) {
+                            totalPrice += price;
+                        }
+                    }
+                }
+            });
             
-            // Tạo wrapper cho ảnh
-            const wrapper = document.createElement('div');
-            wrapper.className = 'component-image-wrapper';
-            wrapper.appendChild(img);
+            // Update total price cell
+            const totalPriceCell = document.getElementById('total-price-cell');
+            if (totalPriceCell) {
+                totalPriceCell.textContent = formatPrice(totalPrice) + ' VNĐ';
+            }
             
-            // Thêm vào cell
-            cell.appendChild(wrapper);
+            // Update remaining price cell (same as total for now)
+            const remainingPriceCell = document.getElementById('remaining-price-cell');
+            if (remainingPriceCell) {
+                remainingPriceCell.textContent = formatPrice(totalPrice) + ' VNĐ';
+            }
+            
+            console.log(`Total price calculated: ${formatPrice(totalPrice)} VNĐ`);
+        } catch (error) {
+            console.error('Error calculating total price:', error);
         }
     }
 
@@ -5103,6 +4672,41 @@ console.log("✅ CPU-Mainboard and RAM compatibility functions exposed globally"
                         
 // validateAllComponents function is already defined elsewhere in the file
 // DO NOT add a duplicate here
+
+// Explicitly expose compatibility filter functions to the window object
+window.filterMainboardsByCpu = filterMainboardsByCpu;
+window.updateRamOptionsBasedOnMainboard = updateRamOptionsBasedOnMainboard;
+window.determineCpuMainboardCompatibility = function(cpu, mainboard) {
+    // Check if CPU and mainboard are compatible based on socket
+    if (!cpu || !mainboard) return false;
+    
+    let cpuSocket = cpu.socket;
+    if (!cpuSocket) {
+        cpuSocket = getCPUSocketFromName(cpu.name);
+    }
+    
+    let mbSocket = mainboard.socket;
+    if (!mbSocket) {
+        mbSocket = getMainboardSocketFromName(mainboard.name);
+    }
+    
+    // Check socket compatibility
+    return cpuSocket === mbSocket;
+};
+
+// Add function to force show the config table
+window.forceShowConfigTable = function() {
+    const configTable = document.getElementById('config-table');
+    if (configTable) {
+        configTable.style.display = 'block';
+        configTable.style.visibility = 'visible';
+        configTable.scrollIntoView({ behavior: 'smooth' });
+        console.log('Config table forced to display');
+        
+        // Update the component table with current selections
+        updateComponentTable();
+    }
+};
 
 // Helper function to check form factor compatibility
 function isFormFactorCompatible(caseFormFactor, mainboardFormFactor) {
