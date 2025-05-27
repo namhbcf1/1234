@@ -976,8 +976,16 @@
             
             <!-- Bảng chi tiết cấu hình -->
             <div id="config-table" class="config-table" style="display:none; margin: 20px auto; max-width: 90%; overflow-x: auto; background-color: white; box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 8px;">
-                <h2 style="text-align: center; color: var(--primary-color); margin: 15px 0; font-size: 24px;"><i class="fas fa-clipboard-list"></i> TRƯỜNG PHÁT COMPUTER XIN GỬI BẢNG CHI TIẾT CẤU HÌNH MÁY TÍNH</h2>
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                <div style="text-align: center; padding: 15px; background-color: #222; color: #f44336; font-weight: bold; font-size: 18px; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+                    <i class="fas fa-desktop"></i> TRƯỜNG PHÁT COMPUTER XIN GỬI BẢNG CHI TIẾT CẤU HÌNH MÁY TÍNH
+                </div>
+                
+                <!-- Current date and time in Vietnam (GMT+7) -->
+                <div id="current-datetime" style="text-align: center; padding: 10px; background-color: #333; color: #fff; font-size: 16px; border-bottom: 1px solid #555;">
+                    Ngày giờ: <span id="datetime-value">Đang tải...</span>
+                </div>
+                
+                <table style="width: 100%; border-collapse: collapse; background-color: #222; color: white;">
                     <thead>
                         <tr style="background-color: #2196F3; color: white;">
                             <th style="padding: 12px; text-align: center; border: 1px solid #ddd;">STT</th>
@@ -2111,6 +2119,57 @@
                         console.warn(`Error loading ${component} data:`, error);
                     });
             });
+        });
+    </script>
+
+    <!-- Script to update real-time date and time display in Vietnam timezone (GMT+7) -->
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Convert to Vietnam timezone (GMT+7)
+            const vietnamTime = new Date(now.getTime() + (7 * 60 * 60 * 1000 + now.getTimezoneOffset() * 60 * 1000));
+            
+            // Format the date and time
+            const options = { 
+                weekday: 'long',
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                hour12: false,
+                timeZone: 'Asia/Ho_Chi_Minh'
+            };
+            
+            try {
+                const formattedDateTime = vietnamTime.toLocaleString('vi-VN', options);
+                document.getElementById('datetime-value').textContent = formattedDateTime;
+            } catch (error) {
+                // Fallback if Intl is not supported
+                const pad = num => String(num).padStart(2, '0');
+                const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+                const months = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 
+                                'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+                
+                const day = days[vietnamTime.getDay()];
+                const date = vietnamTime.getDate();
+                const month = months[vietnamTime.getMonth()];
+                const year = vietnamTime.getFullYear();
+                const hours = pad(vietnamTime.getHours());
+                const minutes = pad(vietnamTime.getMinutes());
+                const seconds = pad(vietnamTime.getSeconds());
+                
+                const fallbackFormat = `${day}, ${date} ${month} ${year}, ${hours}:${minutes}:${seconds}`;
+                document.getElementById('datetime-value').textContent = fallbackFormat;
+            }
+        }
+        
+        // Update the date and time immediately and then every second
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDateTime(); // Initial update
+            setInterval(updateDateTime, 1000); // Update every second
         });
     </script>
 </body>

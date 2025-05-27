@@ -326,6 +326,18 @@ function updateComponentCell(componentType, componentKey, alternativeType) {
     if (totalCell) {
         totalCell.textContent = formatPrice(component.price) + ' VND';
     }
+    
+    // Update warranty cell - Use exact warranty from component data
+    const warrantyCell = document.getElementById(`${cellId}-warranty`);
+    if (warrantyCell && component.warranty) {
+        warrantyCell.textContent = component.warranty;
+    }
+    
+    // Update condition/status cell
+    const statusCell = document.getElementById(`${cellId}-status`);
+    if (statusCell && component.condition) {
+        statusCell.textContent = component.condition;
+    }
 }
 
 // Helper function to get icon class for component type
