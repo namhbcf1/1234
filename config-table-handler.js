@@ -94,15 +94,89 @@ function updateAndShowConfigTable() {
     configTable.style.display = 'block';
     configTable.style.visibility = 'visible';
     
-    // Update table cells for each component
-    updateComponentCell('cpu', cpuDropdown ? cpuDropdown.value : '');
-    updateComponentCell('mainboard', mainboardDropdown ? mainboardDropdown.value : '');
-    updateComponentCell('vga', vgaDropdown ? vgaDropdown.value : '');
-    updateComponentCell('ram', ramDropdown ? ramDropdown.value : '');
-    updateComponentCell('ssd', ssdDropdown ? ssdDropdown.value : '');
-    updateComponentCell('cpu-cooler', cpuCoolerDropdown ? cpuCoolerDropdown.value : '');
-    updateComponentCell('psu', psuDropdown ? psuDropdown.value : '');
-    updateComponentCell('case', caseDropdown ? caseDropdown.value : '');
+    // Ensure CPU cooler row exists
+    if (window.ensureCpuCoolerRow) {
+        window.ensureCpuCoolerRow();
+    }
+    
+    // Update table cells for each component - only update if there's a value selected
+    if (cpuDropdown && cpuDropdown.value) {
+        updateComponentCell('cpu', cpuDropdown.value);
+    }
+    
+    if (mainboardDropdown && mainboardDropdown.value) {
+        updateComponentCell('mainboard', mainboardDropdown.value);
+    }
+    
+    if (vgaDropdown && vgaDropdown.value) {
+        updateComponentCell('vga', vgaDropdown.value);
+    }
+    
+    if (ramDropdown && ramDropdown.value) {
+        updateComponentCell('ram', ramDropdown.value);
+    }
+    
+    if (ssdDropdown && ssdDropdown.value) {
+        updateComponentCell('ssd', ssdDropdown.value);
+    }
+    
+    if (psuDropdown && psuDropdown.value) {
+        updateComponentCell('psu', psuDropdown.value);
+    }
+    
+    if (caseDropdown && caseDropdown.value) {
+        updateComponentCell('case', caseDropdown.value);
+    }
+    
+    // Special handling for CPU cooler
+    if (cpuCoolerDropdown && cpuCoolerDropdown.value) {
+        const coolerKey = cpuCoolerDropdown.value;
+        
+        // First try the official data source from js/data/cpuCooler.js
+        if (window.cpuCoolerData && window.cpuCoolerData[coolerKey]) {
+            const cooler = window.cpuCoolerData[coolerKey];
+            console.log('Found CPU cooler in official data:', cooler.name);
+            
+            // Update image
+            const imageCell = document.getElementById('cpu-cooler-image');
+            if (imageCell) {
+                const img = document.createElement('img');
+                img.src = cooler.image;
+                img.alt = cooler.name;
+                img.style.maxWidth = '100px';
+                img.style.maxHeight = '60px';
+                
+                // Handle image loading error
+                img.onerror = function() {
+                    console.warn(`Failed to load CPU cooler image: ${cooler.image}`);
+                    this.src = 'images/placeholder.jpg';
+                };
+                
+                imageCell.innerHTML = '';
+                imageCell.appendChild(img);
+            }
+            
+            // Update name
+            const nameCell = document.getElementById('cpu-cooler-name');
+            if (nameCell) {
+                nameCell.textContent = cooler.name;
+            }
+            
+            // Update price
+            const priceCell = document.getElementById('cpu-cooler-price');
+            if (priceCell) {
+                priceCell.textContent = formatPrice(cooler.price) + ' VND';
+            }
+            
+            // Update total
+            const totalCell = document.getElementById('cpu-cooler-total');
+            if (totalCell) {
+                totalCell.textContent = formatPrice(cooler.price) + ' VND';
+            }
+        } else {
+            console.warn(`CPU cooler not found: ${coolerKey}`);
+        }
+    }
     
     // Update additional components
     if (hddDropdown && hddDropdown.value) {
@@ -124,47 +198,133 @@ function updateAndShowConfigTable() {
 
 // Function to update a component cell in the table
 function updateComponentCell(componentType, componentKey, alternativeType) {
-    // Skip if no component selected
-    if (!componentKey) return;
+    console.log(`Updating component cell: ${componentType} with key ${componentKey}`);
     
-    // Get component data
-    const dataType = alternativeType || componentType.replace('-', '');
-    const dataObj = window[`${dataType}Data`];
-    if (!dataObj) {
-        console.warn(`Data object not found for ${dataType}`);
+    // Skip empty component keys
+    if (!componentKey) {
+        console.log(`Empty component key for ${componentType}, skipping update`);
         return;
     }
     
-    const component = dataObj[componentKey];
-    if (!component) {
-        console.warn(`Component not found for key ${componentKey} in ${dataType}Data`);
+    // Handle case differences and aliases
+    const type = componentType.toLowerCase();
+    let dataKey = type;
+    
+    // Special handling for CPU cooler which has naming inconsistencies
+    if (type === 'cpucooler' || type === 'cpu-cooler') {
+        dataKey = 'cpuCooler';
+    }
+    
+    // Get component data - try to use the official data from js/data directory
+    let componentData = null;
+    
+    // Try getting data from global objects (populated from js/data)
+    if (window[`${dataKey}Data`]) {
+        componentData = window[`${dataKey}Data`];
+    }
+    
+    // If no data is found for cpuCooler, try specific sources
+    if (!componentData && dataKey === 'cpuCooler') {
+        // Try window.cpuCoolerData which might have been loaded directly
+        if (window.cpuCoolerData) {
+            componentData = window.cpuCoolerData;
+            console.log('Using direct global cpuCoolerData:', Object.keys(componentData).length, 'items');
+        }
+    }
+    
+    // If still no data, log error and return
+    if (!componentData) {
+        console.warn(`Data object not found for ${dataKey}`);
         return;
+    }
+    
+    // Get the component from the data
+    const component = componentData[componentKey];
+    if (!component) {
+        console.warn(`Component ${componentKey} not found in ${dataKey} data`);
+        return;
+    }
+    
+    // Format cell ID - handle special cases
+    let cellId = type;
+    if (alternativeType) {
+        cellId = alternativeType;
+    } else if (type === 'cpucooler') {
+        cellId = 'cpu-cooler';
+    }
+    
+    console.log(`Found ${dataKey} component:`, component.name);
+    
+    // Update image cell
+    const imageCell = document.getElementById(`${cellId}-image`);
+    if (imageCell) {
+        const img = document.createElement('img');
+        
+        // Determine image path - use the image property from data if available
+        if (component.image) {
+            img.src = component.image;
+        } else {
+            // Construct fallback path based on type
+            const typePath = {
+                'cpu': 'cpu',
+                'mainboard': 'mainboard',
+                'ram': 'ram',
+                'vga': 'vga',
+                'ssd': 'ssd',
+                'psu': 'psu',
+                'case': 'case',
+                'cpucooler': 'coolers',
+                'cpu-cooler': 'coolers'
+            }[type] || type;
+            
+            // Try using component key as filename
+            img.src = `images/${typePath}/${componentKey}.jpg`;
+        }
+        
+        // Error handler for images
+        img.onerror = function() {
+            console.warn(`Failed to load image for ${componentType}: ${componentKey} (${this.src})`);
+            
+            // Try a generic placeholder
+            this.src = 'images/placeholder.jpg';
+            
+            // Handle error for placeholder
+            this.onerror = function() {
+                this.style.display = 'none';
+                console.error('Failed to load placeholder image');
+            };
+        };
+        
+        img.alt = component.name;
+        img.style.maxWidth = '100px';
+        img.style.maxHeight = '60px';
+        img.style.objectFit = 'contain';
+        
+        // Clear and add the image
+        imageCell.innerHTML = '';
+        imageCell.appendChild(img);
+    } else {
+        console.warn(`Image cell not found for ${cellId}-image`);
     }
     
     // Update name cell
-    const nameCell = document.getElementById(`${componentType}-name`);
+    const nameCell = document.getElementById(`${cellId}-name`);
     if (nameCell) {
         nameCell.textContent = component.name;
+    } else {
+        console.warn(`Name cell not found for ${cellId}-name`);
     }
     
     // Update price cell
-    const priceCell = document.getElementById(`${componentType}-price`);
+    const priceCell = document.getElementById(`${cellId}-price`);
     if (priceCell) {
-        priceCell.textContent = formatPrice(component.price) + ' VNĐ';
+        priceCell.textContent = formatPrice(component.price) + ' VND';
     }
     
-    // Update total cell (price is the same as price for single quantity)
-    const totalCell = document.getElementById(`${componentType}-total`);
+    // Update total cell
+    const totalCell = document.getElementById(`${cellId}-total`);
     if (totalCell) {
-        totalCell.textContent = formatPrice(component.price) + ' VNĐ';
-    }
-    
-    // Update image cell with icon
-    const imageCell = document.getElementById(`${componentType}-image`);
-    if (imageCell) {
-        // Use Font Awesome icon
-        const iconClass = getIconClassForComponent(componentType);
-        imageCell.innerHTML = `<i class="${iconClass}" style="font-size: 32px; color: #0053b4;"></i>`;
+        totalCell.textContent = formatPrice(component.price) + ' VND';
     }
 }
 
@@ -210,16 +370,16 @@ function calculateTotalPrice() {
         // Update total price cell
         const totalPriceCell = document.getElementById('total-price-cell');
         if (totalPriceCell) {
-            totalPriceCell.textContent = formatPrice(totalPrice) + ' VNĐ';
+            totalPriceCell.textContent = formatPrice(totalPrice) + ' VND';
         }
         
         // Update remaining price cell (same as total for now)
         const remainingPriceCell = document.getElementById('remaining-price-cell');
         if (remainingPriceCell) {
-            remainingPriceCell.textContent = formatPrice(totalPrice) + ' VNĐ';
+            remainingPriceCell.textContent = formatPrice(totalPrice) + ' VND';
         }
         
-        console.log(`Total price calculated: ${formatPrice(totalPrice)} VNĐ`);
+        console.log(`Total price calculated: ${formatPrice(totalPrice)} VND`);
     } catch (error) {
         console.error('Error calculating total price:', error);
     }
@@ -228,4 +388,73 @@ function calculateTotalPrice() {
 // Helper function to format price with commas
 function formatPrice(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function updateComponentTable(cpuKey, mainboardKey, vgaKey, ramKey, ssdKey, psuKey, caseKey, cpuCoolerKey) {
+    console.log('Updating component table with selected components:');
+    console.log({cpuKey, mainboardKey, vgaKey, ramKey, ssdKey, psuKey, caseKey, cpuCoolerKey});
+    
+    try {
+        // Update each component cell
+        updateComponentCell('cpu', cpuKey);
+        updateComponentCell('mainboard', mainboardKey);
+        updateComponentCell('vga', vgaKey);
+        updateComponentCell('ram', ramKey);
+        updateComponentCell('ssd', ssdKey);
+        updateComponentCell('psu', psuKey);
+        updateComponentCell('case', caseKey);
+        
+        // Special handling for CPU cooler
+        if (cpuCoolerKey && window.cpuCoolerData && window.cpuCoolerData[cpuCoolerKey]) {
+            const cooler = window.cpuCoolerData[cpuCoolerKey];
+            console.log('Found CPU cooler:', cooler.name);
+            
+            // Update image
+            const imageCell = document.getElementById('cpu-cooler-image');
+            if (imageCell) {
+                const img = document.createElement('img');
+                img.src = cooler.image || `images/coolers/${cpuCoolerKey}.jpg`;
+                img.alt = cooler.name;
+                img.style.maxWidth = '100px';
+                img.style.maxHeight = '60px';
+                img.onerror = function() {
+                    this.src = 'images/coolers/cr-1000.jpg';
+                };
+                
+                imageCell.innerHTML = '';
+                imageCell.appendChild(img);
+            }
+            
+            // Update name
+            const nameCell = document.getElementById('cpu-cooler-name');
+            if (nameCell) {
+                nameCell.textContent = cooler.name;
+            }
+            
+            // Update price
+            const priceCell = document.getElementById('cpu-cooler-price');
+            if (priceCell) {
+                priceCell.textContent = formatPrice(cooler.price) + ' VND';
+            }
+            
+            // Update total
+            const totalCell = document.getElementById('cpu-cooler-total');
+            if (totalCell) {
+                totalCell.textContent = formatPrice(cooler.price) + ' VND';
+            }
+        } else {
+            console.warn(`CPU cooler ${cpuCoolerKey} not found in data:`, window.cpuCoolerData);
+        }
+        
+        // Calculate and update total price
+        calculateTotalPrice();
+        
+        // Show the configuration table
+        const configTable = document.getElementById('config-table');
+        if (configTable) {
+            configTable.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Error updating component table:', error);
+    }
 } 

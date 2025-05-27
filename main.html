@@ -1206,7 +1206,10 @@
 
     <!-- Script for the interactive PC builder -->
     <script src="./components-data.js"></script>
-    <script src="./buildsan.js"></script>
+    <!-- CPU cooler data is now loaded directly from js/data/ -->
+    <!-- <script src="./cpu-cooler-data.js"></script> -->
+    <script src="./buildsan.js" type="module"></script>
+    <script src="./buildsan-globals.js"></script>
     <!-- Script for Excel export functionality -->
     <script src="./auto-export-config.js"></script>
     <!-- Script for enhanced auto-config functionality -->
@@ -1233,6 +1236,62 @@
                     resolve();
                 }
             });
+        }
+
+        // Create image placeholder folders in memory
+        function createImagePlaceholders() {
+            // This function creates placeholders for image directories
+            // to prevent 404 errors when images can't be found
+            
+            // Create a dynamic placeholder image with a label
+            function createPlaceholderSrc(label) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 120;
+                canvas.height = 80;
+                const ctx = canvas.getContext('2d');
+                
+                // Fill background
+                ctx.fillStyle = '#f0f0f0';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Add border
+                ctx.strokeStyle = '#ccc';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(2, 2, canvas.width-4, canvas.height-4);
+                
+                // Add text
+                ctx.fillStyle = '#666';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(label, canvas.width/2, canvas.height/2);
+                
+                return canvas.toDataURL('image/png');
+            }
+            
+            // Create placeholders for each component type
+            window.placeholderImages = {
+                'cpu': createPlaceholderSrc('CPU'),
+                'mainboard': createPlaceholderSrc('Mainboard'),
+                'ram': createPlaceholderSrc('RAM'),
+                'vga': createPlaceholderSrc('VGA'),
+                'ssd': createPlaceholderSrc('SSD'),
+                'psu': createPlaceholderSrc('PSU'),
+                'case': createPlaceholderSrc('Case'),
+                'cpucooler': createPlaceholderSrc('CPU Cooler'),
+                'coolers': createPlaceholderSrc('CPU Cooler'),
+                'cpu-cooler': createPlaceholderSrc('CPU Cooler'),
+                'hdd': createPlaceholderSrc('HDD'),
+                'monitor': createPlaceholderSrc('Monitor'),
+                'placeholder': createPlaceholderSrc('No Image')
+            };
+            
+            // Make the placeholders globally available
+            window.getPlaceholder = function(type) {
+                return window.placeholderImages[type] || window.placeholderImages['placeholder'];
+            };
+            
+            console.log('Image placeholders created successfully');
         }
 
         // Hàm populateDropdowns
@@ -1310,6 +1369,9 @@
         document.addEventListener('DOMContentLoaded', async () => {
             try {
                 await loadRequiredLibraries();
+                
+                // Create image placeholders
+                createImagePlaceholders();
                 
                 // Lắng nghe sự kiện dữ liệu đã được tải
                 document.addEventListener('component-data-loaded', () => {
@@ -1492,82 +1554,167 @@
     <script src="./service-worker.js"></script>
     <script src="./component-compatibility.js"></script>
     <script src="./component-compatibility-bridge.js"></script>
+    <script src="./component-compatibility-fix.js"></script>
     <script src="./config-table-handler.js"></script>
 
     <!-- Script to handle the show all config tables button -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Run diagnostic check for CPU cooler cells
+            console.log('Diagnostic check for CPU cooler cells:');
+            console.log('cpu-cooler-image exists:', !!document.getElementById('cpu-cooler-image'));
+            console.log('cpu-cooler-name exists:', !!document.getElementById('cpu-cooler-name'));
+            console.log('cpu-cooler-price exists:', !!document.getElementById('cpu-cooler-price'));
+            console.log('cpu-cooler-total exists:', !!document.getElementById('cpu-cooler-total'));
+            
+            // Check alternative element IDs
+            console.log('Alternative element check:');
+            console.log('cpucooler-image exists:', !!document.getElementById('cpucooler-image'));
+            console.log('cpuCooler-image exists:', !!document.getElementById('cpuCooler-image'));
+            
+            // Handle the update configuration button click - Fix the invalid selector
+            const updateButtons = document.querySelectorAll('button');
+            let updateConfigButton = null;
+            
+            // Find the update button by its text content
+            updateButtons.forEach(button => {
+                if (button.textContent.includes('Cập Nhật') || 
+                    button.id.includes('nhật') || 
+                    button.id.includes('cập-nhật')) {
+                    updateConfigButton = button;
+                }
+            });
+            
+            if (updateConfigButton) {
+                console.log('Found update button:', updateConfigButton.textContent.trim());
+                updateConfigButton.addEventListener('click', function() {
+                    console.log('Update config button clicked');
+                    
+                    // Force direct update of CPU cooler in config table
+                    const cpuCoolerDropdown = document.getElementById('cpuCooler');
+                    if (cpuCoolerDropdown && cpuCoolerDropdown.value) {
+                        const coolerKey = cpuCoolerDropdown.value;
+                        
+                        if (window.cpuCoolerData && window.cpuCoolerData[coolerKey]) {
+                            const cooler = window.cpuCoolerData[coolerKey];
+                            
+                            // Debug output
+                            console.log('Manually updating CPU cooler in table:', cooler.name);
+                            
+                            // Find all possible element IDs
+                            const possibleImageIds = ['cpu-cooler-image', 'cpucooler-image', 'cpuCooler-image'];
+                            const possibleNameIds = ['cpu-cooler-name', 'cpucooler-name', 'cpuCooler-name'];
+                            const possiblePriceIds = ['cpu-cooler-price', 'cpucooler-price', 'cpuCooler-price'];
+                            const possibleTotalIds = ['cpu-cooler-total', 'cpucooler-total', 'cpuCooler-total'];
+                            
+                            // Find existing elements
+                            let imageCell = null;
+                            for (const id of possibleImageIds) {
+                                const el = document.getElementById(id);
+                                if (el) {
+                                    imageCell = el;
+                                    console.log('Found image cell with ID:', id);
+                                    break;
+                                }
+                            }
+                            
+                            let nameCell = null;
+                            for (const id of possibleNameIds) {
+                                const el = document.getElementById(id);
+                                if (el) {
+                                    nameCell = el;
+                                    console.log('Found name cell with ID:', id);
+                                    break;
+                                }
+                            }
+                            
+                            let priceCell = null;
+                            for (const id of possiblePriceIds) {
+                                const el = document.getElementById(id);
+                                if (el) {
+                                    priceCell = el;
+                                    console.log('Found price cell with ID:', id);
+                                    break;
+                                }
+                            }
+                            
+                            let totalCell = null;
+                            for (const id of possibleTotalIds) {
+                                const el = document.getElementById(id);
+                                if (el) {
+                                    totalCell = el;
+                                    console.log('Found total cell with ID:', id);
+                                    break;
+                                }
+                            }
+                            
+                            // Update cells if found
+                            if (imageCell) {
+                                const img = document.createElement('img');
+                                img.src = cooler.image || `images/coolers/${coolerKey}.jpg`;
+                                img.alt = cooler.name;
+                                img.style.maxWidth = '100px';
+                                img.style.maxHeight = '60px';
+                                
+                                // Add error handler
+                                img.onerror = function() {
+                                    this.src = 'images/coolers/cr-1000.jpg';
+                                    
+                                    // Final fallback
+                                    this.onerror = function() {
+                                        if (window.getPlaceholder) {
+                                            this.src = window.getPlaceholder('cpucooler');
+                                        } else {
+                                            console.warn('Failed to load CPU cooler image');
+                                            this.style.display = 'none';
+                                        }
+                                    };
+                                };
+                                
+                                imageCell.innerHTML = '';
+                                imageCell.appendChild(img);
+                            }
+                            
+                            if (nameCell) nameCell.textContent = cooler.name;
+                            
+                            const formatPrice = function(price) {
+                                return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            };
+                            
+                            if (priceCell) priceCell.textContent = formatPrice(cooler.price) + ' VND';
+                            if (totalCell) totalCell.textContent = formatPrice(cooler.price) + ' VND';
+                        }
+                    }
+                });
+            } else {
+                console.warn('Update config button not found');
+                
+                // Try to find any buttons and log them
+                const allButtons = document.querySelectorAll('button');
+                console.log('Found', allButtons.length, 'buttons on the page:');
+                allButtons.forEach((btn, index) => {
+                    console.log(`Button ${index}:`, btn.id || '(no id)', btn.textContent.trim());
+                });
+            }
+            
             // Initialize buttons for showing modal
             const calculateButton = document.getElementById('calculate-button');
             const showConfigDetailsButton = document.getElementById('show-config-details');
-            const showAllConfigTablesButton = document.getElementById('show-all-config-tables');
             const summaryModal = document.getElementById('summary-modal');
             const closeModalBtn = document.querySelector('.close-modal');
             
-            // Handler for Calculate button
-            if (calculateButton) {
+            if (calculateButton && typeof window.calculateTotalPriceAndSummary === 'function') {
                 calculateButton.addEventListener('click', function() {
-                    console.log('Calculate button clicked - showing detailed configuration modal');
-                    
-                    // Calculate and update total price
-                    if (typeof window.calculateTotalPriceAndSummary === 'function') {
-                        window.calculateTotalPriceAndSummary();
-                    }
-                    
-                    // Force show both tables
-                    if (typeof window.forceShowComponentTable === 'function') {
-                        window.forceShowComponentTable();
-                    } else {
-                        // Fallback to direct manipulation
-                        const configTable = document.getElementById('config-table');
-                        if (configTable) {
-                            configTable.style.display = 'block';
-                            configTable.style.visibility = 'visible';
-                        }
-                        
-                        if (summaryModal) {
-                            summaryModal.style.display = 'block';
-                        }
-                    }
+                    window.calculateTotalPriceAndSummary();
                 });
             }
             
-            // Handler for "Show all config tables" button
-            if (showAllConfigTablesButton) {
-                showAllConfigTablesButton.addEventListener('click', function() {
-                    console.log('Show all config tables button clicked');
-                    
-                    // Force show both configuration tables
-                    if (typeof window.forceShowComponentTable === 'function') {
-                        window.forceShowComponentTable();
-                    } else {
-                        console.error('forceShowComponentTable function not found, using fallback');
-                        // Fallback if the function isn't available
-                        // Show main config table
-                        const configTable = document.getElementById('config-table');
-                        if (configTable) {
-                            configTable.style.display = 'block';
-                            configTable.style.visibility = 'visible';
-                            configTable.scrollIntoView({ behavior: 'smooth' });
-                        }
-                        
-                        // Show the modal with detailed configuration
-                        const summaryModal = document.getElementById('summary-modal');
-                        if (summaryModal) {
-                            summaryModal.style.display = 'block';
-                            
-                            // Make sure modal content is updated
-                            if (typeof window.showConfigDetailModal === 'function') {
-                                window.showConfigDetailModal();
-                            } else if (typeof window.calculateTotalPriceAndSummary === 'function') {
-                                window.calculateTotalPriceAndSummary();
-                            }
-                        }
-                    }
+            if (showConfigDetailsButton && typeof window.calculateTotalPriceAndSummary === 'function') {
+                showConfigDetailsButton.addEventListener('click', function() {
+                    window.calculateTotalPriceAndSummary();
                 });
             }
             
-            // Close modal handlers
             if (closeModalBtn && summaryModal) {
                 closeModalBtn.addEventListener('click', function() {
                     summaryModal.style.display = 'none';
@@ -1750,6 +1897,221 @@
             });
         });
     });
+    </script>
+
+    <script>
+        // Create an event handler for CPU cooler dropdown changes
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle CPU cooler dropdown change
+            const cpuCoolerDropdown = document.getElementById('cpuCooler');
+            if (cpuCoolerDropdown) {
+                cpuCoolerDropdown.addEventListener('change', function() {
+                    console.log('CPU cooler selection changed:', this.value);
+                    
+                    // Get the selected cooler key
+                    const coolerKey = this.value;
+                    
+                    // Find cooler data
+                    if (coolerKey && window.cpuCoolerData && window.cpuCoolerData[coolerKey]) {
+                        const cooler = window.cpuCoolerData[coolerKey];
+                        
+                        // Update the CPU cooler in the configuration table
+                        const imageCell = document.getElementById('cpu-cooler-image');
+                        const nameCell = document.getElementById('cpu-cooler-name');
+                        const priceCell = document.getElementById('cpu-cooler-price');
+                        const totalCell = document.getElementById('cpu-cooler-total');
+                        
+                        if (imageCell) {
+                            const img = document.createElement('img');
+                            img.src = cooler.image || `images/coolers/${coolerKey}.jpg`;
+                            img.alt = cooler.name;
+                            img.style.maxWidth = '100px';
+                            img.style.maxHeight = '60px';
+                            img.onerror = function() {
+                                this.src = 'images/coolers/cr-1000.jpg';
+                            };
+                            
+                            imageCell.innerHTML = '';
+                            imageCell.appendChild(img);
+                        }
+                        
+                        if (nameCell) nameCell.textContent = cooler.name;
+                        
+                        const formatPrice = function(price) {
+                            return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        };
+                        
+                        if (priceCell) priceCell.textContent = formatPrice(cooler.price) + ' VND';
+                        if (totalCell) totalCell.textContent = formatPrice(cooler.price) + ' VND';
+                        
+                        // Make sure the configuration table is visible
+                        const configTable = document.getElementById('config-table');
+                        if (configTable) {
+                            configTable.style.display = 'block';
+                            configTable.style.visibility = 'visible';
+                        }
+                        
+                        console.log('CPU cooler updated in configuration table');
+                    }
+                });
+            }
+        });
+    </script>
+
+    <!-- Update CPU Cooler button (hidden by default) -->
+    <button id="force-update-cpu-cooler" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; background: #ff5722; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+        Cập Nhật Tản Nhiệt
+    </button>
+    
+    <script>
+        // Button to force CPU cooler update
+        document.addEventListener('DOMContentLoaded', function() {
+            const forceUpdateButton = document.getElementById('force-update-cpu-cooler');
+            if (forceUpdateButton) {
+                forceUpdateButton.addEventListener('click', function() {
+                    console.log('Force update CPU cooler button clicked');
+                    
+                    // Ensure CPU cooler row exists
+                    if (window.ensureCpuCoolerRow) {
+                        window.ensureCpuCoolerRow();
+                    }
+                    
+                    // Get the selected cooler value
+                    const cpuCoolerDropdown = document.getElementById('cpuCooler');
+                    if (cpuCoolerDropdown && cpuCoolerDropdown.value) {
+                        const coolerKey = cpuCoolerDropdown.value;
+                        
+                        if (window.cpuCoolerData && window.cpuCoolerData[coolerKey]) {
+                            const cooler = window.cpuCoolerData[coolerKey];
+                            console.log('Updating CPU cooler:', cooler.name);
+                            
+                            // Update the image
+                            const imageCell = document.getElementById('cpu-cooler-image');
+                            if (imageCell) {
+                                const img = document.createElement('img');
+                                img.src = cooler.image;
+                                img.alt = cooler.name;
+                                img.style.maxWidth = '100px';
+                                img.style.maxHeight = '60px';
+                                
+                                // Handle image loading error
+                                img.onerror = function() {
+                                    this.src = 'images/coolers/cr-1000.jpg';
+                                };
+                                
+                                imageCell.innerHTML = '';
+                                imageCell.appendChild(img);
+                                
+                                console.log('CPU cooler image updated');
+                            }
+                            
+                            // Update the name
+                            const nameCell = document.getElementById('cpu-cooler-name');
+                            if (nameCell) {
+                                nameCell.textContent = cooler.name;
+                                console.log('CPU cooler name updated');
+                            }
+                            
+                            // Update the price
+                            const priceCell = document.getElementById('cpu-cooler-price');
+                            if (priceCell) {
+                                const formatPrice = function(price) {
+                                    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                };
+                                
+                                priceCell.textContent = formatPrice(cooler.price) + ' VND';
+                                console.log('CPU cooler price updated');
+                            }
+                            
+                            // Update the total
+                            const totalCell = document.getElementById('cpu-cooler-total');
+                            if (totalCell) {
+                                const formatPrice = function(price) {
+                                    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                };
+                                
+                                totalCell.textContent = formatPrice(cooler.price) + ' VND';
+                                console.log('CPU cooler total updated');
+                            }
+                            
+                            // Recalculate total price
+                            if (typeof window.calculateTotalPrice === 'function') {
+                                window.calculateTotalPrice();
+                                console.log('Total price recalculated');
+                            }
+                            
+                            // Make sure the configuration table is visible
+                            const configTable = document.getElementById('config-table');
+                            if (configTable) {
+                                configTable.style.display = 'block';
+                                configTable.style.visibility = 'visible';
+                                console.log('Configuration table made visible');
+                            }
+                        } else {
+                            console.warn('CPU cooler data not found for:', coolerKey);
+                        }
+                    } else {
+                        console.warn('CPU cooler dropdown not found or no value selected');
+                    }
+                });
+            }
+        });
+    </script>
+
+    <!-- Script to load component data from js/data directory -->
+    <script>
+        // Load component data from js/data directory
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Loading component data from js/data directory...');
+            
+            // List of components to load
+            const components = [
+                'cpu',
+                'mainboard',
+                'vga',
+                'ram',
+                'ssd',
+                'psu',
+                'case',
+                'cpuCooler',
+                'hdd',
+                'monitor'
+            ];
+            
+            // Load each component's data
+            components.forEach(component => {
+                fetch(`js/data/${component}.js`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Failed to fetch ${component} data: ${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        try {
+                            // Extract the data object from the module
+                            const dataText = data.replace(`export const ${component}Data =`, `window.${component}Data =`);
+                            
+                            // Create a script element to evaluate the code
+                            const script = document.createElement('script');
+                            script.textContent = dataText;
+                            document.head.appendChild(script);
+                            
+                            if (window[`${component}Data`]) {
+                                console.log(`✅ ${component} data loaded from js/data/${component}.js:`, 
+                                    Object.keys(window[`${component}Data`]).length, 'items');
+                            } else {
+                                console.warn(`⚠️ ${component} data not properly loaded`);
+                            }
+                        } catch (error) {
+                            console.error(`Error processing ${component} data:`, error);
+                        }
+                    })
+                    .catch(error => {
+                        console.warn(`Error loading ${component} data:`, error);
+                    });
+            });
+        });
     </script>
 </body>
 
