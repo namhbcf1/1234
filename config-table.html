@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng Chi Tiết Cấu Hình PC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #0053b4;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th {
+            background-color: #2196F3;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .action-button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .primary-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+        .accent-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .header {
+            background: linear-gradient(135deg, #0053b4, #0275d8);
+            color: white;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 20px;
+        }
+        .total-price {
+            font-weight: bold;
+            color: #f44336;
+            text-align: right;
+        }
+        .system-message {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #socket-message {
+            background-color: #e7f3fe;
+            border: 1px solid #b6dcfe;
+            color: #0c5460;
+        }
+        #score-message {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        #upgrade-message {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-desktop"></i> TRUONG PHAT COMPUTER</h1>
+            <p style="text-align: center; margin: 5px 0;">Liên hệ: 0836768597</p>
+        </div>
+        
+        <h2><i class="fas fa-clipboard-list"></i> BẢNG CHI TIẾT CẤU HÌNH MÁY TÍNH</h2>
+        
+        <div id="config-table" class="config-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>HÌNH ẢNH</th>
+                        <th>TÊN, MÃ, LOẠI LINH KIỆN</th>
+                        <th>ĐVT</th>
+                        <th>SỐ LƯỢNG</th>
+                        <th>ĐƠN GIÁ</th>
+                        <th>THÀNH TIỀN</th>
+                        <th>BẢO HÀNH</th>
+                        <th>GHI CHÚ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align: center;">1</td>
+                        <td id="cpu-image" style="text-align: center;"></td>
+                        <td id="cpu-name">CPU: Intel Core i5-13400F (10 Cores, 16 Threads, Up to 4.6 GHz)</td>
+                        <td style="text-align: center;">Chiếc</td>
+                        <td style="text-align: center;">1</td>
+                        <td id="cpu-price" style="text-align: right;">4,390,000</td>
+                        <td id="cpu-total" style="text-align: right;">4,390,000</td>
+                        <td style="text-align: center;">36T</td>
+                        <td style="text-align: center;">NEW</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">2</td>
+                        <td id="mainboard-image" style="text-align: center;"></td>
+                        <td id="mainboard-name">Mainboard: MSI B760M BOMBER WIFI DDR4</td>
+                        <td style="text-align: center;">Chiếc</td>
+                        <td style="text-align: center;">1</td>
+                        <td id="mainboard-price" style="text-align: right;">3,690,000</td>
+                        <td id="mainboard-total" style="text-align: right;">3,690,000</td>
+                        <td style="text-align: center;">36T</td>
+                        <td style="text-align: center;">NEW</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">3</td>
+                        <td id="ram-image" style="text-align: center;"></td>
+                        <td id="ram-name">RAM: G.SKILL Ripjaws V 16GB (2x8GB) 3200MHz</td>
+                        <td style="text-align: center;">Chiếc</td>
+                        <td style="text-align: center;">1</td>
+                        <td id="ram-price" style="text-align: right;">1,290,000</td>
+                        <td id="ram-total" style="text-align: right;">1,290,000</td>
+                        <td style="text-align: center;">36T</td>
+                        <td style="text-align: center;">NEW</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">4</td>
+                        <td id="vga-image" style="text-align: center;"></td>
+                        <td id="vga-name">VGA: MSI GEFORCE RTX 4060 GAMING X 8GB GDDR6</td>
+                        <td style="text-align: center;">Chiếc</td>
+                        <td style="text-align: center;">1</td>
+                        <td id="vga-price" style="text-align: right;">8,890,000</td>
+                        <td id="vga-total" style="text-align: right;">8,890,000</td>
+                        <td style="text-align: center;">36T</td>
+                        <td style="text-align: center;">NEW</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">5</td>
+                        <td id="ssd-image" style="text-align: center;"></td>
+                        <td id="ssd-name">SSD: Kingston NV2 1TB M.2 PCIe Gen4 x4 NVMe</td>
+                        <td style="text-align: center;">Chiếc</td>
+                        <td style="text-align: center;">1</td>
+                        <td id="ssd-price" style="text-align: right;">1,590,000</td>
+                        <td id="ssd-total" style="text-align: right;">1,590,000</td>
+                        <td style="text-align: center;">36T</td>
+                        <td style="text-align: center;">NEW</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">6</td>
+                        <td id="cpu-cooler-image" style="text-align: center;"></td>
+                        <td id="cpu-cooler-name">Tản nhiệt: Deepcool AK400</td>
+                        <td style="text-align: center;">Chiếc</td>
+                        <td style="text-align: center;">1</td>
+                        <td id="cpu-cooler-price" style="text-align: right;">590,000</td>
+                        <td id="cpu-cooler-total" style="text-align: right;">590,000</td>
+                        <td style="text-align: center;">12T</td>
+                        <td style="text-align: center;">NEW</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">7</td>
+                        <td id="psu-image" style="text-align: center;"></td>
+                        <td id="psu-name">Nguồn: Corsair CV650 650W 80 Plus Bronze</td>
+                        <td style="text-align: center;">Chiếc</td>
+                        <td style="text-align: center;">1</td>
+                        <td id="psu-price" style="text-align: right;">1,290,000</td>
+                        <td id="psu-total" style="text-align: right;">1,290,000</td>
+                        <td style="text-align: center;">36T</td>
+                        <td style="text-align: center;">NEW</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">8</td>
+                        <td id="case-image" style="text-align: center;"></td>
+                        <td id="case-name">Vỏ case: Deepcool CH510 White</td>
+                        <td style="text-align: center;">Chiếc</td>
+                        <td style="text-align: center;">1</td>
+                        <td id="case-price" style="text-align: right;">1,290,000</td>
+                        <td id="case-total" style="text-align: right;">1,290,000</td>
+                        <td style="text-align: center;">12T</td>
+                        <td style="text-align: center;">NEW</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" style="text-align: right;"><strong>Tổng cộng</strong></td>
+                        <td id="total-price-cell" style="font-weight: bold; color: #f44336; text-align: right;">19,340,000</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" style="text-align: right;"><strong>Chiết khấu</strong></td>
+                        <td style="text-align: right;">0</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" style="text-align: right;"><strong>Đã thanh toán</strong></td>
+                        <td style="text-align: right;">0</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" style="text-align: right;"><strong>Còn lại</strong></td>
+                        <td id="remaining-price-cell" style="font-weight: bold; color: #f44336; text-align: right;">19,340,000</td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="system-message" id="socket-message">
+                Mainboard B760M tương thích với CPU Intel Core i5-13400F Socket LGA 1700
+            </div>
+            
+            <div class="system-message" id="score-message">
+                Cấu hình này phù hợp để chơi game với hiệu suất cao và ổn định
+            </div>
+            
+            <div class="system-message" id="upgrade-message">
+                Gợi ý nâng cấp: Thêm RAM để đạt 32GB để làm việc đa nhiệm tốt hơn
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button class="action-button primary-btn">
+                <i class="fas fa-print"></i> In cấu hình
+            </button>
+            <button class="action-button accent-btn">
+                <i class="fas fa-download"></i> Tải xuống
+            </button>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <p>© 2025 TRUONG PHAT COMPUTER. Liên hệ: 0836768597</p>
+        </div>
+    </div>
+</body>
+</html> 

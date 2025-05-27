@@ -1,0 +1,902 @@
+/* buildsan.css */
+
+/* Reset CSS và CSS chung */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    background: #ff4d4d;
+    outline: none;
+    opacity: 0.9;
+    transition: opacity .15s ease-in-out;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: red;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: red;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+/* CSS Variables for easier theming */
+:root {
+    --primary-color: #29b6f6;
+    /* Màu chính - Xanh dương sáng */
+    --secondary-color: #1976d2;
+    /* Màu phụ - Xanh dương đậm */
+    --background-color: #e3f2fd;
+    /* Màu nền - Xanh rất nhạt */
+    --text-color: #333;
+    /* Màu chữ chính */
+    --card-background: #ffffff;
+    /* Màu nền card */
+    --border-color: #e0e0e0;
+    /* Màu viền */
+    --hover-border-color: #bbdefb;
+    /* Màu viền khi hover */
+    --box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    /* Bóng đổ */
+    --transition-speed: 0.3s;
+    /* Tốc độ hiệu ứng */
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.7;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Enhanced Header with Vibrant Colors and Dynamic Effects */
+header {
+    background: linear-gradient(135deg, #ff7e5f, #feb47b);
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    position: relative;
+    z-index: 100;
+    overflow: hidden;
+}
+
+header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    animation: rotate 6s linear infinite;
+    z-index: 0;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+header .logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    z-index: 1;
+}
+
+header .logo:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+header .logo i {
+    color: #ffeb3b;
+    font-size: 1.8em;
+    margin-right: 10px;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+header .logo span {
+    color: white;
+    font-weight: 800;
+    font-size: 1.5em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+header .contact-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+}
+
+/* Zalo button with unique styling */
+header .contact-buttons a:nth-child(1) {
+    background-color: #0068ff;
+    color: white;
+    text-decoration: none;
+    font-size: 1.1em;
+    padding: 10px 18px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 104, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+header .contact-buttons a:nth-child(1)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    z-index: 0;
+}
+
+header .contact-buttons a:nth-child(1):hover::before {
+    left: 100%;
+}
+
+header .contact-buttons a:nth-child(1):hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 104, 255, 0.4);
+    background-color: #0074e8;
+}
+
+/* Phone number with unique styling */
+header .phone-number {
+    background: linear-gradient(45deg, #ff9a38, #ffcb7c);
+    color: #333;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(255, 154, 56, 0.3);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+header .phone-number:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(255, 154, 56, 0.4);
+}
+
+header .phone-number i {
+    margin-right: 10px;
+    color: #333;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Facebook button with unique styling */
+header .contact-buttons a:nth-child(3) {
+    background-color: #1877f2;
+    color: white;
+    text-decoration: none;
+    font-size: 1.1em;
+    padding: 10px 18px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(24, 119, 242, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+header .contact-buttons a:nth-child(3)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    z-index: 0;
+}
+
+header .contact-buttons a:nth-child(3):hover::before {
+    left: 100%;
+}
+
+header .contact-buttons a:nth-child(3):hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(24, 119, 242, 0.4);
+    background-color: #0d65d9;
+}
+
+header .contact-buttons a i,
+header .phone-number i {
+    margin-right: 10px;
+    font-size: 1.2em;
+    position: relative;
+    z-index: 1;
+}
+
+/* Responsive design for header */
+@media (max-width: 768px) {
+    header .contact-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    header .phone-number,
+    header .contact-buttons a {
+        width: 80%;
+        justify-content: center;
+    }
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: var(--card-background);
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    flex-grow: 1;
+}
+
+.selection-grid,
+.additional-components-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #263238;
+    font-size: 2.5em;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.selection-section {
+    margin-bottom: 30px;
+}
+
+.selection-section h2 {
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    color: #37474f;
+    font-weight: 600;
+}
+
+.dropdown {
+    width: 100%;
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    font-size: 1.1em;
+    color: #455a64;
+    background-color: #f8faff;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="currentColor" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position-x: 100%;
+    background-position-y: 10px;
+    padding-right: 30px;
+}
+
+.dropdown:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(100, 181, 246, 0.5);
+}
+
+.selection-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.additional-components-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.component {
+    background-color: var(--card-background);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    transition: all var(--transition-speed) ease;
+}
+
+.component:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.2);
+    border-color: var(--hover-border-color);
+}
+
+#selected-components-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: flex-start;
+}
+
+.image-preview {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.image-preview h2 {
+    margin-bottom: 15px;
+    color: #37474f;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+#image-preview-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.total-price {
+    text-align: center;
+    margin-bottom: 20px;
+    /* giảm khoảng cách dưới */
+}
+
+.total-price h2 {
+    margin-bottom: 10px;
+    /* giảm khoảng cách dưới tiêu đề */
+    color: #37474f;
+    font-size: 1.0em;
+    /* giảm kích thước tiêu đề */
+    font-weight: 600;
+}
+
+.total-price p {
+    font-size: 1.5em;
+    /* giảm kích thước tổng tiền */
+    font-weight: bold;
+    color: var(--secondary-color);
+    text-shadow: 1px 1px 1px #e0f7fa;
+}
+
+.button-group {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.action-button {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: var(--primary-color);
+    color: #fff;
+    transition: background-color var(--transition-speed) ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.action-button:hover {
+    background-color: var(--secondary-color);
+}
+
+.summary-section {
+    background-color: var(--card-background);
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 30px;
+    box-shadow: var(--box-shadow);
+}
+
+.summary-section h2 {
+    margin-bottom: 15px;
+    color: #37474f;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+footer {
+    text-align: center;
+    padding: 20px 0;
+    background-color: var(--secondary-color);
+    color: #fff;
+    margin-top: 40px;
+}
+
+footer p {
+    font-size: 1em;
+}
+
+/* CSS chung cho tất cả các thông báo */
+.socket-error-message,
+.score-message,
+.upgrade-message {
+    margin-bottom: 20px;
+    /* Tăng khoảng cách dưới để tách biệt rõ hơn */
+    padding: 15px 20px;
+    /* Tăng padding để thông báo rộng rãi hơn */
+    border-radius: 10px;
+    /* Bo tròn góc nhiều hơn cho mềm mại */
+    font-weight: bold;
+    /* Vẫn giữ in đậm */
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+    /* Thêm bóng đổ nhẹ tạo chiều sâu */
+    font-family: 'Arial', sans-serif;
+    /* Chọn font chữ dễ đọc và hiện đại */
+    text-align: center;
+    /* Căn giữa chữ trong thông báo */
+    animation: fadeIn 0.5s ease-out;
+    /* Thêm hiệu ứng fade-in khi hiển thị */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    /* Bắt đầu trong suốt và dịch lên */
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Kết thúc rõ ràng và vị trí ban đầu */
+}
+
+/* CSS riêng cho thông báo lỗi socket (màu đỏ nổi bật hơn) */
+.socket-error-message {
+    color: white;
+    /* Chữ trắng để nổi bật trên nền đỏ */
+    background-color: #f44336;
+    /* Đỏ đậm hơn, mã màu Material Design Red 500 */
+    border: 2px solid #d32f2f;
+    /* Viền đỏ đậm hơn chút */
+    /* Thêm icon cảnh báo (tùy chọn, cần thêm HTML để hiển thị icon) */
+    /* background-image: url('icon-warning.png');  */
+    /* Đường dẫn tới icon cảnh báo */
+    /* background-repeat: no-repeat; */
+    /* background-position: 20px center; */
+    /* padding-left: 50px;  */
+    /* Để khoảng trống cho icon */
+}
+
+/* CSS riêng cho thông báo điểm (màu xanh lá cây tươi sáng) */
+.score-message {
+    color: white;
+    /* Chữ trắng nổi bật trên nền xanh */
+    background-color: #4caf50;
+    /* Xanh lá cây tươi, mã màu Material Design Green 500 */
+    border: 2px solid #388e3c;
+    /* Viền xanh lá cây đậm hơn chút */
+}
+
+/* CSS riêng cho thông báo nâng cấp (màu xanh dương hiện đại) */
+.upgrade-message {
+    color: white;
+    /* Chữ trắng nổi bật trên nền xanh dương */
+    background-color: #2196f3;
+    /* Xanh dương tươi, mã màu Material Design Blue 500 */
+    border: 2px solid #1976d2;
+    /* Viền xanh dương đậm hơn chút */
+}
+
+.red-section {
+    background-color: #ffe5e5;
+    /* Màu nền nhẹ đỏ */
+    border: 2px solid #ff0000;
+    /* Viền đỏ */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.red-section h2 {
+    color: #ff0000;
+    /* Tiêu đề màu đỏ */
+}
+
+/* Hiệu ứng Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: var(--card-background);
+    margin: 15% auto;
+    padding: 30px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#modal-components-list {
+    overflow-x: auto;
+}
+
+.component-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    border-spacing: 0;
+}
+
+.component-table th,
+.component-table td {
+    padding: 12px 18px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.component-table th {
+    background-color: var(--hover-border-color);
+    color: #34495e;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    font-size: 0.9em;
+}
+
+.component-table tbody tr:nth-child(even) td {
+    background-color: #f2f2f2;
+}
+
+.component-table td:first-child,
+.component-table th:first-child {
+    text-align: left;
+    font-weight: 500;
+}
+
+.component-table td:nth-child(2),
+.component-table th:nth-child(2) {
+    width: 100px;
+    text-align: center;
+}
+
+.component-table img {
+    max-width: 80px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+    padding: 3px;
+    background-color: #fff;
+}
+
+#modal-total-price {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: var(--secondary-color);
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px dashed var(--hover-border-color);
+}
+
+.modal-visible {
+    display: block;
+}
+
+/* Card linh kiện đã chọn */
+#selected-components-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+}
+
+.component-card {
+    background-color: var(--card-background);
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    width: calc(33.33% - 15px);
+    min-width: 200px;
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    border: 1px solid var(--border-color);
+}
+
+.component-card img.component-image {
+    max-width: 80px;
+    height: auto;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.component-card .component-info h3 {
+    font-size: 1em;
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 5px;
+}
+
+/* Style cho section "Lựa Chọn Thêm" */
+#additional-selection {
+    margin-top: 40px;
+    border-top: 2px solid #c0d6e4;
+    padding-top: 30px;
+}
+
+.additional-components-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+/* Responsive Design */
+@media (max-width: 78px) {
+
+    .selection-grid,
+    .additional-components-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .component-card {
+        width: 100%;
+    }
+}
+
+.components-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+/* Giảm kích thước hình ảnh trong linh kiện đã chọn */
+.component-card img.component-image {
+    max-width: 60px;
+    /* giảm từ 80px xuống 60px */
+    height: auto;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.component-info {
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.component-info.hidden {
+    display: none;
+}
+
+.component-card {
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.component-card:hover {
+    background: #f5f5f5;
+}
+
+.component-card.active .component-info {
+    display: block;
+}
+
+.choices-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+/* Lựa chọn chính và phụ */
+.main-choices,
+.optional-choices {
+    flex: 1;
+    min-width: 300px;
+    /* Đảm bảo không quá nhỏ */
+}
+
+/* Hide configuration display elements */
+#show-config-detail-button,
+#main-config-button,
+#config-detail-button,
+#show-config-modal-button,
+#force-show-table-button,
+.config-table,
+#summary-modal,
+#modal-components-list,
+#config-table,
+.RAM-Type {
+    display: none !important;
+}
+
+/* Hide RAM Type box */
+[id="RAM Type"] {
+    display: none !important;
+}
+
+/* Hide configuration modals except for the main evaluation button */
+.modal {
+    display: none !important;
+}
+
+/* Keep only the "XEM CHI TIẾT VÀ ĐÁNH GIÁ" button visible */
+.action-button.primary-btn#calculate-button {
+    display: inline-block !important;
+}
+
+/* Hide RAM Type info */
+span[style*="RAM Type"],
+[style*="RAM Type"],
+div:has(> span[style*="RAM Type"]) {
+    display: none !important;
+}
+
+/* Style the socket info div to only show CPU and Mainboard info */
+#socket-info {
+    display: block !important; 
+    background-color: #e3f2fd !important;
+    padding: 15px !important;
+    border-radius: 5px !important;
+    margin: 10px 0 !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+    font-size: 16px !important;
+}
+
+/* Add these rules to hide the green configuration button */
+.action-button[onclick*="showConfigDetail"],
+.action-button.green-btn,
+#show-config-detail-button,
+#force-show-table-button,
+button[style*="background-color: #4CAF50"],
+div[style*="position: fixed"] button[style*="background-color: #4CAF50"] {
+    display: none !important;
+}
+
+/* Keep the "XEM CHI TIẾT VÀ ĐÁNH GIÁ" button visible */
+.action-button.primary-btn {
+    display: inline-block !important;
+}
+
+/* Hide RAM Type information in socket info box */
+#socket-info span[id="RAM Type"],
+#socket-info span[data-type="RAM Type"],
+#socket-info .ram-type-info,
+.socket-info-label:has(span:contains("RAM Type")),
+.socket-info-value:contains("DDR") {
+    display: none !important;
+}
+
+/* Make sure the socket info box is still displayed */
+#socket-info {
+    display: block !important;
+}

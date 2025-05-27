@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1024">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Tự xây dựng cấu hình PC với công cụ TRUONG PHAT COMPUTER - Chọn linh kiện máy tính phù hợp nhu cầu và ngân sách">
+    
+    <title>BUILD PC TRUONG PHAT COMPUTER - Đang tải...</title>
+    
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0053b4, #0275d8);
+            color: white;
+            overflow: hidden;
+        }
+        
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        
+        .loader-logo {
+            margin-bottom: 30px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 20px 40px;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .loader-progress-container {
+            width: 80%;
+            max-width: 500px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .loader-progress-bar {
+            height: 20px;
+            width: 0%;
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            border-radius: 8px;
+            transition: width 0.3s ease;
+        }
+        
+        .loader-progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .loader-message {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.6;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader-container">
+        <div class="loader-logo">TRUONG PHAT COMPUTER</div>
+        <h2>Đang tải dữ liệu...</h2>
+        <div class="loader-progress-container">
+            <div class="loader-progress-bar" id="progressBar"></div>
+            <div class="loader-progress-text" id="progressText">0%</div>
+        </div>
+        <div class="loader-message" id="loadingMessage">Đang chuẩn bị dữ liệu linh kiện...</div>
+        <div class="loader-message pulse">Vui lòng đợi trong giây lát</div>
+    </div>
+
+    <script>
+        // List of all resources to preload (JS, CSS, and any large data files)
+        const resourcesToLoad = [
+            './main.html',
+            './buildsan.css',
+            './styles.css',
+            './fix-styles.css',
+            './modal-styles.css',
+            './buildsan.js',
+            './component-connector.js',
+            './components-data.js',
+            './js/data/cpu.js',
+            './js/data/vga.js',
+            './js/data/ram.js',
+            './js/data/mainboard.js',
+            './js/data/ssd.js',
+            './js/data/hdd.js',
+            './js/data/case.js',
+            './js/data/psu.js',
+            './js/data/monitor.js',
+            './js/configs/index.js',
+            './event-handlers.js',
+            './modern-ui.js'
+        ];
+
+        // Loading messages to show during different stages
+        const loadingMessages = [
+            "Đang tải dữ liệu CPU...",
+            "Đang tải dữ liệu Card đồ họa...",
+            "Đang tải dữ liệu RAM...",
+            "Đang tải dữ liệu Mainboard...",
+            "Đang tải dữ liệu ổ cứng...",
+            "Đang tải giao diện...",
+            "Đang chuẩn bị dữ liệu game...",
+            "Đang tối ưu hóa trải nghiệm...",
+            "Sắp hoàn tất..."
+        ];
+
+        // Get DOM elements
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const loadingMessage = document.getElementById('loadingMessage');
+
+        // Track loading progress
+        let loadedCount = 0;
+        let totalResources = resourcesToLoad.length;
+        let messageIndex = 0;
+
+        // Function to update the progress bar and message
+        function updateProgress() {
+            loadedCount++;
+            const progress = Math.floor((loadedCount / totalResources) * 100);
+            
+            progressBar.style.width = progress + '%';
+            progressText.textContent = progress + '%';
+            
+            // Update loading message periodically
+            if (progress > messageIndex * (100 / loadingMessages.length)) {
+                if (messageIndex < loadingMessages.length) {
+                    loadingMessage.textContent = loadingMessages[messageIndex];
+                    messageIndex++;
+                }
+            }
+            
+            // Redirect when all resources are loaded
+            if (loadedCount >= totalResources) {
+                loadingMessage.textContent = "Tải hoàn tất! Đang chuyển hướng...";
+                setTimeout(() => {
+                    window.location.href = 'main.html';
+                }, 1000);
+            }
+        }
+
+        // Preload all resources
+        function preloadResources() {
+            resourcesToLoad.forEach(resource => {
+                if (resource.endsWith('.js')) {
+                    const script = document.createElement('script');
+                    script.src = resource;
+                    script.onload = updateProgress;
+                    script.onerror = updateProgress; // Count errors as loaded to avoid hanging
+                    document.head.appendChild(script);
+                } else if (resource.endsWith('.css')) {
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = resource;
+                    link.onload = updateProgress;
+                    link.onerror = updateProgress;
+                    document.head.appendChild(link);
+                } else {
+                    fetch(resource)
+                        .then(response => {
+                            updateProgress();
+                        })
+                        .catch(error => {
+                            console.error(`Failed to preload ${resource}: ${error}`);
+                            updateProgress();
+                        });
+                }
+            });
+        }
+
+        // Simulate initial loading progress for better UX
+        let simulatedProgress = 0;
+        const simulateLoading = setInterval(() => {
+            simulatedProgress += 1;
+            if (simulatedProgress <= 5) {
+                progressBar.style.width = simulatedProgress + '%';
+                progressText.textContent = simulatedProgress + '%';
+            } else {
+                clearInterval(simulateLoading);
+                // Start actual preloading
+                preloadResources();
+            }
+        }, 100);
+
+        // Fallback in case something goes wrong with loading
+        setTimeout(() => {
+            if (loadedCount < totalResources) {
+                loadingMessage.textContent = "Tải chậm. Đang cố gắng hoàn tất...";
+                
+                // Force redirect after 30 seconds regardless of loading state
+                setTimeout(() => {
+                    window.location.href = 'main.html';
+                }, 10000);
+            }
+        }, 20000);
+    </script>
+</body>
+</html>
+
