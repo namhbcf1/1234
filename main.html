@@ -1188,29 +1188,292 @@
     </div>
 
     <footer>
-        <div class="footer-content">
-            <div class="footer-logo">
-                <i class="fas fa-desktop"></i> TRUONG PHAT COMPUTER
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-desktop fa-2x"></i>
+                    <div class="logo-text">
+                        <h3>TRUONG PHAT COMPUTER</h3>
+                        <p>Giải pháp tin học chuyên nghiệp</p>
+                    </div>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4><i class="fas fa-address-card"></i> THÔNG TIN LIÊN HỆ</h4>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Địa chỉ: TP Hòa Bình, Tỉnh Hòa Bình, Việt Nam</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <span>Hotline: <a href="tel:0836768597">0836.768.597</a></span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email: <a href="mailto:contact@truongphatcomputer.com">contact@truongphatcomputer.com</a></span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Giờ làm việc: 8:00 - 20:00 (Tất cả các ngày trong tuần)</span>
+                    </div>
+                </div>
+                
+                <div class="footer-social">
+                    <h4><i class="fas fa-share-alt"></i> KẾT NỐI VỚI CHÚNG TÔI</h4>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/tpcom.hb" target="_blank" class="social-icon facebook">
+                            <i class="fab fa-facebook-f"></i>
+                            <span>Facebook</span>
+                        </a>
+                        <a href="https://zalo.me/0836768597" target="_blank" class="social-icon zalo">
+                            <i class="fas fa-comment"></i>
+                            <span>Zalo</span>
+                        </a>
+                        <a href="https://www.tiktok.com/@truongphatcomputer" target="_blank" class="social-icon tiktok">
+                            <i class="fab fa-tiktok"></i>
+                            <span>TikTok</span>
+                        </a>
+                        <a href="https://www.youtube.com/@truongphatcomputer" target="_blank" class="social-icon youtube">
+                            <i class="fab fa-youtube"></i>
+                            <span>YouTube</span>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="footer-contact">
-                <div><i class="fas fa-map-marker-alt"></i> Địa chỉ: Hòa Bình, Việt Nam</div>
-                <div><i class="fas fa-phone"></i> Hotline: 0836768597</div>
-                <div><i class="fas fa-envelope"></i> Email: contact@truongphatcomputer.com</div>
-            </div>
-            <div class="footer-social">
-                <a href="https://www.facebook.com/tpcom.hb" target="_blank"><i class="fab fa-facebook"></i></a>
-                <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
-                <a href="#" target="_blank"><i class="fab fa-tiktok"></i></a>
+            
+            <div class="footer-map">
+                <h4><i class="fas fa-map-marked-alt"></i> BẢN ĐỒ CỬA HÀNG</h4>
+                <div class="map-container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d59680.29954790853!2d105.30341240223767!3d20.81712697193579!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31345b465a4e65fb%3A0xaae6040cfabe8fe!2zVHAuIEjDsmEgQsOsbmgsIEjDsmEgQsOsbmgsIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1719071000000!5m2!1svi!2s" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
             </div>
         </div>
+        
         <div class="footer-bottom">
-            <p>&copy; 2025 BUILD PC TRUONG PHAT COMPUTER. All rights reserved.</p>
+            <p>&copy; 2024 TRUONG PHAT COMPUTER. Tất cả các quyền được bảo lưu.</p>
+            <p>Thiết kế và phát triển bởi <span class="highlight">TRUONG PHAT TEAM</span></p>
         </div>
     </footer>
 
     <div id="to-top-button" class="to-top-button">
         <i class="fas fa-arrow-up"></i>
     </div>
+
+    <style>
+        /* Enhanced Footer Styling */
+        footer {
+            background: linear-gradient(135deg, #222831 0%, #393e46 100%);
+            color: #fff;
+            padding: 0;
+            margin-top: 40px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            flex: 3;
+            gap: 30px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            padding-right: 20px;
+        }
+        
+        .footer-logo {
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 20px;
+        }
+        
+        .footer-logo i {
+            color: #0D6EFD;
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(13, 110, 253, 0.3);
+        }
+        
+        .logo-text h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0D6EFD;
+            text-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+        }
+        
+        .logo-text p {
+            margin: 5px 0 0;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .footer-contact {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-contact h4, .footer-social h4, .footer-map h4 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #0D6EFD;
+            position: relative;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .footer-contact h4 i, .footer-social h4 i, .footer-map h4 i {
+            margin-right: 10px;
+        }
+        
+        .contact-item {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .contact-item i {
+            color: #0D6EFD;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .contact-item a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .contact-item a:hover {
+            color: #0D6EFD;
+            text-decoration: underline;
+        }
+        
+        .footer-social {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .social-icons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .social-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 8px;
+            width: 80px;
+            transition: all 0.3s ease;
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .social-icon i {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .social-icon span {
+            font-size: 0.8rem;
+        }
+        
+        .social-icon.facebook {
+            background-color: rgba(66, 103, 178, 0.2);
+        }
+        
+        .social-icon.facebook:hover {
+            background-color: #4267B2;
+        }
+        
+        .social-icon.zalo {
+            background-color: rgba(13, 92, 182, 0.2);
+        }
+        
+        .social-icon.zalo:hover {
+            background-color: #0D5CB6;
+        }
+        
+        .social-icon.tiktok {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        
+        .social-icon.tiktok:hover {
+            background: linear-gradient(45deg, #00f2ea, #ff0050);
+        }
+        
+        .social-icon.youtube {
+            background-color: rgba(255, 0, 0, 0.2);
+        }
+        
+        .social-icon.youtube:hover {
+            background-color: #FF0000;
+        }
+        
+        .footer-map {
+            flex: 1;
+            min-width: 300px;
+            padding-left: 20px;
+        }
+        
+        .map-container {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .footer-bottom {
+            background-color: rgba(0,0,0,0.3);
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 20px;
+        }
+        
+        .footer-bottom p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .highlight {
+            color: #0D6EFD;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .footer-container {
+                flex-direction: column;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                border-right: none;
+                padding-right: 0;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                padding-bottom: 20px;
+            }
+            
+            .footer-map {
+                padding-left: 0;
+                margin-top: 20px;
+            }
+        }
+    </style>
 
     <!-- Script for the interactive PC builder -->
     <script src="./components-data.js"></script>
