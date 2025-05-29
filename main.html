@@ -11,6 +11,36 @@
     <meta http-equiv="Cache-Control" content="max-age=31536000, immutable">
     <meta name="description" content="Tự xây dựng cấu hình PC với công cụ TRUONG PHAT COMPUTER - Chọn linh kiện máy tính phù hợp nhu cầu và ngân sách">
     
+    <!-- Fix trình duyệt bị ẩn footer -->
+    <script>
+        // Fix việc footer bị ẩn khi tải trang
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const footer = document.querySelector('footer');
+                if (footer) {
+                    // Đảm bảo footer hiển thị
+                    footer.style.cssText = 'display: block !important; visibility: visible !important; position: relative !important; z-index: 9999 !important;';
+                    
+                    // Scroll đến footer để kiểm tra việc hiển thị
+                    footer.scrollIntoView({behavior: 'smooth', block: 'end'});
+                    console.log('Footer fix applied on DOMContentLoaded');
+                }
+            }, 2000);
+        });
+        
+        // Chạy lại khi trang đã tải hoàn tất
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const footer = document.querySelector('footer');
+                if (footer) {
+                    // Đảm bảo footer hiển thị
+                    footer.style.cssText = 'display: block !important; visibility: visible !important; position: relative !important; z-index: 9999 !important;';
+                    console.log('Footer fix applied on window load');
+                }
+            }, 1000);
+        });
+    </script>
+    
     <title>BUILD PC TRUONG PHAT COMPUTER - Chọn Linh Kiện Máy Tính</title>
     
     <!-- DNS Prefetch và Preconnect -->
@@ -1187,7 +1217,7 @@
         </div>
     </div>
 
-    <footer>
+    <footer style="display:block !important; visibility:visible !important; opacity:1 !important; position:relative !important; z-index:9999 !important; margin-top:50px !important; clear:both !important; border-top:5px solid #0D6EFD !important; background: linear-gradient(135deg, #222831 0%, #393e46 100%) !important; color:#fff !important;">
         <div class="footer-container">
             <div class="footer-content">
                 <div class="footer-logo">
@@ -1259,15 +1289,62 @@
         <i class="fas fa-arrow-up"></i>
     </div>
 
+    <script>
+        // Script đặc biệt để đảm bảo footer hiển thị
+        (function() {
+            // Thực thi ngay lập tức
+            const footer = document.querySelector('footer');
+            if (footer) {
+                // Đặt style cho footer
+                footer.style.cssText = 'display: block !important; visibility: visible !important; position: relative !important; z-index: 9999 !important; margin-top: 50px !important; clear: both !important;';
+                
+                // Xử lý các phần tử chồng lên footer
+                const overlappingElements = document.querySelectorAll('[style*="position: fixed"][style*="bottom"]');
+                overlappingElements.forEach(function(element) {
+                    if (element.id !== 'to-top-button') {
+                        element.style.bottom = 'auto';
+                        element.style.top = '0';
+                    }
+                });
+                
+                // Đảm bảo footer nằm sau tất cả các phần tử khác
+                document.body.appendChild(footer);
+                
+                // Đẩy các phần tử khác lên trên
+                const siblings = Array.from(document.body.children).filter(el => el !== footer && el.tagName !== 'SCRIPT' && el !== document.getElementById('to-top-button'));
+                siblings.forEach(function(el) {
+                    el.style.marginBottom = '0';
+                });
+                
+                // Tạo khoảng trống trước footer
+                const spacer = document.createElement('div');
+                spacer.style.height = '50px';
+                spacer.style.clear = 'both';
+                document.body.insertBefore(spacer, footer);
+                
+                console.log('Đã áp dụng các sửa lỗi cho footer!');
+            }
+        })();
+    </script>
+
     <style>
         /* Enhanced Footer Styling */
-        footer {
-            background: linear-gradient(135deg, #222831 0%, #393e46 100%);
-            color: #fff;
-            padding: 0;
-            margin-top: 40px;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
-            font-family: 'Roboto', sans-serif;
+        footer, footer.footer, body > footer, html > body > footer {
+            background: linear-gradient(135deg, #222831 0%, #393e46 100%) !important;
+            color: #fff !important;
+            padding: 0 !important;
+            margin-top: 40px !important;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1) !important;
+            font-family: 'Roboto', sans-serif !important;
+            position: relative !important;
+            z-index: 100 !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            overflow: visible !important;
+            width: 100% !important;
+            clear: both !important;
+            border-top: 5px solid #0D6EFD !important;
         }
         
         .footer-container {
@@ -1276,6 +1353,8 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 30px 20px;
+            position: relative !important;
+            z-index: 101 !important;
         }
         
         .footer-content {
@@ -2071,6 +2150,388 @@
                 }
             }
         });
+    })();
+    </script>
+
+
+
+    <!-- Script to automatically show modals on page load -->
+    <script>
+    // Force display of component-detail-modal
+    window.addEventListener('load', function() {
+        // First try the regular ways
+        if (typeof window.showConfigDetailModal === 'function') {
+            console.log('Calling showConfigDetailModal automatically');
+            window.showConfigDetailModal();
+        }
+        
+        // Then force direct visibility for modal
+        setTimeout(function() {
+            const modal = document.getElementById('component-detail-modal');
+            if (modal) {
+                console.log('Forcing component-detail-modal visible');
+                modal.style.cssText = 'display: block !important; visibility: visible !important; opacity: 1 !important;';
+                modal.classList.add('show');
+                modal.classList.add('in');
+                
+                // Make backdrop visible too
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (!backdrop) {
+                    // Create a backdrop if it doesn't exist
+                    const newBackdrop = document.createElement('div');
+                    newBackdrop.className = 'modal-backdrop fade in';
+                    newBackdrop.style.cssText = 'display: block !important; opacity: 0.5 !important;';
+                    document.body.appendChild(newBackdrop);
+                }
+                
+                // Show all tables inside the modal
+                const tables = modal.querySelectorAll('table');
+                tables.forEach(function(table) {
+                    table.style.cssText = 'display: table !important; visibility: visible !important; opacity: 1 !important;';
+                });
+            }
+        }, 1500); // Wait for 1.5 seconds after load
+        
+        // Also try to make the summary modal visible
+        setTimeout(function() {
+            const summaryModal = document.getElementById('summary-modal');
+            if (summaryModal) {
+                console.log('Forcing summary-modal visible');
+                summaryModal.style.cssText = 'display: block !important; visibility: visible !important; opacity: 1 !important;';
+            }
+        }, 2000); // Wait for 2 seconds after load
+    });
+    </script>
+
+    <!-- Modal close functionality -->
+    <script>
+    // Ensure modal close buttons work properly
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all close buttons in modals
+        const closeButtons = document.querySelectorAll('.modal .close, [data-dismiss="modal"]');
+        
+        closeButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                // Find the parent modal
+                let modal = this.closest('.modal');
+                if (modal) {
+                    // Hide the modal
+                    modal.style.display = 'none';
+                    
+                    // Remove modal backdrop if it exists
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.parentNode.removeChild(backdrop);
+                    }
+                    
+                    console.log('Modal closed via close button');
+                }
+            });
+        });
+        
+        // Also allow clicking outside the modal to close it
+        window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(function(modal) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                    
+                    // Remove modal backdrop
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.parentNode.removeChild(backdrop);
+                    }
+                    
+                    console.log('Modal closed via outside click');
+                }
+            });
+        });
+    });
+    </script>
+
+    <script>
+        // Create an event handler for CPU cooler dropdown changes
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle CPU cooler dropdown change
+            const cpuCoolerDropdown = document.getElementById('cpuCooler');
+            if (cpuCoolerDropdown) {
+                cpuCoolerDropdown.addEventListener('change', function() {
+                    console.log('CPU cooler selection changed:', this.value);
+                    
+                    // Get the selected cooler key
+                    const coolerKey = this.value;
+                    
+                    // Find cooler data
+                    if (coolerKey && window.cpuCoolerData && window.cpuCoolerData[coolerKey]) {
+                        const cooler = window.cpuCoolerData[coolerKey];
+                        
+                        // Update the CPU cooler in the configuration table
+                        const imageCell = document.getElementById('cpu-cooler-image');
+                        const nameCell = document.getElementById('cpu-cooler-name');
+                        const priceCell = document.getElementById('cpu-cooler-price');
+                        const totalCell = document.getElementById('cpu-cooler-total');
+                        
+                        if (imageCell) {
+                            const img = document.createElement('img');
+                            img.src = cooler.image || `images/coolers/${coolerKey}.jpg`;
+                            img.alt = cooler.name;
+                            img.style.maxWidth = '100px';
+                            img.style.maxHeight = '60px';
+                            img.onerror = function() {
+                                this.src = 'images/coolers/cr-1000.jpg';
+                            };
+                            
+                            imageCell.innerHTML = '';
+                            imageCell.appendChild(img);
+                        }
+                        
+                        if (nameCell) nameCell.textContent = cooler.name;
+                        
+                        const formatPrice = function(price) {
+                            return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        };
+                        
+                        if (priceCell) priceCell.textContent = formatPrice(cooler.price) + ' VND';
+                        if (totalCell) totalCell.textContent = formatPrice(cooler.price) + ' VND';
+                        
+                        // Make sure the configuration table is visible
+                        const configTable = document.getElementById('config-table');
+                        if (configTable) {
+                            configTable.style.display = 'block';
+                            configTable.style.visibility = 'visible';
+                        }
+                        
+                        console.log('CPU cooler updated in configuration table');
+                    }
+                });
+            }
+        });
+    </script>
+
+    <!-- Update CPU Cooler button (hidden by default) -->
+    <!-- Button removed as requested -->
+    
+    <script>
+        // Button to force CPU cooler update - disabled
+        document.addEventListener('DOMContentLoaded', function() {
+            // Button functionality removed as requested
+        });
+    </script>
+
+    <!-- Script to load component data from js/data directory -->
+    <script>
+        // Load component data from js/data directory
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Loading component data from js/data directory...');
+            
+            // List of components to load
+            const components = [
+                'cpu',
+                'mainboard',
+                'vga',
+                'ram',
+                'ssd',
+                'psu',
+                'case',
+                'cpuCooler',
+                'hdd',
+                'monitor'
+            ];
+            
+            // Load each component's data
+            components.forEach(component => {
+                fetch(`js/data/${component}.js`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Failed to fetch ${component} data: ${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        try {
+                            // Extract the data object from the module
+                            const dataText = data.replace(`export const ${component}Data =`, `window.${component}Data =`);
+                            
+                            // Create a script element to evaluate the code
+                            const script = document.createElement('script');
+                            script.textContent = dataText;
+                            document.head.appendChild(script);
+                            
+                            if (window[`${component}Data`]) {
+                                console.log(`✅ ${component} data loaded from js/data/${component}.js:`, 
+                                    Object.keys(window[`${component}Data`]).length, 'items');
+                            } else {
+                                console.warn(`⚠️ ${component} data not properly loaded`);
+                            }
+                        } catch (error) {
+                            console.error(`Error processing ${component} data:`, error);
+                        }
+                    })
+                    .catch(error => {
+                        console.warn(`Error loading ${component} data:`, error);
+                    });
+            });
+        });
+    </script>
+
+    <!-- Script to update real-time date and time display in Vietnam timezone (GMT+7) -->
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Convert to Vietnam timezone (GMT+7)
+            const vietnamTime = new Date(now.getTime() + (7 * 60 * 60 * 1000 + now.getTimezoneOffset() * 60 * 1000));
+            
+            // Format the date and time
+            const options = { 
+                weekday: 'long',
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                hour12: false,
+                timeZone: 'Asia/Ho_Chi_Minh'
+            };
+            
+            try {
+                const formattedDateTime = vietnamTime.toLocaleString('vi-VN', options);
+                document.getElementById('datetime-value').textContent = formattedDateTime;
+            } catch (error) {
+                // Fallback if Intl is not supported
+                const pad = num => String(num).padStart(2, '0');
+                const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+                const months = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 
+                                'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+                
+                const day = days[vietnamTime.getDay()];
+                const date = vietnamTime.getDate();
+                const month = months[vietnamTime.getMonth()];
+                const year = vietnamTime.getFullYear();
+                const hours = pad(vietnamTime.getHours());
+                const minutes = pad(vietnamTime.getMinutes());
+                const seconds = pad(vietnamTime.getSeconds());
+                
+                const fallbackFormat = `${day}, ${date} ${month} ${year}, ${hours}:${minutes}:${seconds}`;
+                document.getElementById('datetime-value').textContent = fallbackFormat;
+            }
+        }
+        
+        // Update the date and time immediately and then every second
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDateTime(); // Initial update
+            setInterval(updateDateTime, 1000); // Update every second
+        });
+    </script>
+
+    <!-- Script to ensure footer visibility -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ensure the footer is visible
+            const footer = document.querySelector('footer');
+            if (footer) {
+                console.log('Ensuring footer visibility...');
+                
+                // Force footer to be visible
+                footer.style.display = 'block';
+                footer.style.visibility = 'visible';
+                footer.style.position = 'relative';
+                footer.style.zIndex = '999';
+                
+                // Hide any potential overlapping elements
+                const debugHelper = document.getElementById('debug-helper');
+                if (debugHelper) {
+                    debugHelper.style.bottom = 'auto';
+                    debugHelper.style.top = '0';
+                }
+                
+                // Force repaint
+                setTimeout(function() {
+                    footer.style.opacity = '0.99';
+                    setTimeout(function() {
+                        footer.style.opacity = '1';
+                        
+                        // Scroll to footer to ensure it's visible
+                        footer.scrollIntoView({behavior: 'smooth', block: 'end'});
+                        console.log('Footer should now be visible!');
+                    }, 100);
+                }, 500);
+            }
+        });
+        
+        // Also run on window load
+        window.addEventListener('load', function() {
+            const footer = document.querySelector('footer');
+            if (footer) {
+                footer.style.display = 'block';
+                footer.style.visibility = 'visible';
+                console.log('Ensuring footer visibility on window load');
+                
+                // Remove any elements that might be covering the footer
+                document.querySelectorAll('[style*="position: fixed"][style*="bottom: 0"]').forEach(function(el) {
+                    if (el.id !== 'to-top-button') {
+                        el.style.bottom = 'auto';
+                        el.style.top = '0';
+                        console.log('Repositioned fixed element:', el.id || el.className);
+                    }
+                });
+            }
+        });
+    </script>
+
+    <!-- This script runs immediately to remove unwanted elements -->
+    <script>
+    // This script runs immediately to remove unwanted elements
+    (function() {
+        // Function to remove unwanted elements
+        function removeUnwantedElements() {
+            // List of IDs to remove
+            const elementsToRemove = [
+                'selected-components',
+                'compatibility-alert',
+                'total-price',
+                'show-all-config-tables',
+                'floating-config-btn',
+                'show-full-ui-btn',
+                'show-selected-components-btn'
+            ];
+            
+            // Remove elements by ID
+            elementsToRemove.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    console.log('Removing element:', id);
+                    element.remove();
+                }
+            });
+            
+            // Remove elements by selector
+            const selectorsToRemove = [
+                'div.tooltip-container', 
+                'div[style*="position: fixed"]',
+                'div[style*="text-align: center; margin: 20px 0px"] button#show-selected-components-btn'
+            ];
+            
+            selectorsToRemove.forEach(selector => {
+                document.querySelectorAll(selector).forEach(element => {
+                    console.log('Removing element by selector:', selector);
+                    element.remove();
+                });
+            });
+        }
+        
+        // Run immediately
+        removeUnwantedElements();
+        
+        // Also run after DOM content loaded
+        document.addEventListener('DOMContentLoaded', removeUnwantedElements);
+        
+        // Also run after window load
+        window.addEventListener('load', removeUnwantedElements);
+        
+        // Run periodically to catch any dynamically added elements
+        setInterval(removeUnwantedElements, 1000);
     })();
     </script>
 
