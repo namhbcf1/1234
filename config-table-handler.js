@@ -18,45 +18,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Function to create and add a button to show the config table
 function createShowConfigButton() {
-    const button = document.createElement('button');
-    button.id = 'show-config-table-button';
-    button.className = 'action-button primary-btn';
-    button.innerHTML = '<i class="fas fa-table"></i> Hiển Thị Bảng Cấu Hình';
-    button.style.marginTop = '20px';
-    button.style.padding = '10px 20px';
-    button.style.backgroundColor = '#e53935';
-    button.style.color = 'white';
-    button.style.border = 'none';
-    button.style.borderRadius = '4px';
-    button.style.cursor = 'pointer';
-    button.style.fontWeight = 'bold';
-    
-    // Add event listener
-    button.addEventListener('click', function() {
-        updateAndShowConfigTable();
-    });
-    
-    // Add the button to the page
-    const componentSelection = document.getElementById('component-selection');
-    if (componentSelection) {
-        const buttonContainer = document.createElement('div');
-        buttonContainer.style.textAlign = 'center';
-        buttonContainer.style.margin = '20px 0';
-        buttonContainer.appendChild(button);
-        
-        // Add after component selection section
-        componentSelection.parentNode.insertBefore(buttonContainer, componentSelection.nextSibling);
-    } else {
-        // If component selection section not found, add to body
-        const container = document.querySelector('.container');
-        if (container) {
-            const buttonContainer = document.createElement('div');
-            buttonContainer.style.textAlign = 'center';
-            buttonContainer.style.margin = '20px 0';
-            buttonContainer.appendChild(button);
-            container.appendChild(buttonContainer);
-        }
-    }
+    // Button creation has been disabled as requested
+    console.log('Show config table button has been disabled');
 }
 
 // Function to setup event listeners for component dropdowns

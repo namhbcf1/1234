@@ -1967,102 +1967,12 @@
     </script>
 
     <!-- Update CPU Cooler button (hidden by default) -->
-    <button id="force-update-cpu-cooler" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; background: #ff5722; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
-        Cập Nhật Tản Nhiệt
-    </button>
+    <!-- Button removed as requested -->
     
     <script>
-        // Button to force CPU cooler update
+        // Button to force CPU cooler update - disabled
         document.addEventListener('DOMContentLoaded', function() {
-            const forceUpdateButton = document.getElementById('force-update-cpu-cooler');
-            if (forceUpdateButton) {
-                forceUpdateButton.addEventListener('click', function() {
-                    console.log('Force update CPU cooler button clicked');
-                    
-                    // Ensure CPU cooler row exists
-                    if (window.ensureCpuCoolerRow) {
-                        window.ensureCpuCoolerRow();
-                    }
-                    
-                    // Get the selected cooler value
-                    const cpuCoolerDropdown = document.getElementById('cpuCooler');
-                    if (cpuCoolerDropdown && cpuCoolerDropdown.value) {
-                        const coolerKey = cpuCoolerDropdown.value;
-                        
-                        if (window.cpuCoolerData && window.cpuCoolerData[coolerKey]) {
-                            const cooler = window.cpuCoolerData[coolerKey];
-                            console.log('Updating CPU cooler:', cooler.name);
-                            
-                            // Update the image
-                            const imageCell = document.getElementById('cpu-cooler-image');
-                            if (imageCell) {
-                                const img = document.createElement('img');
-                                img.src = cooler.image;
-                                img.alt = cooler.name;
-                                img.style.maxWidth = '100px';
-                                img.style.maxHeight = '60px';
-                                
-                                // Handle image loading error
-                                img.onerror = function() {
-                                    this.src = 'images/coolers/cr-1000.jpg';
-                                };
-                                
-                                imageCell.innerHTML = '';
-                                imageCell.appendChild(img);
-                                
-                                console.log('CPU cooler image updated');
-                            }
-                            
-                            // Update the name
-                            const nameCell = document.getElementById('cpu-cooler-name');
-                            if (nameCell) {
-                                nameCell.textContent = cooler.name;
-                                console.log('CPU cooler name updated');
-                            }
-                            
-                            // Update the price
-                            const priceCell = document.getElementById('cpu-cooler-price');
-                            if (priceCell) {
-                                const formatPrice = function(price) {
-                                    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                };
-                                
-                                priceCell.textContent = formatPrice(cooler.price) + ' VND';
-                                console.log('CPU cooler price updated');
-                            }
-                            
-                            // Update the total
-                            const totalCell = document.getElementById('cpu-cooler-total');
-                            if (totalCell) {
-                                const formatPrice = function(price) {
-                                    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                };
-                                
-                                totalCell.textContent = formatPrice(cooler.price) + ' VND';
-                                console.log('CPU cooler total updated');
-                            }
-                            
-                            // Recalculate total price
-                            if (typeof window.calculateTotalPrice === 'function') {
-                                window.calculateTotalPrice();
-                                console.log('Total price recalculated');
-                            }
-                            
-                            // Make sure the configuration table is visible
-                            const configTable = document.getElementById('config-table');
-                            if (configTable) {
-                                configTable.style.display = 'block';
-                                configTable.style.visibility = 'visible';
-                                console.log('Configuration table made visible');
-                            }
-                        } else {
-                            console.warn('CPU cooler data not found for:', coolerKey);
-                        }
-                    } else {
-                        console.warn('CPU cooler dropdown not found or no value selected');
-                    }
-                });
-            }
+            // Button functionality removed as requested
         });
     </script>
 
@@ -2588,10 +2498,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- Update the button to match the design in screenshots - red background with white text -->
 <div style="text-align: center; margin: 20px auto;">
-    <button id="show-detail-config-btn" style="background-color: #e53935; color: white; border: none; padding: 12px 20px; font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.3); display: inline-flex; align-items: center; justify-content: center;">
-        <i class="fas fa-table" style="margin-right: 8px;"></i> HIỆN BẢNG CẤU HÌNH CHI TIẾT
-    </button>
-</div>
 
 <!-- FLOATING BUTTON REMOVED AS REQUESTED -->
 

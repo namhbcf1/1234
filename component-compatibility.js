@@ -226,55 +226,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Add a button to update the configuration table
 document.addEventListener('DOMContentLoaded', function() {
-    // Create the button
-    const updateButton = document.createElement('button');
-    updateButton.id = 'update-config-button';
-    updateButton.className = 'action-button primary-btn';
-    updateButton.innerHTML = '<i class="fas fa-sync-alt"></i> Cập Nhật Bảng Cấu Hình';
-    updateButton.style.marginTop = '20px';
-    updateButton.style.marginBottom = '20px';
-    updateButton.style.padding = '10px 20px';
-    updateButton.style.backgroundColor = '#4CAF50';
-    updateButton.style.color = 'white';
-    updateButton.style.border = 'none';
-    updateButton.style.borderRadius = '4px';
-    updateButton.style.cursor = 'pointer';
-    
-    // Add event listener
-    updateButton.addEventListener('click', function() {
-        if (typeof window.forceShowConfigTable === 'function') {
-            window.forceShowConfigTable();
-        } else if (typeof window.updateComponentTable === 'function') {
-            window.updateComponentTable();
-            
-            // Show the config table
-            const configTable = document.getElementById('config-table');
-            if (configTable) {
-                configTable.style.display = 'block';
-                configTable.scrollIntoView({ behavior: 'smooth' });
-            }
-        } else {
-            console.error('Unable to update config table - functions not found');
-        }
-    });
-    
-    // Find a suitable place to insert the button
-    const componentSelection = document.getElementById('component-selection');
-    if (componentSelection) {
-        const container = componentSelection.querySelector('.container');
-        if (container) {
-            // Create a div to center the button
-            const buttonDiv = document.createElement('div');
-            buttonDiv.style.textAlign = 'center';
-            buttonDiv.appendChild(updateButton);
-            
-            // Insert after the components grid
-            const componentsGrid = container.querySelector('.components-grid');
-            if (componentsGrid) {
-                componentsGrid.after(buttonDiv);
-            } else {
-                container.appendChild(buttonDiv);
-            }
-        }
-    }
+    console.log('Update config button has been disabled');
 }); 
