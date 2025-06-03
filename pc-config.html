@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cấu Hình Máy Tính</title>
+    <link rel="stylesheet" href="warranty-styles.css">
+    <style>
+        body {
+            background-color: #121212;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .config-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .performance-rating {
+            background-color: #222;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            color: #4CAF50;
+        }
+        .recommendation {
+            background-color: #222;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            color: #FFC107;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .action-button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .save-button {
+            background-color: #6200EA;
+        }
+        .contact-button {
+            background-color: #2196F3;
+        }
+        .export-button {
+            background-color: #4CAF50;
+        }
+        .form-container {
+            margin-top: 20px;
+            background-color: #1E1E1E;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            flex: 1;
+            min-width: 300px;
+            margin-right: 15px;
+            margin-bottom: 15px;
+        }
+        .power-info {
+            background-color: #1a3c70;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="config-container">
+        <div class="warranty-table-title">
+            <span>TRƯỜNG PHÁT COMPUTER XIN GỬI BẢNG CHI TIẾT CẤU HÌNH MÁY TÍNH</span>
+        </div>
+        
+        <div class="warranty-table-time">
+            lúc 19:25:29 Thứ Ba, 3 tháng 6, 2025
+        </div>
+        
+        <table class="warranty-table" id="config-table">
+            <thead>
+                <tr>
+                    <th class="stt-cell">STT</th>
+                    <th class="image-cell">HÌNH ẢNH</th>
+                    <th>TÊN, MÃ, LOẠI LINH KIỆN</th>
+                    <th>ĐVT</th>
+                    <th>SỐ LƯỢNG</th>
+                    <th>ĐƠN GIÁ</th>
+                    <th>THÀNH TIỀN</th>
+                    <th>BẢO HÀNH</th>
+                    <th>GHI CHÚ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="stt-cell">1</td>
+                    <td class="image-cell"><img src="https://product.hstatic.net/1000026716/product/amd-ryzen-5-5600x_7a831c53d36a4ca48322942a6a01973c.jpg" alt="AMD Ryzen 5 5600X"></td>
+                    <td>AMD Ryzen 5 5600X</td>
+                    <td>Chiếc</td>
+                    <td>1</td>
+                    <td class="price-cell">2.500.000 VND</td>
+                    <td class="price-cell">2.500.000 VND</td>
+                    <td class="warranty-cell">36T</td>
+                    <td class="note-cell"><span class="condition-new">NEW</span></td>
+                </tr>
+                <tr>
+                    <td class="stt-cell">2</td>
+                    <td class="image-cell"><img src="https://product.hstatic.net/1000026716/product/asrock-b450m-hdv_1d66f5e3b527404aaf496a8d0b19600a.jpg" alt="ASRock B450M-HDV/M.2"></td>
+                    <td>ASRock B450M-HDV/M.2 (AM4)</td>
+                    <td>Chiếc</td>
+                    <td>1</td>
+                    <td class="price-cell">1.390.000 VND</td>
+                    <td class="price-cell">1.390.000 VND</td>
+                    <td class="warranty-cell">36T</td>
+                    <td class="note-cell"><span class="condition-new">NEW</span></td>
+                </tr>
+                <tr>
+                    <td class="stt-cell">3</td>
+                    <td class="image-cell"><img src="https://product.hstatic.net/1000026716/product/corsair-vengeance-lpx-16gb_80d87ad8f70d4d45a0af1ee9dd5c04f0.jpg" alt="RAM Corsair"></td>
+                    <td>RAM Corsair Vengeance LPX 16GB DDR4 (Bus 3200)</td>
+                    <td>Chiếc</td>
+                    <td>1</td>
+                    <td class="price-cell">700.000 VND</td>
+                    <td class="price-cell">700.000 VND</td>
+                    <td class="warranty-cell">36T</td>
+                    <td class="note-cell"><span class="condition-new">NEW</span></td>
+                </tr>
+                <tr>
+                    <td class="stt-cell">4</td>
+                    <td class="image-cell"><img src="https://product.hstatic.net/1000026716/product/geforce-rtx-2060_e7842a687f514d2ab5d92c19cf5b1e19.jpg" alt="RTX 2060"></td>
+                    <td>RTX 2060 6GB GDDR6 /GIGA/MSI/ASUS GAMING (Cũ)</td>
+                    <td>Chiếc</td>
+                    <td>1</td>
+                    <td class="price-cell">3.400.000 VND</td>
+                    <td class="price-cell">3.400.000 VND</td>
+                    <td class="warranty-cell">3T</td>
+                    <td class="note-cell"><span class="condition-used">2ND</span></td>
+                </tr>
+                <tr>
+                    <td class="stt-cell">5</td>
+                    <td class="image-cell"><img src="https://product.hstatic.net/1000026716/product/sstc-oceanic-nvme-m2_9a70d9a9baff4d809e0af1cc09e77f1c.jpg" alt="SSD SSTC"></td>
+                    <td>SSD SSTC Oceanic Whitetip NVMe M.2 MAX-III 256GB</td>
+                    <td>Chiếc</td>
+                    <td>1</td>
+                    <td class="price-cell">600.000 VND</td>
+                    <td class="price-cell">600.000 VND</td>
+                    <td class="warranty-cell">36T</td>
+                    <td class="note-cell"><span class="condition-new">NEW</span></td>
+                </tr>
+                <tr>
+                    <td class="stt-cell">6</td>
+                    <td class="image-cell"><img src="https://product.hstatic.net/1000026716/product/jonsbo-cr1000-rgb_f7d56d5e2dce45a3822b0ab280c2a108.jpg" alt="Jonsbo CR-1000"></td>
+                    <td>Jonsbo CR-1000 RGB</td>
+                    <td>Chiếc</td>
+                    <td>1</td>
+                    <td class="price-cell">300.000 VND</td>
+                    <td class="price-cell">300.000 VND</td>
+                    <td class="warranty-cell">12T</td>
+                    <td class="note-cell"><span class="condition-new">NEW</span></td>
+                </tr>
+                <tr>
+                    <td class="stt-cell">7</td>
+                    <td class="image-cell"><img src="https://product.hstatic.net/1000026716/product/vsp-elite-dt660_a64df2b6dd454be49ea94f1a89ea7c1c.jpg" alt="Nguồn VSP"></td>
+                    <td>Nguồn VSP Elite DT660 650W</td>
+                    <td>Chiếc</td>
+                    <td>1</td>
+                    <td class="price-cell">700.000 VND</td>
+                    <td class="price-cell">700.000 VND</td>
+                    <td class="warranty-cell">36T</td>
+                    <td class="note-cell"><span class="condition-new">NEW</span></td>
+                </tr>
+                <tr>
+                    <td class="stt-cell">8</td>
+                    <td class="image-cell"><img src="https://product.hstatic.net/1000026716/product/vo-case-2-mat-kinh_23b4ef23a19c4e67b42f2b3a85a0995e.jpg" alt="Vỏ Case"></td>
+                    <td>Vỏ Case 2 Mặt Kính Cường Lực</td>
+                    <td>Chiếc</td>
+                    <td>1</td>
+                    <td class="price-cell">300.000 VND</td>
+                    <td class="price-cell">300.000 VND</td>
+                    <td class="warranty-cell">12T</td>
+                    <td class="note-cell"><span class="condition-new">NEW</span></td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="6" style="text-align: right;">Tổng cộng:</td>
+                    <td class="price-cell">9.890.000 VND</td>
+                    <td colspan="2"></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="performance-rating">
+            Đánh giá hiệu năng: Hệ thống của bạn đạt mức Cơ bản với điểm tổng hợp 47/100.
+        </div>
+        
+        <div class="recommendation">
+            Đề xuất nâng cấp: Bạn nên cân nhắc nâng cấp card đồ họa hoặc nâng cấp CPU, thêm RAM, nâng cấp SSD nhanh hơn để có trải nghiệm tốt hơn.
+        </div>
+        
+        <div class="form-container">
+            <div class="power-info">
+                Công suất nguồn: 650W
+                <input type="checkbox" checked> Nguồn đủ công suất cho hệ thống
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cpu">CPU</label>
+                    <select id="cpu" class="form-control">
+                        <option selected>AMD Ryzen 5 5600X - 2.500.000 VND</option>
+                        <option>AMD Ryzen 5 3600 - 2.000.000 VND</option>
+                        <option>Intel Core i5-10400F - 2.200.000 VND</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mainboard">Mainboard</label>
+                    <select id="mainboard" class="form-control">
+                        <option selected>ASRock B450M-HDV/M.2 (AM4) - 1.390.000 VND</option>
+                        <option>Gigabyte B450M DS3H - 1.500.000 VND</option>
+                        <option>MSI B450M PRO-VDH MAX - 1.600.000 VND</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="vga">Card Đồ Họa (VGA)</label>
+                    <select id="vga" class="form-control">
+                        <option selected>RTX 2060 6GB GDDR6 /GIGA/MSI/ASUS GAMING (Cũ) - 3.400.000 VND</option>
+                        <option>GTX 1660 Super 6GB - 2.800.000 VND</option>
+                        <option>RX 5600 XT 6GB - 3.200.000 VND</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="ram">RAM</label>
+                    <select id="ram" class="form-control">
+                        <option selected>RAM Corsair Vengeance LPX 16GB DDR4 (Bus 3200) - 700.000 VND</option>
+                        <option>RAM Kingston Fury 16GB DDR4 3200MHz - 750.000 VND</option>
+                        <option>RAM G.Skill Ripjaws V 16GB DDR4 3200MHz - 730.000 VND</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="ssd">Ổ Cứng SSD</label>
+                    <select id="ssd" class="form-control">
+                        <option selected>SSD SSTC Oceanic Whitetip NVMe M.2 MAX-III 256GB - 600.000 VND</option>
+                        <option>SSD Kingston A2000 500GB NVMe - 900.000 VND</option>
+                        <option>SSD WD Blue SN550 500GB NVMe - 950.000 VND</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="psu">Nguồn (PSU)</label>
+                    <select id="psu" class="form-control">
+                        <option selected>Nguồn VSP Elite DT660 650W - 700.000 VND</option>
+                        <option>Nguồn Cooler Master MWE 650W Bronze - 900.000 VND</option>
+                        <option>Nguồn Corsair CV650 650W - 950.000 VND</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="case">Vỏ Case</label>
+                    <select id="case" class="form-control">
+                        <option selected>Vỏ Case 2 Mặt Kính Cường Lực - 300.000 VND</option>
+                        <option>Vỏ Case Xigmatek Aero - 450.000 VND</option>
+                        <option>Vỏ Case Cooler Master MasterBox Q300L - 500.000 VND</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cpuCooler">Tản Nhiệt CPU</label>
+                    <select id="cpuCooler" class="form-control">
+                        <option selected>Jonsbo CR-1000 RGB - 300.000 VND</option>
+                        <option>Deepcool GAMMAXX 400 - 350.000 VND</option>
+                        <option>Cooler Master Hyper 212 RGB - 450.000 VND</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="action-button save-button" id="save-config">Lưu cấu hình Excel</button>
+            <button class="action-button contact-button" id="contact-shop">Liên hệ với shop</button>
+            <button class="action-button export-button" id="export-image">Chụp lại cấu hình</button>
+        </div>
+    </div>
+
+    <script src="dropdown-fix.js"></script>
+    <script src="warranty-display.js"></script>
+</body>
+</html> 

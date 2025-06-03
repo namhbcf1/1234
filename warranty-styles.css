@@ -135,21 +135,40 @@
     display: none !important;
 }
 
-/* Đảm bảo dropdown có thể mở ra và sử dụng được */
-select {
+/* FIX DROPDOWN KHÔNG MỞ ĐƯỢC - CẢI TIẾN MỚI */
+select,
+select.form-control,
+select#mainboard, 
+select#ram,
+select#cpu,
+select#vga,
+select#ssd,
+select#psu,
+select#case,
+select#cpuCooler,
+select#hdd,
+select#monitor {
+    position: relative !important;
     display: inline-block !important;
     visibility: visible !important;
     opacity: 1 !important;
     pointer-events: auto !important;
-    z-index: 9999 !important;
-    position: relative !important;
+    z-index: 99999 !important;
+    cursor: pointer !important;
+    background: #fff !important;
+    color: #000 !important;
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+    padding: 8px !important;
+    width: 100% !important;
 }
 
-/* Fix dropdown options visibility */
+/* Hiển thị options */
 select option {
     display: block !important;
     color: #000 !important;
     background-color: #fff !important;
+    padding: 5px !important;
 }
 
 /* Style cho các dropdown */
@@ -169,23 +188,7 @@ select option {
     color: #333;
 }
 
-/* Style cho dropdown */
-.form-control {
-    display: block !important;
-    width: 100% !important;
-    padding: 8px 12px !important;
-    font-size: 14px !important;
-    line-height: 1.5 !important;
-    color: #333 !important;
-    background-color: #fff !important;
-    border: 1px solid #ced4da !important;
-    border-radius: 4px !important;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
-    pointer-events: auto !important;
-    z-index: 9999 !important;
-}
-
-/* Highlight dropdown khi focus */
+/* Đảm bảo dropdown focus hoạt động */
 .form-control:focus {
     border-color: #80bdff !important;
     outline: 0 !important;
@@ -215,4 +218,37 @@ select option {
 
 #show-warranty-button:hover {
     background-color: #003d82;
+}
+
+/* Xóa các style chặn dropdown */
+[style*="pointer-events: none"] {
+    pointer-events: auto !important;
+}
+
+[style*="visibility: hidden"],
+[style*="display: none"] {
+    visibility: visible !important;
+    display: block !important;
+}
+
+/* Xóa các overlay chặn click */
+.overlay, 
+.blocker, 
+.dropdown-blocker {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Vô hiệu hóa JS block cho mainboard và RAM */
+html body .mainboard-wrapper,
+html body .ram-wrapper,
+html body .mainboard-group,
+html body .ram-group {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 999999 !important;
 } 
