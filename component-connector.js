@@ -770,15 +770,27 @@ window.showConfigDetailModal = showConfigDetailModal;
             const originalAutoSelectConfig = window.autoSelectConfig;
             
             // Override hàm autoSelectConfig
-            window.autoSelectConfig = function(gameId, budget, cpuType) {
+            window.autoSelectConfig = async function(gameId, budget, cpuType) {
                 console.log('Enhanced autoSelectConfig intercepted:', gameId, budget, cpuType);
                 
                 // Đảm bảo ID được ánh xạ tới đúng ID trong dropdown
-                const result = originalAutoSelectConfig(gameId, budget, cpuType);
+                let result;
+                try {
+                    result = await originalAutoSelectConfig(gameId, budget, cpuType);
+                } catch (error) {
+                    console.error('Error in original autoSelectConfig:', error);
+                    result = null;
+                }
                 
-                // Thêm xử lý sau khi đã chọn cấu hình
+                // Luôn đảm bảo kiểm tra tương thích sau khi cập nhật dropdown
                 setTimeout(() => {
                     updateDropdownsWithAvailableValues();
+                    
+                    // Đảm bảo ensureCompatibleComponents được gọi
+                    if (typeof window.ensureCompatibleComponents === 'function') {
+                        window.ensureCompatibleComponents();
+                        console.log('✅ Compatibility check performed after auto-selection');
+                    }
                 }, 500);
                 
                 return result;
