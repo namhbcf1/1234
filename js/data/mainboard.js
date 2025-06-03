@@ -131,7 +131,7 @@ export const mainboardData = {
     },
     "B360": {
         "name": "Gigabyte B360M D3H",
-        "price": 1500000,
+        "price": 8000000,
         "image": "images/gigabyte-b360m-d3h.jpg",
         "brand": "Gigabyte (Cũ)",
         "warranty": "1 tháng",
@@ -145,7 +145,7 @@ export const mainboardData = {
     },
     "B365": {
         "name": "ASUS Prime B365M-A",
-        "price": 11000000,
+        "price": 8000000,
         "image": "images/asus-prime-b365m-a.jpg",
         "brand": "ASUS (Cũ)",
         "warranty": "1 tháng",
@@ -159,7 +159,7 @@ export const mainboardData = {
     },
     "B460": {
         "name": "Gigabyte B460M DS3H AC",
-        "price": 1900000,
+        "price": 1300000,
         "image": "images/gigabyte-b460m-ds3h-ac.jpg",
         "brand": "Gigabyte (Cũ)",
         "warranty": "1 tháng",
@@ -187,7 +187,7 @@ export const mainboardData = {
     },
     "HNZ-B760": {
         "name": "Main Huananzhi B760M-DDR4 (Màu đen)",
-        "price": 1800000,
+        "price": 1600000,
         "image": "images/main-huananzhi-b760m-DDR4-den.jpg",
         "brand": "Huananzhi",
         "warranty": "36 tháng",
@@ -202,7 +202,7 @@ export const mainboardData = {
     },
     "MSI-B760": {
         "name": "Mainboard MSI PRO B760M-E DDR4",
-        "price": 2450000,
+        "price": 2150000,
         "image": "images/mainboard-msi-pro-b760m-e-ddr4.jpg",
         "brand": "MSI",
         "warranty": "36 tháng",
@@ -217,7 +217,7 @@ export const mainboardData = {
     },
     "B760M-E": {
         "name": "Bo mạch chủ ASUS TUF GAMING B760M-E D4",
-        "price": 3100000, // Giá không có sẵn
+        "price": 2900000, // Giá không có sẵn
         "image": "images/asus-tuf-gaming-b760m-e-d4.jpg",
         "brand": "ASUS",
         "warranty": "36 tháng",
@@ -233,7 +233,7 @@ export const mainboardData = {
 
     "ASUS-B760": {
         "name": "Mainboard Asus PRIME B760M-K DDR4",
-        "price": 2490000,
+        "price": 2200000,
         "image": "images/mainboard-asus-prime-b760m-k-ddr4.jpg",
         "brand": "Asus",
         "warranty": "36 tháng",
@@ -245,20 +245,6 @@ export const mainboardData = {
         "pcieVersion": "4.0",
         "formFactor": "Micro-ATX",
         "score": 7
-    },
-    "GIGA-B450": {
-        "name": "Gigabyte B450M DS3H V2 (AM4)",
-        "price": 1400000,
-        "image": "images/gigabyte-b450m-ds3h-v2.jpg",
-        "brand": "Gigabyte",
-        "warranty": "36 tháng",
-        "sockets": ["AM4"], // ĐÃ SỬA: socket -> sockets, giá trị là MẢNG
-        "memoryType": "DDR4",
-        "condition": "NEW",
-        "nvmeSlots": 1,
-        "pcieVersion": "3.0",
-        "formFactor": "Micro-ATX",
-        "score": 5
     },
     "JGINYUE-B450": {
         "name": "JGinyue B450M-TI (AM4)",
@@ -318,35 +304,20 @@ export const mainboardData = {
         "formFactor": "Micro-ATX",
         "score": 8
     },
-    "JGINYUE-B650": {
-        "name": "DDR5 - MAINBOARD JGINYUE B650M-D (AM5)",
-        "price": 1900000,
-        "image": "images/jginyue-b650m-d.jpg",
-        "brand": "JGINYUE",
+    "MSI-B650M-E": {
+        "name": "DDR5 - MAINBOARD MSI B650M-E (AM5)",
+        "price": 2600000,
+        "image": "images/msi-pro-b650m-p.jpg",
+        "brand": "MSI",
         "warranty": "36 tháng",
         "sockets": ["AM5"], // ĐÃ SỬA: socket -> sockets, giá trị là MẢNG
         "memoryType": "DDR5",
         "condition": "NEW",
-        "buss": "6400",
+        "buss": "5600",
         "nvmeSlots": 1,
         "pcieVersion": "4.0",
         "formFactor": "Micro-ATX",
-        "score": 6
-    },
-    "JGINYUE-B650-PRO": {
-        "name": "DDR5 - MAINBOARD JGINYUE B650M PRO (AM5)",
-        "price": 2100000,
-        "image": "images/jginyue-b650m-pro.jpg",
-        "brand": "JGinyue",
-        "warranty": "36 tháng",
-        "sockets": ["AM5"], // ĐÃ SỬA: socket -> sockets, giá trị là MẢNG
-        "memoryType": "DDR5",
-        "condition": "NEW",
-        "buss": "5200",
-        "nvmeSlots": 1,
-        "pcieVersion": "4.0",
-        "formFactor": "Micro-ATX",
-        "score": 6
+        "score": 7
     },
     "ASROCK-B650M-HDV-M2": {
         "name": "DDR5 - MAINBOARD ASRock B650M-HDV/M.2 (AM5)",
@@ -395,7 +366,7 @@ export const mainboardData = {
     },
     "GIGABYTE-B650M-GAMING-PLUS-WIFI": {
         "name": "DDR5 - MAINBOARD GIGABYTE B650M GAMING PLUS WIFI (AM5)",
-        "price": 3290000,
+        "price": 2800000,
         "image": "images/gigabyte-b650m-gaming-plus-wifi.jpg",
         "brand": "Gigabyte",
         "warranty": "36 tháng",
@@ -413,21 +384,6 @@ export const mainboardData = {
         "price": 3790000,
         "image": "images/asus-tuf-gaming-b650m-e-wifi.jpg",
         "brand": "ASUS",
-        "warranty": "36 tháng",
-        "sockets": ["AM5"], // ĐÃ SỬA: socket -> sockets, giá trị là MẢNG
-        "memoryType": "DDR5",
-        "condition": "NEW",
-        "buss": "5600",
-        "nvmeSlots": 1,
-        "pcieVersion": "4.0",
-        "formFactor": "Micro-ATX",
-        "score": 8
-    },
-    "MSI-B650M-GAMING-PLUS-WIFI": {
-        "name": "DDR5 - MAINBOARD MSI B650M GAMING PLUS WIFI (AM5)",
-        "price": 3890000,
-        "image": "images/msi-b650m-gaming-plus-wifi.jpg",
-        "brand": "MSI",
         "warranty": "36 tháng",
         "sockets": ["AM5"], // ĐÃ SỬA: socket -> sockets, giá trị là MẢNG
         "memoryType": "DDR5",

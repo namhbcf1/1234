@@ -32,7 +32,7 @@ export const cpuData = {
     },
     "10100f": {
         name: "Intel Core i3-10100f",
-        price: 1100000,
+        price: 1000000,
         image: "images/intel-core-i3-10100f.jpg",
         brand: "Intel",
         warranty: "12 tháng",
@@ -152,7 +152,7 @@ export const cpuData = {
     },
     "10400f": {
         name: "Intel Core i5-10400f",
-        price: 1600000,
+        price: 1500000,
         image: "images/intel-core-i5-10400f.jpg",
         brand: "Intel",
         warranty: "12 tháng",
@@ -167,7 +167,7 @@ export const cpuData = {
     },
     "11400f": {
         name: "Intel Core i5-11400f",
-        price: 1700000,
+        price: 1500000,
         image: "images/intel-core-i5-11400f.jpg",
         brand: "Intel",
         warranty: "12 tháng",
@@ -302,7 +302,7 @@ export const cpuData = {
     },
     "5600": {
         name: "AMD Ryzen 5 5600",
-        price: 2400000,
+        price: 2300000,
         image: "images/amd-ryzen-5-5600.jpg",
         brand: "AMD",
         warranty: "36 tháng",
@@ -317,7 +317,7 @@ export const cpuData = {
     },
     "5600x": {
         name: "AMD Ryzen 5 5600X",
-        price: 2800000,
+        price: 2500000,
         image: "images/amd-ryzen-5-5600.jpg",
         brand: "AMD",
         warranty: "36 tháng",
@@ -347,7 +347,7 @@ export const cpuData = {
     },
     "7600x": {
         name: "AMD Ryzen 5 7600X",
-        price: 4800000,
+        price: 4600000,
         image: "images/amd-ryzen-5-7600x-tray.jpg",
         brand: "AMD",
         warranty: "36 tháng",
@@ -362,7 +362,7 @@ export const cpuData = {
     },
     "5700x": {
         name: "AMD Ryzen 7 5700X",
-        price: 3300000,
+        price: 3100000,
         image: "images/amd-ryzen-7-5700x.jpg",
         brand: "AMD",
         warranty: "36 tháng",
@@ -377,7 +377,7 @@ export const cpuData = {
     },
     "5700x3d": {
         name: "AMD Ryzen 7 5700X3D",
-        price: 5800000,
+        price: 5700000,
         image: "images/amd-ryzen-7-5700x3d.jpg",
         brand: "AMD",
         warranty: "36 tháng",
@@ -422,7 +422,7 @@ export const cpuData = {
     },
     "7800x3d": {
         name: "AMD Ryzen 7 7800X3D",
-        price: 9490000,
+        price: 9200000,
         image: "images/amd-ryzen-7-7800x3d-tray.jpg",
         brand: "AMD",
         warranty: "36 tháng",
@@ -516,7 +516,7 @@ export const cpuData = {
     },
     "9900x": {
         name: "AMD Ryzen 9 9900X",
-        price: 11900000,
+        price: 10000000,
         image: "images/amd-ryzen-9-9900x.jpg",
         brand: "AMD",
         warranty: "36 tháng",
@@ -535,7 +535,7 @@ export const cpuData = {
     },
     "9800x3d": {
         name: "AMD Ryzen 7 9800X3D",
-        price: 14100000,
+        price: 13200000,
         image: "images/amd-ryzen-7-9800x3d.jpg",
         brand: "AMD",
         warranty: "36 tháng",
@@ -573,7 +573,7 @@ export const cpuData = {
     },
     "9600x": {
         name: "AMD Ryzen 5 9600X",
-        price: 6000000,
+        price: 5500000,
         image: "images/amd-ryzen-5-9600x.jpg",
         brand: "AMD",
         warranty: "36 tháng",

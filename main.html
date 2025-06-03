@@ -1555,9 +1555,6 @@
     </style>
 
     <!-- Script for the interactive PC builder -->
-    <script src="./components-data.js"></script>
-    <!-- CPU cooler data is now loaded directly from js/data/ -->
-    <!-- <script src="./cpu-cooler-data.js"></script> -->
     <script src="./buildsan.js" type="module"></script>
     <script src="./buildsan-globals.js"></script>
     <!-- Script for Excel export functionality -->
@@ -1565,7 +1562,7 @@
     <!-- Script for enhanced auto-config functionality -->
     <script src="./auto-config-helper.js"></script>
     
-    <!-- Tải trình tải dữ liệu linh kiện -->
+    <!-- Ensure data loader is loaded first -->
     <script src="./import-loader.js" type="module"></script>
     
     <script>
@@ -1773,7 +1770,7 @@
     </script>
 
     <!-- Thêm script kết nối các component -->
-    <script src="component-connector.js"></script>
+    <script src="component-connector.js" type="module"></script>
 
     <!-- Event handlers script -->
     <script src="event-handlers.js"></script>

@@ -13,6 +13,29 @@ export const ramData = {
         image: "images/ram-corsair-vengeance-16gb-ddr5-5200.jpg",
         score: 5 // Added score
     },
+    "Crucial-16-6000": {
+        name: "RAM Crucial 16GB DDR5 (Bus 6000) ",
+        price: 1400000,
+        brand: "Crucial",
+        type: "DDR5",
+        speed: "6000MHz",
+        size: "16GB",
+        warranty: "36 tháng",
+        condition: "NEW",
+        image: "images/crucial-6000.jpg",
+        score: 7 // Added score
+    },"Crucial-32-6000": {
+        name: "RAM Crucial 32GB DDR5 (Bus 6000) ",
+        price: 2400000,
+        brand: "Crucial",
+        type: "DDR5",
+        speed: "6000MHz",
+        size: "32GB",
+        warranty: "36 tháng",
+        condition: "NEW",
+        image: "images/crucial-6000.jpg",
+        score: 7 // Added score
+    },
     "tridentz-16-6000": {
         name: "RAM TridentZ 16GB DDR5 (Bus 6000) ",
         price: 1400000,
@@ -57,6 +80,18 @@ export const ramData = {
         type: "DDR4",
         speed: "3200MHz",
         size: "16GB",
+        warranty: "36 tháng",
+        condition: "NEW",
+        image: "images/ram-corsair-vengeance-16gb-ddr4-3200.jpg",
+        score: 4 // Added score
+    },
+    "cosair-8": {
+        name: "RAM Corsair Vengeance LPX 16GB DDR4 (Bus 3200)",
+        price: 400000,
+        brand: "Corsair",
+        type: "DDR4",
+        speed: "3200MHz",
+        size: "8GB",
         warranty: "36 tháng",
         condition: "NEW",
         image: "images/ram-corsair-vengeance-16gb-ddr4-3200.jpg",

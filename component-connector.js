@@ -2,6 +2,9 @@
  * Component Connector - kết nối tất cả các thành phần của trang web
  */
 
+// Import the loadComponentData function from import-loader.js
+import { loadComponentData } from './import-loader.js';
+
 // Định dạng giá tiền
 function formatPrice(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -365,41 +368,44 @@ window.showConfigDetailModal = showConfigDetailModal;
     
     // Đảm bảo dữ liệu linh kiện được tải
     function ensureComponentsDataLoaded() {
-        // Kiểm tra xem dữ liệu đã được tải chưa
+        // Lấy dữ liệu linh kiện từ window object
         const componentsData = {
-            'cpuData': window.cpuData,
-            'mainboardData': window.mainboardData,
-            'vgaData': window.vgaData,
-            'ramData': window.ramData,
-            'ssdData': window.ssdData,
-            'psuData': window.psuData,
-            'caseData': window.caseData,
-            'cpuCoolerData': window.cpuCoolerData,
-            'hddData': window.hddData,
-            'monitorData': window.monitorData
+            'cpu': window.cpuData,
+            'mainboard': window.mainboardData,
+            'vga': window.vgaData,
+            'ram': window.ramData,
+            'ssd': window.ssdData,
+            'psu': window.psuData,
+            'case': window.caseData,
+            'cpuCooler': window.cpuCoolerData,
+            'hdd': window.hddData,
+            'monitor': window.monitorData
         };
         
         // Kiểm tra xem tất cả dữ liệu đã tồn tại chưa
-        const allDataLoaded = Object.values(componentsData).every(data => data !== undefined);
+        const allDataLoaded = Object.values(componentsData).every(data => data !== undefined && Object.keys(data).length > 0);
         
         if (!allDataLoaded) {
-            console.log('Components data not fully loaded, attempting to load from components-data.js');
+            console.log('Dữ liệu linh kiện chưa được tải hoàn tất, đang thử tải lại từ js/data...');
             
-            // Nếu script chưa được tải, thêm vào
-            if (!document.querySelector('script[src="./components-data.js"]')) {
-                const script = document.createElement('script');
-                script.src = './components-data.js';
-                script.onload = function() {
-                    console.log('components-data.js loaded successfully');
-                    // Sau khi tải xong, gọi lại hàm populateDropdowns nếu có
-                    if (typeof window.populateDropdowns === 'function') {
-                        window.populateDropdowns();
+            // Thử tải lại dữ liệu linh kiện từ module
+            if (typeof loadComponentData === 'function') {
+                loadComponentData().then(success => {
+                    if (success) {
+                        console.log('Dữ liệu linh kiện đã được tải thành công từ js/data');
+                        // Sau khi tải xong, gọi lại hàm populateDropdowns nếu có
+                        if (typeof window.populateDropdowns === 'function') {
+                            window.populateDropdowns();
+                        }
+                    } else {
+                        console.error('Không thể tải dữ liệu linh kiện từ js/data');
                     }
-                };
-                document.head.appendChild(script);
+                });
+            } else {
+                console.error('Không tìm thấy hàm loadComponentData');
             }
         } else {
-            console.log('Components data already loaded');
+            console.log('Dữ liệu linh kiện đã được tải thành công');
         }
     }
     

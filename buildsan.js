@@ -400,29 +400,29 @@ function filterMainboardsByCpu(cpuKey) {
     }
 }
 
-// Kết hợp dữ liệu từ import và dữ liệu từ components-data.js nếu có
-const cpuData = window.cpuData || importedCpuData || {};
-const mainboardData = window.mainboardData || importedMainboardData || {};
-const vgaData = window.vgaData || importedVgaData || {};
-const ramData = window.ramData || importedRamData || {};
-const ssdData = window.ssdData || importedSsdData || {};
-const psuData = window.psuData || importedPsuData || {};
-const caseData = window.caseData || importedCaseData || {};
-const cpuCoolerData = window.cpuCoolerData || importedCpuCoolerData || {};
-const hddData = window.hddData || importedHddData || {};
-const monitorData = window.monitorData || importedMonitorData || {};
+// Kết hợp dữ liệu từ import và dữ liệu từ js/data modules - giờ chỉ sử dụng dữ liệu từ js/data
+const cpuData = importedCpuData || {};
+const mainboardData = importedMainboardData || {};
+const vgaData = importedVgaData || {};
+const ramData = importedRamData || {};
+const ssdData = importedSsdData || {};
+const psuData = importedPsuData || {};
+const caseData = importedCaseData || {};
+const cpuCoolerData = importedCpuCoolerData || {};
+const hddData = importedHddData || {};
+const monitorData = importedMonitorData || {};
 
-// Chia sẻ dữ liệu toàn cục nếu không có sẵn
-if (!window.cpuData) window.cpuData = cpuData;
-if (!window.mainboardData) window.mainboardData = mainboardData;
-if (!window.vgaData) window.vgaData = vgaData;
-if (!window.ramData) window.ramData = ramData;
-if (!window.ssdData) window.ssdData = ssdData;
-if (!window.psuData) window.psuData = psuData;
-if (!window.caseData) window.caseData = caseData;
-if (!window.cpuCoolerData) window.cpuCoolerData = cpuCoolerData;
-if (!window.hddData) window.hddData = hddData;
-if (!window.monitorData) window.monitorData = monitorData;
+// Chia sẻ dữ liệu toàn cục
+window.cpuData = cpuData;
+window.mainboardData = mainboardData;
+window.vgaData = vgaData;
+window.ramData = ramData;
+window.ssdData = ssdData;
+window.psuData = psuData;
+window.caseData = caseData;
+window.cpuCoolerData = cpuCoolerData;
+window.hddData = hddData;
+window.monitorData = monitorData;
 
 // Add image error handling function globally
 window.handleImageError = function(img, componentType) {
@@ -2321,7 +2321,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setTimeout(updateScores, 0);
 
     // Hàm tự động chọn cấu hình dựa trên game, ngân sách và loại CPU
-    function autoSelectConfig(gameId, budget, cpuType) {
+    async function autoSelectConfig(gameId, budget, cpuType) {
         console.log(`%c 🟠 autoSelectConfig được gọi với params: gameId=${gameId}, budget=${budget}, cpuType=${cpuType}`, 
                    'background: #FFA500; color: white; font-weight: bold; font-size: 14px; padding: 5px;');
         
@@ -2483,57 +2483,26 @@ document.addEventListener('DOMContentLoaded', function () {
             loadingIndicator.style.boxShadow = '0 0 30px rgba(0,0,0,0.5)';
             loadingIndicator.id = 'config-loading-indicator';
             loadingIndicator.innerHTML = `<div>ĐANG TẢI CẤU HÌNH</div><div style="font-size: 32px; margin: 10px 0;">${finalCpuType.toUpperCase()}</div>`;
-            
-            // Xóa indicator cũ nếu có
             if (document.getElementById('config-loading-indicator')) {
                 document.getElementById('config-loading-indicator').remove();
             }
-            
             document.body.appendChild(loadingIndicator);
-            
+
             // Chuyển đổi budget sang định dạng chuẩn
             const budgetInMillions = Math.floor(budget / 1000000);
             const budgetKey = `${budgetInMillions}M`;
-            
-            // CRITICAL: Gọi getConfig với finalCpuType đã được đồng bộ hóa
-            console.log(`%c CALLING getConfig(${finalCpuType}, ${gameId}, ${budgetKey})`, 
-                       'background: #333; color: #FFA500; font-weight: bold; padding: 5px;');
-                       
-            // CRITICAL CHECK: Xác minh rằng getConfig function tồn tại
-            if (typeof window.getConfig !== 'function') {
-                console.error('❌ CRITICAL ERROR: window.getConfig không phải là hàm!');
-                console.log('window.getConfig =', window.getConfig);
-                
-                // Kiểm tra xem getConfig có trong phạm vi toàn cục không
-                if (typeof getConfig === 'function') {
-                    console.log('✅ Tìm thấy getConfig trong phạm vi toàn cục, gán vào window');
-                    window.getConfig = getConfig;
-                } else {
-                    console.error('❌ getConfig không được tìm thấy trong phạm vi toàn cục');
-                    
-                    // Cập nhật loading indicator thành lỗi
-                    if (document.getElementById('config-loading-indicator')) {
-                        document.getElementById('config-loading-indicator').innerHTML = 
-                            `❌ LỖI: Không thể tìm thấy hàm getConfig`;
-                        document.getElementById('config-loading-indicator').style.backgroundColor = '#F44336';
-                        
-                        // Tự động xóa sau 3 giây
-                        setTimeout(() => {
-                            document.getElementById('config-loading-indicator')?.remove();
-                        }, 3000);
-                    }
-                    
-                    return null;
-                }
+
+            // Import động file cấu hình game
+            let configResult = null;
+            try {
+                const cpuFolder = finalCpuType.toLowerCase() === 'intel' ? 'intel' : 'amd';
+                const configPath = `./js/configs/${cpuFolder}/${gameId}.js`;
+                const configModule = await import(configPath);
+                configResult = configModule.config;
+            } catch (e) {
+                configResult = null;
             }
-            
-            // CRITICAL CHECK: Xác minh rằng các đối tượng cấu hình tồn tại
-            console.log('Intel configs available:', window.intelConfigs ? Object.keys(window.intelConfigs).length : 'No');
-            console.log('AMD configs available:', window.amdConfigs ? Object.keys(window.amdConfigs).length : 'No');
-            
-            // Gọi getConfig với tham số đã được xác minh
-            const configResult = window.getConfig(finalCpuType, gameId, budgetKey);
-            
+
             // Cập nhật loading indicator
             if (document.getElementById('config-loading-indicator')) {
                 if (configResult) {
@@ -2545,28 +2514,25 @@ document.addEventListener('DOMContentLoaded', function () {
                         `❌ KHÔNG TÌM THẤY CẤU HÌNH<br>${finalCpuType.toUpperCase()}`;
                     document.getElementById('config-loading-indicator').style.backgroundColor = '#F44336';
                 }
-                
-                // Tự động xóa sau 3 giây
                 setTimeout(() => {
                     document.getElementById('config-loading-indicator')?.remove();
                 }, 3000);
             }
-            
+
             // Kiểm tra kết quả
             if (!configResult) {
                 console.error(`❌ Không tìm thấy cấu hình cho ${finalCpuType} ${gameId} ${budgetKey}`);
                 return null;
             }
-            
+
             console.log(`%c ✅ Đã tìm thấy cấu hình cho ${finalCpuType} ${gameId} ${budgetKey}:`, 
                        'color: green; font-weight: bold;', configResult);
-            
+
             // Xóa các lựa chọn hiện tại
             clearAllDropdowns();
-            
+
             // Áp dụng cấu hình mới
             setTimeout(() => {
-                // Áp dụng các lựa chọn thành phần từ cấu hình
                 if (configResult.cpu) updateDropdown('cpu', configResult.cpu);
                 if (configResult.mainboard) updateDropdown('mainboard', configResult.mainboard);
                 if (configResult.vga) updateDropdown('vga', configResult.vga);
@@ -2575,70 +2541,45 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (configResult.case) updateDropdown('case', configResult.case);
                 if (configResult.cpuCooler) updateDropdown('cpuCooler', configResult.cpuCooler);
                 if (configResult.psu) updateDropdown('psu', configResult.psu);
-                
+
                 // Check CPU-Mainboard compatibility
                 const cpuDropdown = document.getElementById('cpu');
                 const mainboardDropdown = document.getElementById('mainboard');
-                
                 if (cpuDropdown && mainboardDropdown && cpuDropdown.value && mainboardDropdown.value) {
                     checkSocketCompatibility(cpuDropdown.value, mainboardDropdown.value);
                 }
-                
+
                 // Update prices and summary
                 if (typeof updateComponentPrices === 'function') {
                     updateComponentPrices();
                 }
-                
-                // Nếu có hàm calculateTotalPriceAndSummary, gọi nó
                 if (typeof calculateTotalPriceAndSummary === 'function') {
                     calculateTotalPriceAndSummary();
                 }
-                
                 console.log(`%c Configuration for ${finalCpuType} applied successfully`, 'color: green; font-weight: bold;');
-                
-                // CRITICAL FIX: LUÔN hiển thị bảng cấu hình chi tiết sau khi cập nhật
-                // Chỉ hiển thị bảng nếu người dùng chưa đóng
+
+                // Hiển thị bảng cấu hình chi tiết sau khi cập nhật
                 if (!window.userClosedConfigModal) {
-                    // Click vào nút calculate để hiển thị bảng
                     const calculateButton = document.getElementById('calculate-button');
                     if (calculateButton) {
-                        console.log('Triggering calculate button click to show configuration table');
                         calculateButton.click();
-                    } else {
-                        console.error('Calculate button not found, trying alternative method to show config');
-                        
-                        // Phương pháp thay thế: Gọi trực tiếp hàm showConfigDetailModal nếu có
-                        if (typeof window.showConfigDetailModal === 'function') {
-                            window.showConfigDetailModal();
-                        }
+                    } else if (typeof window.showConfigDetailModal === 'function') {
+                        window.showConfigDetailModal();
                     }
-                } else {
-                    console.log('Not showing table because user manually closed it');
                 }
-                
-                // REPLACED WITH:
-                // Hiển thị bảng cấu hình sau khi auto-select chỉ khi người dùng chưa đóng nó
-                console.log('Checking if we should show configuration table after auto-select');
-                
-                // Chỉ hiển thị nếu người dùng chưa đóng bảng
                 if (!window.userClosedConfigModal) {
                     setTimeout(() => {
                         if (typeof window.showConfigDetailModal === 'function') {
                             window.showConfigDetailModal();
                         } else {
-                            console.error('showConfigDetailModal function not available');
-                            // Fallback to clicking the calculate button
                             const calculateButton = document.getElementById('calculate-button');
                             if (calculateButton) {
                                 calculateButton.click();
                             }
                         }
-                    }, 500); // Thêm một chút delay để đảm bảo các component đã được cập nhật
-                } else {
-                    console.log('Not showing table because user manually closed it');
+                    }, 500);
                 }
-                
-                // Thêm thông báo rằng bảng chi tiết đã hiển thị
+                // Thông báo bảng chi tiết đã hiển thị
                 const tableNotification = document.createElement('div');
                 tableNotification.style.position = 'fixed';
                 tableNotification.style.bottom = '70px';
@@ -2653,21 +2594,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 tableNotification.style.boxShadow = '0 0 10px rgba(0,0,0,0.3)';
                 tableNotification.id = 'table-notification';
                 tableNotification.textContent = `Bảng cấu hình chi tiết đã được cập nhật`;
-                
-                // Xóa thông báo cũ nếu có
                 if (document.getElementById('table-notification')) {
                     document.getElementById('table-notification').remove();
                 }
-                
                 document.body.appendChild(tableNotification);
                 setTimeout(() => {
                     if (document.getElementById('table-notification')) {
                         document.getElementById('table-notification').remove();
                     }
                 }, 3000);
-                
             }, 300);
-            
+
             return configResult;
         } catch (error) {
             console.error('Error in autoSelectConfig:', error);
