@@ -2497,9 +2497,75 @@ document.addEventListener('DOMContentLoaded', function () {
             try {
                 const cpuFolder = finalCpuType.toLowerCase() === 'intel' ? 'intel' : 'amd';
                 const configPath = `./js/configs/${cpuFolder}/${gameId}.js`;
-                const configModule = await import(configPath);
-                configResult = configModule.config;
+                console.log(`🔍 Đang tìm file cấu hình: ${configPath}`);
+                
+                const configModule = await import(configPath).catch(e => {
+                    console.error(`❌ Không thể import file cấu hình ${configPath}:`, e);
+                    return null;
+                });
+                
+                if (configModule) {
+                    // Hỗ trợ nhiều cách export khác nhau
+                    if (configModule.config) {
+                        configResult = configModule.config;
+                        console.log(`✅ Đã tìm thấy config export dạng: configModule.config`);
+                    } else if (configModule.configs) {
+                        // Trường hợp export const configs = {...}
+                        configResult = configModule.configs;
+                        console.log(`✅ Đã tìm thấy config export dạng: configModule.configs`);
+                    } else if (configModule.default) {
+                        // Trường hợp export default
+                        if (typeof configModule.default === 'object') {
+                            configResult = configModule.default;
+                            console.log(`✅ Đã tìm thấy config export dạng: export default {...}`);
+                        } else if (typeof configModule.default === 'function') {
+                            // Trường hợp export default function() { return {...} }
+                            configResult = configModule.default(budgetKey);
+                            console.log(`✅ Đã tìm thấy config export dạng: export default function`);
+                        }
+                    } else if (Object.keys(configModule).length > 0) {
+                        // Trường hợp module.exports = {...} hoặc export cả module
+                        const firstKey = Object.keys(configModule)[0];
+                        if (typeof configModule[firstKey] === 'object' && configModule[firstKey] !== null) {
+                            configResult = configModule[firstKey];
+                            console.log(`✅ Đã tìm thấy config export với key: ${firstKey}`);
+                        } else {
+                            configResult = configModule;
+                            console.log(`✅ Đã tìm thấy config export toàn bộ module`);
+                        }
+                    }
+                    
+                    // Log cấu trúc module để debug
+                    console.log(`📋 Cấu trúc configModule:`, Object.keys(configModule));
+                    
+                    // Kiểm tra budget key trong configResult
+                    if (configResult && typeof configResult === 'object') {
+                        // Nếu configResult có budget keys, lấy đúng budget
+                        if (configResult[budgetKey]) {
+                            configResult = configResult[budgetKey];
+                            console.log(`✅ Đã tìm thấy cấu hình cho budget: ${budgetKey}`);
+                        } else if (Object.keys(configResult).some(key => /^\d+M$/.test(key))) {
+                            // Có các budget keys nhưng không có budget hiện tại
+                            console.warn(`⚠️ File có các budget keys (${Object.keys(configResult).join(', ')}) nhưng không có ${budgetKey}`);
+                            
+                            // Tìm budget gần nhất
+                            const budgetKeys = Object.keys(configResult).filter(key => /^\d+M$/.test(key));
+                            const budgetValues = budgetKeys.map(key => parseInt(key));
+                            const closestBudget = budgetValues.reduce((prev, curr) => 
+                                Math.abs(curr - budgetInMillions) < Math.abs(prev - budgetInMillions) ? curr : prev);
+                            
+                            if (!isNaN(closestBudget)) {
+                                const closestBudgetKey = `${closestBudget}M`;
+                                console.log(`🔄 Sử dụng budget gần nhất: ${closestBudgetKey}`);
+                                configResult = configResult[closestBudgetKey];
+                            } else {
+                                configResult = null;
+                            }
+                        }
+                    }
+                }
             } catch (e) {
+                console.error(`❌ Lỗi khi xử lý file cấu hình:`, e);
                 configResult = null;
             }
 

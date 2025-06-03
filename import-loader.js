@@ -1,4 +1,3 @@
-
 async function loadComponentData() {
     try {
         console.log('🔄 Đang tải dữ liệu linh kiện từ js/data...');
@@ -70,4 +69,84 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Xuất hàm ra bên ngoài
-export { loadComponentData }; 
+export { loadComponentData };
+
+// Đảm bảo tương thích ngược với các tính năng cũ
+// Cầu nối với code cũ sử dụng window.getConfig, window.intelConfigs, window.amdConfigs
+window.getConfig = async function(cpuType, gameId, budgetKey) {
+    console.warn('⚠️ Deprecated: window.getConfig is being used, should migrate to dynamic import');
+    
+    try {
+        // Chuyển đổi budget sang định dạng chuẩn
+        if (typeof budgetKey === 'number') {
+            budgetKey = `${budgetKey}M`;
+        } else if (typeof budgetKey === 'string' && /^[0-9]+$/.test(budgetKey)) {
+            budgetKey = `${budgetKey}M`;
+        }
+        
+        // Chuẩn hóa CPU type
+        const finalCpuType = cpuType.toLowerCase().includes('amd') ? 'amd' : 'intel';
+        
+        // Import động file cấu hình
+        const configPath = `./js/configs/${finalCpuType}/${gameId}.js`;
+        console.log(`🔍 Đang tìm file cấu hình qua getConfig: ${configPath}`);
+        
+        const configModule = await import(configPath).catch(e => {
+            console.error(`❌ Không thể import file cấu hình ${configPath}:`, e);
+            return null;
+        });
+        
+        if (!configModule) return null;
+        
+        // Xử lý các loại export khác nhau
+        let configResult = null;
+        
+        if (configModule.configs) {
+            configResult = configModule.configs[budgetKey];
+        } else if (configModule.config) {
+            configResult = configModule.config[budgetKey];
+        } else if (configModule.default) {
+            const defaultConfig = typeof configModule.default === 'function' 
+                ? configModule.default(budgetKey) 
+                : configModule.default;
+            configResult = defaultConfig[budgetKey];
+        }
+        
+        return configResult;
+    } catch (e) {
+        console.error('Error in legacy getConfig:', e);
+        return null;
+    }
+};
+
+// Tạo đối tượng giả cho window.intelConfigs và window.amdConfigs
+// Chỉ để tương thích ngược với code cũ
+const createProxyConfigs = (cpuType) => {
+    return new Proxy({}, {
+        get: function(target, gameId) {
+            console.warn(`⚠️ Deprecated: window.${cpuType}Configs is being accessed, should migrate to dynamic import`);
+            if (typeof gameId !== 'string' || gameId === 'length' || gameId.startsWith('_')) {
+                return undefined;
+            }
+            
+            // Trả về một proxy cho mỗi game
+            return new Proxy({}, {
+                get: function(target, budgetKey) {
+                    if (typeof budgetKey !== 'string' || budgetKey === 'length' || budgetKey.startsWith('_')) {
+                        return undefined;
+                    }
+                    
+                    // Khi truy cập đến budget, tải động file
+                    console.log(`🔍 Truy cập qua window.${cpuType}Configs['${gameId}']['${budgetKey}']`);
+                    
+                    // Không thể dùng await ở đây, nên trả về null
+                    // Trong thực tế, code sử dụng cách này đã được thay thế bằng dynamic import
+                    return null;
+                }
+            });
+        }
+    });
+};
+
+window.intelConfigs = createProxyConfigs('intel');
+window.amdConfigs = createProxyConfigs('amd'); 
