@@ -432,6 +432,9 @@ function ensureCompatibleComponents() {
     const ramSelect = document.getElementById('ram');
     const vgaSelect = document.getElementById('vga');
     const psuSelect = document.getElementById('psu');
+    const ssdSelect = document.getElementById('ssd');
+    const caseSelect = document.getElementById('case');
+    const cpuCoolerSelect = document.getElementById('cpuCooler');
     
     if (!cpuSelect || !mainboardSelect) {
         return; // Không đủ thông tin để kiểm tra
@@ -449,7 +452,13 @@ function ensureCompatibleComponents() {
     const vgaData = window.getComponentData ? window.getComponentData('VGA', vgaSelect.value) : null;
     // Lấy thông tin PSU
     const psuData = window.getComponentData ? window.getComponentData('PSU', psuSelect.value) : null;
-    
+    // Lấy thông tin SSD
+    const ssdData = window.getComponentData ? window.getComponentData('SSD', ssdSelect.value) : null;
+    // Lấy thông tin Case
+    const caseData = window.getComponentData ? window.getComponentData('Case', caseSelect.value) : null;
+    // Lấy thông tin CPU Cooler
+    const coolerData = window.getComponentData ? window.getComponentData('Cooler', cpuCoolerSelect.value) : null;
+
     if (!cpuData) {
         console.warn('Không tìm thấy dữ liệu CPU');
         return; // Không đủ dữ liệu để kiểm tra
@@ -457,6 +466,9 @@ function ensureCompatibleComponents() {
     
     // Tạo thông báo tổng hợp
     let compatibilityMessages = [];
+    
+    // Hiển thị thông tin bảo hành
+    displayWarrantyInfo(cpuData, mainboardData, ramData, vgaData, psuData, ssdData, caseData, coolerData);
     
     // 1. Kiểm tra socket tương thích
     let cpuSocket = cpuData.socket || '';
@@ -466,7 +478,7 @@ function ensureCompatibleComponents() {
         if (cpuName.includes('ryzen') || cpuName.includes('amd')) {
             if (cpuName.includes('5600x') || cpuName.includes('5700x') || cpuName.includes('5800x') || cpuName.includes('5900x') || cpuName.includes('5950x')) {
                 cpuSocket = 'AM4';
-            } else if (cpuName.includes('7600x') || cpuName.includes('7700x') || cpuName.includes('7900x') || cpuName.includes('7950x') || cpuName.includes('7800x3d')) {
+            } else if (cpuName.includes('7600x') || cpuName.includes('7700x') || cpuName.includes('7900x') || cpuName.includes('7950x') || cpuName.includes('7800x3d') || cpuName.includes('9700x') || cpuName.includes('9900x')) {
                 cpuSocket = 'AM5';
             } else if (cpuName.includes('3600') || cpuName.includes('3700x') || cpuName.includes('3800x')) {
                 cpuSocket = 'AM4';
@@ -716,6 +728,126 @@ function ensureCompatibleComponents() {
     
     console.log('✅ Kiểm tra tương thích hoàn tất');
     return compatibilityMessages;
+}
+
+// Hiển thị thông tin bảo hành và tình trạng của các linh kiện
+function displayWarrantyInfo(cpuData, mainboardData, ramData, vgaData, psuData, ssdData, caseData, coolerData) {
+    // Tạo hoặc cập nhật bảng thông tin bảo hành
+    let warrantyTable = document.getElementById('warranty-info-table');
+    
+    if (!warrantyTable) {
+        // Tạo bảng mới nếu chưa tồn tại
+        warrantyTable = document.createElement('table');
+        warrantyTable.id = 'warranty-info-table';
+        warrantyTable.className = 'warranty-table';
+        warrantyTable.style.width = '100%';
+        warrantyTable.style.borderCollapse = 'collapse';
+        warrantyTable.style.marginTop = '20px';
+        warrantyTable.style.marginBottom = '20px';
+        warrantyTable.style.border = '1px solid #ddd';
+        
+        // Tạo header cho bảng
+        const thead = document.createElement('thead');
+        thead.innerHTML = `
+            <tr style="background-color: #007bff; color: white;">
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">LINH KIỆN</th>
+                <th style="padding: 8px; text-align: center; border: 1px solid #ddd;">THÀNH TIỀN</th>
+                <th style="padding: 8px; text-align: center; border: 1px solid #ddd;">BẢO HÀNH</th>
+                <th style="padding: 8px; text-align: center; border: 1px solid #ddd;">GHI CHÚ</th>
+            </tr>
+        `;
+        warrantyTable.appendChild(thead);
+        
+        // Tạo phần thân bảng
+        const tbody = document.createElement('tbody');
+        tbody.id = 'warranty-info-tbody';
+        warrantyTable.appendChild(tbody);
+        
+        // Thêm bảng vào DOM
+        const configTable = document.getElementById('config-table');
+        if (configTable) {
+            configTable.parentNode.insertBefore(warrantyTable, configTable.nextSibling);
+        } else {
+            const socketMessage = document.getElementById('socket-message');
+            if (socketMessage) {
+                socketMessage.parentNode.insertBefore(warrantyTable, socketMessage.nextSibling);
+            } else {
+                // Thêm vào phần tử main hoặc body nếu không tìm thấy vị trí phù hợp
+                document.querySelector('main') || document.body.appendChild(warrantyTable);
+            }
+        }
+    }
+    
+    // Cập nhật nội dung bảng
+    const tbody = document.getElementById('warranty-info-tbody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    // Thêm dòng cho CPU
+    if (cpuData) {
+        addWarrantyRow(tbody, 'CPU', cpuData);
+    }
+    
+    // Thêm dòng cho Mainboard
+    if (mainboardData) {
+        addWarrantyRow(tbody, 'Mainboard', mainboardData);
+    }
+    
+    // Thêm dòng cho RAM
+    if (ramData) {
+        addWarrantyRow(tbody, 'RAM', ramData);
+    }
+    
+    // Thêm dòng cho VGA
+    if (vgaData) {
+        addWarrantyRow(tbody, 'VGA', vgaData);
+    }
+    
+    // Thêm dòng cho SSD
+    if (ssdData) {
+        addWarrantyRow(tbody, 'SSD', ssdData);
+    }
+    
+    // Thêm dòng cho PSU
+    if (psuData) {
+        addWarrantyRow(tbody, 'Nguồn', psuData);
+    }
+    
+    // Thêm dòng cho Case
+    if (caseData) {
+        addWarrantyRow(tbody, 'Vỏ case', caseData);
+    }
+    
+    // Thêm dòng cho CPU Cooler
+    if (coolerData) {
+        addWarrantyRow(tbody, 'Tản nhiệt CPU', coolerData);
+    }
+    
+    // Hiển thị bảng bảo hành
+    warrantyTable.style.display = 'table';
+}
+
+// Hàm thêm dòng vào bảng bảo hành
+function addWarrantyRow(tbody, componentType, componentData) {
+    const row = document.createElement('tr');
+    
+    // Xác định thông tin bảo hành và tình trạng
+    const warranty = componentData.warranty || '36 tháng';
+    const condition = componentData.condition || 'NEW';
+    
+    // Định dạng giá tiền
+    const price = componentData.price ? componentData.price.toLocaleString() + ' VNĐ' : '';
+    
+    // Tạo nội dung cho dòng
+    row.innerHTML = `
+        <td style="padding: 8px; text-align: left; border: 1px solid #ddd;">${componentData.name || componentType}</td>
+        <td style="padding: 8px; text-align: right; border: 1px solid #ddd;">${price}</td>
+        <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">${warranty}</td>
+        <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">${condition}</td>
+    `;
+    
+    tbody.appendChild(row);
 }
 
 // Kiểm tra và chạy tự động chọn cấu hình khi đủ 3 tiêu chí

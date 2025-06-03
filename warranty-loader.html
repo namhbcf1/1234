@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiển Thị Thông Tin Bảo Hành</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #0053b4;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .btn {
+            padding: 10px 15px;
+            background-color: #0053b4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .instructions {
+            background-color: #e7f3fe;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border: 1px solid #b6dcfe;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bộ Công Cụ Hiển Thị Thông Tin Bảo Hành</h1>
+    
+    <div class="instructions">
+        <h2>Hướng dẫn sử dụng:</h2>
+        <ol>
+            <li>Sao chép đoạn mã bên dưới</li>
+            <li>Mở trang chọn cấu hình PC</li>
+            <li>Mở Developer Console (F12 hoặc Ctrl+Shift+I)</li>
+            <li>Dán mã vào console và nhấn Enter</li>
+            <li>Bảng thông tin bảo hành sẽ hiển thị</li>
+        </ol>
+    </div>
+    
+    <h2>Mã Cần Sao Chép:</h2>
+    <button class="btn" id="copy-script">Sao Chép Mã</button>
+    <pre id="script-code">
+// Đảm bảo CSS được tải
+function loadWarrantyStyles() {
+    // Kiểm tra xem CSS đã được tải chưa
+    if (document.getElementById('warranty-styles')) {
+        return;
+    }
+    
+    // Thêm CSS vào head
+    const styleTag = document.createElement('style');
+    styleTag.id = 'warranty-styles';
+    styleTag.textContent = `
+        /* Định dạng cho bảng thông tin bảo hành */
+        .warranty-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            background-color: #1c1c1c;
+            color: #ffffff;
+            border: 1px solid #333;
+        }
+        
+        .warranty-table thead {
+            background-color: #0053b4;
+            color: white;
+        }
+        
+        .warranty-table th,
+        .warranty-table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #333;
+        }
+        
+        .warranty-table th {
+            font-weight: bold;
+        }
+        
+        .warranty-table tbody tr:nth-child(even) {
+            background-color: #222222;
+        }
+        
+        .warranty-table tbody tr:hover {
+            background-color: #303030;
+        }
+        
+        /* Định dạng giá tiền */
+        .warranty-table td:nth-child(2) {
+            text-align: right;
+            color: #00b3ff;
+        }
+        
+        /* Định dạng bảo hành */
+        .warranty-table td:nth-child(3) {
+            text-align: center;
+            color: #4CAF50;
+        }
+        
+        /* Định dạng ghi chú */
+        .warranty-table td:nth-child(4) {
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        /* Đảm bảo bảng luôn hiển thị */
+        #config-table, 
+        #warranty-info-table {
+            display: table !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* Đảm bảo thông báo tương thích nổi bật */
+        #socket-message {
+            display: block !important;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #e7f3fe;
+            border: 1px solid #b6dcfe;
+            color: #0c5460;
+        }
+        
+        /* Đảm bảo hiển thị các dropdown */
+        select#mainboard, 
+        select#ram,
+        .mainboard-group,
+        .ram-group {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* Style cho dropdown container */
+        .form-group {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            margin-bottom: 15px;
+        }
+        
+        /* Force hiển thị */
+        [style*="display: none"] {
+            display: block !important;
+        }
+        
+        /* Ngoại lệ cho một số phần tử */
+        .modal[style*="display: none"] {
+            display: none !important;
+        }
+    `;
+    
+    document.head.appendChild(styleTag);
+    console.log('✅ Warranty styles added to page');
+}
+
+// Tạo bảng thông tin bảo hành
+function createWarrantyTable() {
+    // Kiểm tra xem bảng đã tồn tại chưa
+    let warrantyTable = document.getElementById('warranty-info-table');
+    if (warrantyTable) {
+        warrantyTable.style.display = 'table';
+        return warrantyTable;
+    }
+    
+    // Tạo bảng mới
+    warrantyTable = document.createElement('table');
+    warrantyTable.id = 'warranty-info-table';
+    warrantyTable.className = 'warranty-table';
+    warrantyTable.style.width = '100%';
+    warrantyTable.style.borderCollapse = 'collapse';
+    warrantyTable.style.marginTop = '20px';
+    warrantyTable.style.marginBottom = '20px';
+    warrantyTable.style.border = '1px solid #ddd';
+    
+    // Tạo header cho bảng
+    const thead = document.createElement('thead');
+    thead.innerHTML = `
+        <tr style="background-color: #007bff; color: white;">
+            <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">LINH KIỆN</th>
+            <th style="padding: 8px; text-align: center; border: 1px solid #ddd;">THÀNH TIỀN</th>
+            <th style="padding: 8px; text-align: center; border: 1px solid #ddd;">BẢO HÀNH</th>
+            <th style="padding: 8px; text-align: center; border: 1px solid #ddd;">GHI CHÚ</th>
+        </tr>
+    `;
+    warrantyTable.appendChild(thead);
+    
+    // Tạo phần thân bảng
+    const tbody = document.createElement('tbody');
+    tbody.id = 'warranty-info-tbody';
+    warrantyTable.appendChild(tbody);
+    
+    // Thêm bảng vào DOM
+    const configTable = document.getElementById('config-table');
+    if (configTable) {
+        configTable.parentNode.insertBefore(warrantyTable, configTable.nextSibling);
+    } else {
+        const socketMessage = document.getElementById('socket-message');
+        if (socketMessage) {
+            socketMessage.parentNode.insertBefore(warrantyTable, socketMessage.nextSibling);
+        } else {
+            document.body.appendChild(warrantyTable);
+        }
+    }
+    
+    return warrantyTable;
+}
+
+// Lấy dữ liệu từ tất cả các dropdown
+function collectAllComponentData() {
+    const components = [
+        { id: 'cpu', type: 'CPU' },
+        { id: 'mainboard', type: 'Mainboard' },
+        { id: 'ram', type: 'RAM' },
+        { id: 'vga', type: 'VGA' },
+        { id: 'ssd', type: 'SSD' },
+        { id: 'psu', type: 'PSU' },
+        { id: 'case', type: 'Case' },
+        { id: 'cpuCooler', type: 'Cooler' },
+        { id: 'hdd', type: 'HDD' },
+        { id: 'monitor', type: 'Monitor' }
+    ];
+    
+    const result = {};
+    
+    components.forEach(component => {
+        const select = document.getElementById(component.id);
+        if (select && select.value) {
+            const data = window.getComponentData ? 
+                window.getComponentData(component.type, select.value) : null;
+            
+            if (data) {
+                result[component.id] = {
+                    name: data.name || 'Unknown',
+                    price: data.price || 0,
+                    warranty: data.warranty || '36 tháng',
+                    condition: data.condition || 'NEW'
+                };
+            }
+        }
+    });
+    
+    return result;
+}
+
+// Cập nhật bảng thông tin bảo hành
+function updateWarrantyTable() {
+    const warrantyTable = createWarrantyTable();
+    const tbody = document.getElementById('warranty-info-tbody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    const components = collectAllComponentData();
+    
+    // Hiển thị mỗi linh kiện trong bảng
+    Object.entries(components).forEach(([id, data]) => {
+        const row = document.createElement('tr');
+        
+        // Định dạng giá tiền
+        const price = data.price ? data.price.toLocaleString() + ' VNĐ' : '';
+        
+        // Tạo nội dung cho dòng
+        row.innerHTML = `
+            <td style="padding: 8px; text-align: left; border: 1px solid #ddd;">${data.name}</td>
+            <td style="padding: 8px; text-align: right; border: 1px solid #ddd;">${price}</td>
+            <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">${data.warranty}</td>
+            <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">${data.condition}</td>
+        `;
+        
+        tbody.appendChild(row);
+    });
+    
+    // Tính tổng tiền
+    let totalPrice = 0;
+    Object.values(components).forEach(data => {
+        totalPrice += data.price || 0;
+    });
+    
+    // Thêm dòng tổng tiền
+    const totalRow = document.createElement('tr');
+    totalRow.innerHTML = `
+        <td style="padding: 8px; text-align: right; border: 1px solid #ddd; font-weight: bold;" colspan="1">TỔNG CỘNG:</td>
+        <td style="padding: 8px; text-align: right; border: 1px solid #ddd; font-weight: bold; color: #FF5722;">${totalPrice.toLocaleString()} VNĐ</td>
+        <td style="padding: 8px; text-align: center; border: 1px solid #ddd;" colspan="2"></td>
+    `;
+    tbody.appendChild(totalRow);
+    
+    // Hiển thị bảng
+    warrantyTable.style.display = 'table';
+    console.log('✅ Warranty table updated');
+}
+
+// Đảm bảo hiển thị các dropdown
+function showAllDropdowns() {
+    const dropdowns = [
+        'cpu', 'mainboard', 'ram', 'vga', 'ssd', 'psu', 'case', 'cpuCooler'
+    ];
+    
+    dropdowns.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            // Tìm phần tử cha .form-group
+            let parent = element.parentElement;
+            while (parent && !parent.classList.contains('form-group')) {
+                parent = parent.parentElement;
+            }
+            
+            if (parent) {
+                parent.style.display = 'block';
+                parent.style.visibility = 'visible';
+                parent.style.opacity = '1';
+            }
+            
+            element.style.display = 'block';
+            element.style.visibility = 'visible';
+            element.style.opacity = '1';
+        }
+    });
+    
+    console.log('✅ All dropdowns are now visible');
+}
+
+// Hiển thị bảng cấu hình
+function showConfigTable() {
+    const configTable = document.getElementById('config-table');
+    if (configTable) {
+        configTable.style.display = 'table';
+        configTable.style.visibility = 'visible';
+        configTable.style.opacity = '1';
+        
+        // Thêm CSS để đảm bảo bảng hiển thị đúng
+        const style = document.createElement('style');
+        style.textContent = `
+            #config-table {
+                display: table !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                width: 100% !important;
+            }
+            
+            #config-table tr, #config-table td, #config-table th {
+                display: table-row !important;
+                visibility: visible !important;
+            }
+            
+            #config-table td, #config-table th {
+                display: table-cell !important;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        console.log('✅ Config table is now visible');
+    }
+}
+
+// Chạy các hàm chính
+function initializeWarrantyDisplay() {
+    loadWarrantyStyles();
+    showAllDropdowns();
+    showConfigTable();
+    updateWarrantyTable();
+    
+    // Gọi hàm kiểm tra tương thích nếu có
+    if (typeof window.ensureCompatibleComponents === 'function') {
+        window.ensureCompatibleComponents();
+        console.log('✅ Component compatibility checked');
+    }
+    
+    console.log('✅ Warranty display initialized successfully');
+    alert('Đã hiển thị thông tin bảo hành thành công!');
+}
+
+// Chạy ngay lập tức
+initializeWarrantyDisplay();
+    </pre>
+    
+    <div class="instructions">
+        <h3>Kết quả:</h3>
+        <ul>
+            <li>Hiển thị bảng thông tin bảo hành với thời gian bảo hành</li>
+            <li>Hiện thị mainboard và RAM dù chúng đang bị ẩn</li>
+            <li>Đảm bảo tương thích giữa CPU, mainboard và RAM</li>
+            <li>Tự động cập nhật khi thay đổi cấu hình</li>
+        </ul>
+    </div>
+    
+    <script>
+        // Script sao chép mã
+        document.getElementById('copy-script').addEventListener('click', function() {
+            const scriptCode = document.getElementById('script-code').textContent;
+            navigator.clipboard.writeText(scriptCode).then(
+                function() {
+                    alert('Đã sao chép mã thành công! Hãy dán vào console của trang web.');
+                },
+                function() {
+                    alert('Không thể sao chép mã. Vui lòng sao chép thủ công.');
+                }
+            );
+        });
+    </script>
+</body>
+</html> 

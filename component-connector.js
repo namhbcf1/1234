@@ -722,7 +722,7 @@ window.showConfigDetailModal = showConfigDetailModal;
                 // Cập nhật tình trạng
                 const statusElement = document.getElementById(mapping.status);
                 if (statusElement) {
-                    const status = componentData?.condition || 'Mới';
+                    const status = componentData?.condition || 'NEW';
                     const statusColor = status.toLowerCase().includes('mới') || status.toLowerCase() === 'new' ? '#4CAF50' : '#FFC107';
                     statusElement.innerHTML = `<span style="color: ${statusColor}; font-weight: bold;">${status.toUpperCase()}</span>`;
                 }
@@ -756,6 +756,11 @@ window.showConfigDetailModal = showConfigDetailModal;
                     this.dataset.price = price;
                     
                     console.log(`Updated ${this.id} price to: ${price}`);
+                    
+                    // Đảm bảo kiểm tra tương thích mỗi khi có thay đổi
+                    if (typeof window.ensureCompatibleComponents === 'function') {
+                        window.ensureCompatibleComponents();
+                    }
                 }
             });
         });
@@ -1079,6 +1084,23 @@ function hasRequiredComponents() {
 
 // Hiển thị modal khi người dùng chọn đủ linh kiện
 function showConfigDetailModal() {
+    // Kiểm tra nếu có bảng warranty-info-table, hiển thị nó
+    const warrantyTable = document.getElementById('warranty-info-table');
+    if (warrantyTable) {
+        warrantyTable.style.display = 'table';
+    }
+    
+    // Đảm bảo bảng config-table luôn hiển thị
+    const configTable = document.getElementById('config-table');
+    if (configTable) {
+        configTable.style.display = 'block';
+    }
+    
+    // Đảm bảo kiểm tra tương thích trước khi hiển thị modal
+    if (typeof window.ensureCompatibleComponents === 'function') {
+        window.ensureCompatibleComponents();
+    }
+    
     if (hasRequiredComponents()) {
         updateModalContent();
     } else {

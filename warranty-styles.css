@@ -1,0 +1,140 @@
+/* Định dạng cho bảng thông tin bảo hành */
+.warranty-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    background-color: #1c1c1c;
+    color: #ffffff;
+    border: 1px solid #333;
+}
+
+.warranty-table thead {
+    background-color: #0053b4;
+    color: white;
+}
+
+.warranty-table th,
+.warranty-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #333;
+}
+
+.warranty-table th {
+    font-weight: bold;
+}
+
+.warranty-table tbody tr:nth-child(even) {
+    background-color: #222222;
+}
+
+.warranty-table tbody tr:hover {
+    background-color: #303030;
+}
+
+/* Định dạng giá tiền */
+.warranty-table td:nth-child(2) {
+    text-align: right;
+    color: #00b3ff;
+}
+
+/* Định dạng bảo hành */
+.warranty-table td:nth-child(3) {
+    text-align: center;
+    color: #4CAF50;
+}
+
+/* Định dạng ghi chú */
+.warranty-table td:nth-child(4) {
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Style cho NEW và 2nd */
+.warranty-table .condition-new {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.warranty-table .condition-used {
+    color: #FFC107;
+    font-weight: bold;
+}
+
+/* Đảm bảo bảng luôn hiển thị */
+#config-table, 
+#warranty-info-table {
+    display: table !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Đảm bảo thông báo tương thích nổi bật */
+#socket-message {
+    display: block !important;
+    margin: 15px 0;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #e7f3fe;
+    border: 1px solid #b6dcfe;
+    color: #0c5460;
+}
+
+/* Làm rõ cảnh báo không tương thích */
+#socket-message [class^="⚠️"] {
+    color: #f44336;
+    font-weight: bold;
+}
+
+/* Highlight các thông báo thành công */
+#socket-message [class^="✅"] {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+/* Đảm bảo hiển thị các dropdown */
+select#mainboard, 
+select#ram {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Style cho dropdown container */
+.form-group {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin-bottom: 15px;
+}
+
+/* Đảm bảo label hiện rõ */
+.form-group label {
+    display: block !important;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Mài mắt cho dropdown */
+.form-control {
+    display: block !important;
+    width: 100% !important;
+    padding: 8px 12px !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    color: #333 !important;
+    background-color: #fff !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 4px !important;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+}
+
+/* Highlight dropdown khi focus */
+.form-control:focus {
+    border-color: #80bdff !important;
+    outline: 0 !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+} 
