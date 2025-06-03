@@ -246,11 +246,11 @@ export const mainboardData = {
         "formFactor": "Micro-ATX",
         "score": 7
     },
-    "JGINYUE-B450": {
-        "name": "JGinyue B450M-TI (AM4)",
+    "ASROCK-B450": {
+        "name": "ASRock B450M-HDV/M.2 (AM4)",
         "price": 1390000,
-        "image": "images/jginyue-b450m-ti.jpg",
-        "brand": "JGinyue",
+        "image": "images/asrock-b450m.jpg",
+        "brand": "ASRock",
         "warranty": "36 tháng",
         "sockets": ["AM4"], // ĐÃ SỬA: socket -> sockets, giá trị là MẢNG
         "memoryType": "DDR4",

@@ -2,7 +2,7 @@
 export const configs = {
     '3M': {
         cpu: "3600",
-        mainboard: "JGINYUE-B450",
+        mainboard: "ASROCK-B450",
         vga: "960",
         ram: "cosair-8",
         ssd: "sstc-256",
@@ -12,7 +12,7 @@ export const configs = {
     },
     '7M': {
         cpu: "3600",
-        mainboard: "JGINYUE-B450",
+        mainboard: "ASROCK-B450",
         vga: "960",
         ram: "cosair-16",
         ssd: "sstc-256",
@@ -22,7 +22,7 @@ export const configs = {
     },
     '8M': {
         cpu: "5600",
-        mainboard: "JGINYUE-B450",
+        mainboard: "ASROCK-B450",
         vga: "1060-3g",
         ram: "cosair-16",
         ssd: "sstc-256",
@@ -32,7 +32,7 @@ export const configs = {
     },
     '9M': {
         cpu: "5600",
-        mainboard: "JGINYUE-B450",
+        mainboard: "ASROCK-B450",
         vga: "1660s",
         ram: "cosair-16",
         ssd: "sstc-256",
@@ -42,7 +42,7 @@ export const configs = {
     },
     '10M': {
         cpu: "5600x",
-        mainboard: "JGINYUE-B450",
+        mainboard: "ASROCK-B450",
         vga: "2060t",
         ram: "cosair-16",
         ssd: "sstc-256",
@@ -52,7 +52,7 @@ export const configs = {
     },
     '11M': {
         cpu: "5600x",
-        mainboard: "JGINYUE-B450",
+        mainboard: "ASROCK-B450",
         vga: "2060s",
         ram: "cosair-16",
         ssd: "crucial-500",
@@ -62,7 +62,7 @@ export const configs = {
     },
     '12M': {
         cpu: "5600x",
-        mainboard: "JGINYUE-B450",
+        mainboard: "ASROCK-B450",
         vga: "2070s",
         ram: "cosair-16",
         ssd: "crucial-500",
@@ -72,7 +72,7 @@ export const configs = {
     },
     '13M': {
         cpu: "5700x3d",
-        mainboard: "JGINYUE-B450",
+        mainboard: "ASROCK-B450",
         vga: "2060s",
         ram: "cosair-16",
         ssd: "sstc-256",
@@ -82,7 +82,7 @@ export const configs = {
     },
     '14M': {
         cpu: "5700x3d",
-        mainboard: "JGINYUE-B450",
+        mainboard: "ASROCK-B450",
         vga: "2070s",
         ram: "cosair-16",
         ssd: "crucial-500",
@@ -92,7 +92,7 @@ export const configs = {
     },
     '15M': {
         cpu: "5700x3d",
-        mainboard: "JGINYUE-B450",
+        mainboard: "ASROCK-B450",
         vga: "3060ti",
         ram: "cosair-16",
         ssd: "crucial-500",
@@ -102,7 +102,7 @@ export const configs = {
     },
     '16M': {
         cpu: "5700x3d",
-        mainboard: "JGINYUE-B450",
+        mainboard: "ASROCK-B450",
         vga: "3070",
         ram: "cosair-16",
         ssd: "crucial-500",
@@ -112,7 +112,7 @@ export const configs = {
     },
     '17M': {
         cpu: "5700x3d",
-        mainboard: "JGINYUE-B450",
+        mainboard: "ASROCK-B450",
         vga: "3070ti",
         ram: "cosair-16",
         ssd: "crucial-500",
@@ -122,7 +122,7 @@ export const configs = {
     },
     '18M': {
         cpu: "5700x3d",
-        mainboard: "JGINYUE-B450",
+        mainboard: "ASROCK-B450",
         vga: "4060",
         ram: "cosair-32",
         ssd: "crucial-1tb",
@@ -132,7 +132,7 @@ export const configs = {
     },
     '19M': {
         cpu: "7600x",
-        mainboard: "JGINYUE-B650",
+        mainboard: "MSI-B650M-E",
         vga: "4060",
         ram: "tridentz-32-6000",
         ssd: "crucial-500",
@@ -142,7 +142,7 @@ export const configs = {
     },
     '20M': {
         cpu: "7600x",
-        mainboard: "JGINYUE-B650",
+        mainboard: "MSI-B650M-E",
         vga: "3070ti",
         ram: "tridentz-32-6000",
         ssd: "crucial-500",
@@ -152,7 +152,7 @@ export const configs = {
     },
     '21M': {
         cpu: "7800x3d",
-        mainboard: "JGINYUE-B650",
+        mainboard: "MSI-B650M-E",
         vga: "2070s",
         ram: "tridentz-16-6000",
         ssd: "crucial-500",
@@ -162,7 +162,7 @@ export const configs = {
     },
     '22M': {
         cpu: "7800x3d",
-        mainboard: "JGINYUE-B650",
+        mainboard: "MSI-B650M-E",
         vga: "3060ti",
         ram: "tridentz-16-6000",
         ssd: "crucial-500",
@@ -172,7 +172,7 @@ export const configs = {
     },
     '23M': {
         cpu: "7800x3d",
-        mainboard: "JGINYUE-B650",
+        mainboard: "MSI-B650M-E",
         vga: "3070",
         ram: "tridentz-16-6000",
         ssd: "crucial-500",
@@ -182,7 +182,7 @@ export const configs = {
     },
     '24M': {
         cpu: "7800x3d",
-        mainboard: "JGINYUE-B650",
+        mainboard: "MSI-B650M-E",
         vga: "4060",
         ram: "tridentz-16-6000",
         ssd: "crucial-500",
@@ -192,7 +192,7 @@ export const configs = {
     },
     '25M': {
         cpu: "7800x3d",
-        mainboard: "JGINYUE-B650",
+        mainboard: "MSI-B650M-E",
         vga: "4060",
         ram: "tridentz-16-6000",
         ssd: "crucial-1tb",
@@ -202,7 +202,7 @@ export const configs = {
     },
     '26M': {
         cpu: "7800x3d",
-        mainboard: "JGINYUE-B650",
+        mainboard: "MSI-B650M-E",
         vga: "4060",
         ram: "tridentz-32-6000",
         ssd: "crucial-500",
@@ -212,7 +212,7 @@ export const configs = {
     },
     '27M': {
         cpu: "7800x3d",
-        mainboard: "JGINYUE-B650",
+        mainboard: "MSI-B650M-E",
         vga: "3080",
         ram: "tridentz-16-6000",
         ssd: "crucial-500",
@@ -222,7 +222,7 @@ export const configs = {
     },
     '28M': {
         cpu: "7800x3d",
-        mainboard: "JGINYUE-B650",
+        mainboard: "MSI-B650M-E",
         vga: "3080",
         ram: "tridentz-16-6000",
         ssd: "crucial-1tb",
@@ -232,7 +232,7 @@ export const configs = {
     },
     '29M': {
         cpu: "7800x3d",
-        mainboard: "JGINYUE-B650",
+        mainboard: "MSI-B650M-E",
         vga: "3080",
         ram: "tridentz-32-6000",
         ssd: "crucial-500",
@@ -242,7 +242,7 @@ export const configs = {
     },
     '30M': {
         cpu: "7800x3d",
-        mainboard: "JGINYUE-B650",
+        mainboard: "MSI-B650M-E",
         vga: "3080",
         ram: "tridentz-32-6000",
         ssd: "crucial-1tb",
