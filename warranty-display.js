@@ -52,21 +52,39 @@
             }
             
             /* Định dạng giá tiền */
-            .warranty-table td:nth-child(2) {
+            .warranty-table td.price-cell {
                 text-align: right;
                 color: #00b3ff;
             }
             
             /* Định dạng bảo hành */
-            .warranty-table td:nth-child(3) {
+            .warranty-table td.warranty-cell {
                 text-align: center;
                 color: #4CAF50;
             }
             
             /* Định dạng ghi chú */
-            .warranty-table td:nth-child(4) {
+            .warranty-table td.note-cell {
                 text-align: center;
                 font-weight: bold;
+            }
+            
+            /* Định dạng STT */
+            .warranty-table td.stt-cell {
+                text-align: center;
+                width: 40px;
+            }
+            
+            /* Định dạng hình ảnh */
+            .warranty-table td.image-cell {
+                text-align: center;
+                width: 80px;
+            }
+            
+            .warranty-table td.image-cell img {
+                max-width: 60px;
+                max-height: 60px;
+                object-fit: contain;
             }
             
             /* Đảm bảo bảng luôn hiển thị */
@@ -77,14 +95,62 @@
                 opacity: 1 !important;
             }
             
-            /* Đảm bảo thông báo tương thích nổi bật */
-            #socket-message {
-                display: none !important;
+            /* Tiêu đề bảng */
+            .warranty-table-title {
+                background-color: #1c1c1c;
+                color: white;
+                padding: 10px;
+                text-align: center;
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 5px;
+                border-radius: 5px 5px 0 0;
+            }
+            
+            /* Thời gian */
+            .warranty-table-time {
+                background-color: #1c1c1c;
+                color: #4CAF50;
+                padding: 5px;
+                text-align: right;
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+            
+            /* Tổng cộng dòng */
+            .warranty-table tr.total-row {
+                background-color: #333;
+                font-weight: bold;
+            }
+            
+            .warranty-table tr.total-row td {
+                padding: 12px 10px;
+            }
+            
+            /* Trạng thái đơn hàng */
+            .order-status {
+                text-align: center;
+                padding: 8px;
+                margin-top: 10px;
+                font-weight: bold;
+                color: white;
+            }
+            
+            .order-status.completed {
+                background-color: #4CAF50;
             }
             
             /* Đảm bảo KHÔNG ẩn select dropdown khi click */
             select#mainboard, 
-            select#ram {
+            select#ram,
+            select#cpu,
+            select#vga,
+            select#ssd,
+            select#psu,
+            select#case,
+            select#cpuCooler,
+            select#hdd,
+            select#monitor {
                 display: inline-block !important;
                 visibility: visible !important;
                 opacity: 1 !important;
@@ -93,9 +159,8 @@
                 position: relative !important;
             }
             
-            /* Đảm bảo select dropdown có thể mở ra và chọn được */
-            select#mainboard option, 
-            select#ram option {
+            /* Fix issue with dropdown options not showing */
+            select option {
                 display: block !important;
                 color: #000 !important;
                 background-color: #fff !important;
@@ -104,7 +169,7 @@
             /* Đảm bảo các dropdown có thể click và mở được */
             .form-group, 
             .form-group select,
-            .form-group .form-control,
+            .form-control,
             .select-dropdown {
                 display: block !important;
                 visibility: visible !important;
@@ -113,31 +178,23 @@
                 z-index: 999 !important;
             }
             
-            /* Đảm bảo form group chứa mainboard và RAM hiển thị */
-            .mainboard-group,
-            .ram-group,
-            .form-group:has(#mainboard),
-            .form-group:has(#ram) {
+            /* Đảm bảo form group chứa dropdown hiển thị */
+            .form-group:has(select) {
                 display: block !important;
                 visibility: visible !important;
                 opacity: 1 !important;
                 pointer-events: auto !important;
             }
             
-            /* Đảm bảo bảng không bị thu nhỏ */
-            .config-table-container {
-                max-width: 100% !important;
-                overflow-x: auto !important;
-            }
-            
-            /* Force hiển thị */
-            [style*="display: none"] {
-                display: block !important;
-            }
-            
-            /* Ngoại lệ cho một số phần tử */
-            .modal[style*="display: none"] {
+            /* Xóa message lỗi tương thích */
+            #socket-message {
                 display: none !important;
+            }
+            
+            /* Fix màu chữ cho dropdown */
+            select.form-control {
+                color: #333 !important;
+                background-color: white !important;
             }
         `;
         

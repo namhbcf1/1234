@@ -34,20 +34,34 @@
     background-color: #303030;
 }
 
-/* Định dạng giá tiền */
-.warranty-table td:nth-child(2) {
+/* Định dạng các cột trong bảng */
+.warranty-table td.stt-cell {
+    text-align: center;
+    width: 40px;
+}
+
+.warranty-table td.image-cell {
+    text-align: center;
+    width: 80px;
+}
+
+.warranty-table td.image-cell img {
+    max-width: 60px;
+    max-height: 60px;
+    object-fit: contain;
+}
+
+.warranty-table td.price-cell {
     text-align: right;
     color: #00b3ff;
 }
 
-/* Định dạng bảo hành */
-.warranty-table td:nth-child(3) {
+.warranty-table td.warranty-cell {
     text-align: center;
     color: #4CAF50;
 }
 
-/* Định dạng ghi chú */
-.warranty-table td:nth-child(4) {
+.warranty-table td.note-cell {
     text-align: center;
     font-weight: bold;
 }
@@ -61,6 +75,51 @@
 .warranty-table .condition-used {
     color: #FFC107;
     font-weight: bold;
+}
+
+/* Tiêu đề bảng */
+.warranty-table-title {
+    background-color: #1c1c1c;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    border-radius: 5px 5px 0 0;
+}
+
+/* Thời gian */
+.warranty-table-time {
+    background-color: #1c1c1c;
+    color: #4CAF50;
+    padding: 5px;
+    text-align: right;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+/* Tổng cộng dòng */
+.warranty-table tr.total-row {
+    background-color: #333;
+    font-weight: bold;
+}
+
+.warranty-table tr.total-row td {
+    padding: 12px 10px;
+}
+
+/* Trạng thái đơn hàng */
+.order-status {
+    text-align: center;
+    padding: 8px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: white;
+}
+
+.order-status.completed {
+    background-color: #4CAF50;
 }
 
 /* Đảm bảo bảng luôn hiển thị */
@@ -77,8 +136,7 @@
 }
 
 /* Đảm bảo dropdown có thể mở ra và sử dụng được */
-select#mainboard, 
-select#ram {
+select {
     display: inline-block !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -87,21 +145,20 @@ select#ram {
     position: relative !important;
 }
 
-/* Đảm bảo các option trong dropdown hiển thị */
-select#mainboard option,
-select#ram option {
+/* Fix dropdown options visibility */
+select option {
     display: block !important;
     color: #000 !important;
     background-color: #fff !important;
 }
 
 /* Style cho các dropdown */
-.form-group {
+.form-group, .form-group * {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    margin-bottom: 15px;
     pointer-events: auto !important;
+    z-index: 999 !important;
 }
 
 /* Đảm bảo label hiện rõ */
@@ -112,7 +169,7 @@ select#ram option {
     color: #333;
 }
 
-/* Mài mắt cho dropdown */
+/* Style cho dropdown */
 .form-control {
     display: block !important;
     width: 100% !important;
@@ -133,4 +190,29 @@ select#ram option {
     border-color: #80bdff !important;
     outline: 0 !important;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+}
+
+/* Container bảng thông tin bảo hành */
+.warranty-table-container {
+    margin: 20px 0;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Button hiển thị bảng thông tin */
+#show-warranty-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #0053b4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#show-warranty-button:hover {
+    background-color: #003d82;
 } 
