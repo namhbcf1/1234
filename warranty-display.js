@@ -79,51 +79,49 @@
             
             /* Đảm bảo thông báo tương thích nổi bật */
             #socket-message {
-                display: block !important;
-                margin: 15px 0;
-                padding: 10px;
-                border-radius: 5px;
-                background-color: #e7f3fe;
-                border: 1px solid #b6dcfe;
-                color: #0c5460;
+                display: none !important;
             }
             
-            /* Làm rõ cảnh báo không tương thích */
-            #socket-message [class^="⚠️"] {
-                color: #f44336;
-                font-weight: bold;
-            }
-            
-            /* Highlight các thông báo thành công */
-            #socket-message [class^="✅"] {
-                color: #4CAF50;
-                font-weight: bold;
-            }
-            
-            /* Đảm bảo hiển thị các dropdown */
+            /* Đảm bảo KHÔNG ẩn select dropdown khi click */
             select#mainboard, 
-            select#ram,
+            select#ram {
+                display: inline-block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                pointer-events: auto !important;
+                z-index: 9999 !important;
+                position: relative !important;
+            }
+            
+            /* Đảm bảo select dropdown có thể mở ra và chọn được */
+            select#mainboard option, 
+            select#ram option {
+                display: block !important;
+                color: #000 !important;
+                background-color: #fff !important;
+            }
+            
+            /* Đảm bảo các dropdown có thể click và mở được */
+            .form-group, 
+            .form-group select,
+            .form-group .form-control,
+            .select-dropdown {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                pointer-events: auto !important;
+                z-index: 999 !important;
+            }
+            
+            /* Đảm bảo form group chứa mainboard và RAM hiển thị */
             .mainboard-group,
-            .ram-group {
+            .ram-group,
+            .form-group:has(#mainboard),
+            .form-group:has(#ram) {
                 display: block !important;
                 visibility: visible !important;
                 opacity: 1 !important;
-            }
-            
-            /* Style cho dropdown container */
-            .form-group {
-                display: block !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                margin-bottom: 15px;
-            }
-            
-            /* Fix cho container của dropdown */
-            .component-selection-container {
-                display: grid !important;
-                grid-template-columns: 1fr 1fr !important;
-                gap: 20px !important;
-                margin-bottom: 20px !important;
+                pointer-events: auto !important;
             }
             
             /* Đảm bảo bảng không bị thu nhỏ */

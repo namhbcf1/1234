@@ -71,43 +71,37 @@
     opacity: 1 !important;
 }
 
-/* Đảm bảo thông báo tương thích nổi bật */
+/* Ẩn thông báo lỗi tương thích */
 #socket-message {
-    display: block !important;
-    margin: 15px 0;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #e7f3fe;
-    border: 1px solid #b6dcfe;
-    color: #0c5460;
+    display: none !important;
 }
 
-/* Làm rõ cảnh báo không tương thích */
-#socket-message [class^="⚠️"] {
-    color: #f44336;
-    font-weight: bold;
-}
-
-/* Highlight các thông báo thành công */
-#socket-message [class^="✅"] {
-    color: #4CAF50;
-    font-weight: bold;
-}
-
-/* Đảm bảo hiển thị các dropdown */
+/* Đảm bảo dropdown có thể mở ra và sử dụng được */
 select#mainboard, 
 select#ram {
-    display: block !important;
+    display: inline-block !important;
     visibility: visible !important;
     opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 9999 !important;
+    position: relative !important;
 }
 
-/* Style cho dropdown container */
+/* Đảm bảo các option trong dropdown hiển thị */
+select#mainboard option,
+select#ram option {
+    display: block !important;
+    color: #000 !important;
+    background-color: #fff !important;
+}
+
+/* Style cho các dropdown */
 .form-group {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     margin-bottom: 15px;
+    pointer-events: auto !important;
 }
 
 /* Đảm bảo label hiện rõ */
@@ -130,6 +124,8 @@ select#ram {
     border: 1px solid #ced4da !important;
     border-radius: 4px !important;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+    pointer-events: auto !important;
+    z-index: 9999 !important;
 }
 
 /* Highlight dropdown khi focus */
